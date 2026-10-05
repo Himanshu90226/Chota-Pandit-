@@ -678,7 +678,7 @@ h2.section-title{letter-spacing:-.015em}
 .moment-reference-copy p{color:#6b5a4c!important;font-family:"DM Sans",Arial,sans-serif!important}
 @media(max-width:820px){
   .buy-image .buy-main{min-height:0;height:320px;flex:none}
-  .buy-thumbs{padding:8px}
+  .buy-thumbs{height:48px;padding:6px 0 0}
   .buy-subtitle{font-size:22px}
 }
 </style>
@@ -1049,6 +1049,51 @@ h2.section-title{letter-spacing:-.015em}
 .hero-copy h1 .hero-ji-red{color:#A31A08 !important;}
 </style>
 </style>
+<style id="mobile-buy-compact-fix">
+@media (max-width:760px){
+  /* Keep the original mobile Buy Now proportions; only tighten the lower details. */
+  /* Keep the product area tall enough to show the image naturally, while compacting the copy below it. */
+  .buy-image{height:405px!important}
+  .buy-image .buy-main{height:355px!important;min-height:355px!important}
+  .buy-thumbs{height:50px!important;padding:6px 0 0!important}
+
+  .buy-content{padding:18px 20px 24px!important}
+  .buy-label{font-size:10.5px!important;letter-spacing:.16em!important;margin-bottom:10px!important}
+  .buy-title{font-size:42px!important;line-height:.95!important;margin-bottom:12px!important}
+  .buy-subtitle{font-size:20px!important;line-height:1.18!important;margin-bottom:12px!important}
+  .buy-description{font-size:14px!important;line-height:1.55!important;margin-bottom:16px!important}
+  .buy-price-row{gap:10px!important;margin-bottom:14px!important}
+  .buy-price{font-size:36px!important}
+  .buy-old{font-size:21px!important}
+  .mrp-discount{font-size:11.5px!important;padding:5px 9px!important}
+  .buy-note{font-size:12.5px!important}
+
+  .buy-perks{gap:10px!important;margin:12px 0 18px!important}
+  .buy-perk{gap:10px!important}
+  .buy-perk-icon{font-size:18px!important;width:24px!important}
+  .buy-perk strong{font-size:15px!important;line-height:1.3!important;margin-bottom:2px!important}
+  .buy-perk span{font-size:12.5px!important;line-height:1.35!important}
+
+  .quantity-row{gap:8px!important;margin:14px 0 8px!important}
+  .quantity-label{font-size:15px!important}
+  .quantity-control{border-radius:14px!important}
+  .quantity-control button,.quantity-control span{width:44px!important;height:42px!important;font-size:18px!important}
+
+  .policy-note{width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 0 12px!important;padding:10px 12px!important;font-size:12.5px!important;line-height:1.42!important;border-radius:12px!important}
+  .bulk-note{font-size:13px!important;margin:12px 0 16px!important;line-height:1.35!important}
+
+  .promo-box{width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 0 16px!important;padding:13px 12px 11px!important;border-radius:14px!important;overflow:hidden!important}
+  .promo-title{font-size:16px!important;line-height:1.2!important;margin-bottom:8px!important}
+  .promo-row{width:100%!important;max-width:100%!important;gap:7px!important}
+  .promo-row input{min-width:0!important;width:0!important;padding:10px 11px!important;font-size:14px!important;border-radius:10px!important}
+  .promo-row button{flex:0 0 auto!important;padding:10px 13px!important;font-size:13px!important;border-radius:10px!important}
+  .promo-message{font-size:11px!important;margin-top:5px!important;min-height:0!important;line-height:1.3!important}
+  .promo-discount{margin-top:7px!important;font-size:12.5px!important;line-height:1.2!important}
+
+  .cart-btn{padding:16px 18px!important;font-size:16px!important;border-radius:16px!important}
+  .bulk-inline-btn{padding:13px 16px!important;font-size:12.5px!important;border-radius:16px!important}
+}
+</style>
 </head>
 <body>
 
@@ -1210,7 +1255,7 @@ h2.section-title{letter-spacing:-.015em}
     <button class="buy-close" type="button" onclick="closeBuyPanel()" aria-label="Close">×</button>
 
     <div class="buy-image">
-      <div class="buy-main" id="buyMain"><img id="buyMainImg" src="assets/buy-01.jpg" alt="Pandit Ji, front view" width="1536" height="1192" style="object-fit:cover"></div>
+      <div class="buy-main" id="buyMain"><img id="buyMainImg" src="assets/buy-01.jpg" alt="Pandit Ji, front view" width="1536" height="1192" style="object-fit:contain"></div>
       <div class="buy-thumbs" id="buyThumbs">
         <button type="button" class="on" data-src="assets/buy-01.jpg" data-alt="Pandit Ji, front view" data-fit="cover" aria-label="Front view"><img src="assets/buy-01.jpg" alt=""></button>
         <button type="button" data-src="assets/buy-02.jpg" data-alt="Pandit Ji held in hand" data-fit="cover" aria-label="Held in hand"><img loading="lazy" decoding="async" src="assets/buy-02.jpg" alt=""></button>
@@ -1397,9 +1442,7 @@ const PRICING = {
   quantityDiscounts: {
     2: 100
   },
-  coupons: {
-    FESTIVE100: { discount: 100, minOrder: 0, expires: '2026-12-31' }
-  }
+  coupons: { TEST698: { discount: 1, minOrder: 0, expires: '2026-12-31' }, HIMANSHU1: { discount: 698, minOrder: 0, expires: '2026-12-31' } }
 };
 let appliedCoupon = null;
 
