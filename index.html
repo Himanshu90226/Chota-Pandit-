@@ -1096,6 +1096,15 @@ h2.section-title{letter-spacing:-.015em}
 </style>
  
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script>
+  const SUPABASE_URL = 'https://fvmfvhzsfmxjioexsrrs.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_Rgc4WSPTrO08VozVdW5bcw_Wg5K1gly';
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+</script>
 </head>
 <body>
 
@@ -1999,6 +2008,16 @@ window.PANDIT_REVIEW_WEBHOOK = "";
     form.reset();rating=0;[].forEach.call(document.querySelectorAll('#rvStars button'),function(x){x.classList.remove('on')});form.classList.remove('open');thanks.classList.add('show');
   });
 })();
+</script>
+<script>
+  // Test Supabase connection
+  supabaseClient
+    .from('admin_users')
+    .select('*')
+    .limit(1)
+    .then(({ data, error }) => {
+      console.log('Supabase test:', data, error);
+    });
 </script>
 </body>
 </html>
