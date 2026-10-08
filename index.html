@@ -1595,18 +1595,55 @@ function makeOrderId(){
   let r = ''; for(let i=0;i<4;i++) r += chars[Math.floor(Math.random()*chars.length)];
   return 'PJ-' + ymd + '-' + r;
 }
-function sendOrderRecord(status){
-  const url = window.PANDIT_ORDER_WEBHOOK;
+async function sendOrderRecord(status){
   const c = window.panditCustomer;
-  if(!url || !c) return;
+  if(!c || !window.panditOrderId) return;
+
   try{
-    fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({orderId:window.panditOrderId,status:status,time:new Date().toISOString(),
-      name:c.name,email:c.email || '',phone:c.phone,address:c.address,city:c.city,state:c.state,pincode:c.pincode,
-      quantity:qty,mrpTotal:window.panditMrpTotal,itemsTotal:window.panditItemsTotal,quantityDiscount:window.panditQuantityDiscount,
-      couponCode:window.panditCouponCode || '',couponDiscount:window.panditCouponDiscount || 0,deliveryFee:0,
-      total:document.getElementById('cartPrice').textContent})});
-  }catch(e){}
+    const { data: customer, error: customerError } = await supabaseClient
+      .from('customers')
+      .insert({
+        name: c.name,
+        email: c.email || null,
+        phone: c.phone,
+        address: c.address,
+        city: c.city,
+        state: c.state,
+        pincode: c.pincode
+      })
+      .select('id')
+      .single();
+
+    if(customerError) throw customerError;
+
+    const totalAmount = Number(
+      document.getElementById('cartPrice').textContent.replace(/[₹,]/g,'')
+    ) || 0;
+
+    const { data: order, error: orderError } = await supabaseClient
+      .from('orders')
+      .insert({
+        order_number: window.panditOrderId,
+        customer_id: customer.id,
+        subtotal: window.panditItemsTotal || 0,
+        discount: window.panditQuantityDiscount || 0,
+        coupon_discount: window.panditCouponDiscount || 0,
+        payment_status: 'pending',
+        payment_method: 'UPI',
+        order_status: status,
+        total_amount: totalAmount
+      })
+      .select('id')
+      .single();
+
+    if(orderError) throw orderError;
+
+    console.log('AKARRA ORDER SAVED:', order);
+
+  }catch(error){
+    console.error('AKARRA ORDER SAVE ERROR:', error);
+  }
+}
 }
 function payWithUPI(){
   const amount = document.getElementById('cartPrice').textContent.replace('₹','').replace(/,/g,'');
