@@ -1094,17 +1094,6 @@ h2.section-title{letter-spacing:-.015em}
   .bulk-inline-btn{padding:13px 16px!important;font-size:12.5px!important;border-radius:16px!important}
 }
 </style>
- 
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- <script>
-  const SUPABASE_URL = 'https://fvmfvhzsfmxjioexsrrs.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_Rgc4WSPTrO08VozVdW5bcw_Wg5K1gly';
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-</script>
 </head>
 <body>
 
@@ -1386,7 +1375,7 @@ h2.section-title{letter-spacing:-.015em}
     <div class="payment-head">
       <div class="payment-kicker">ORDER READY</div>
       <h2>Choose how you want to pay</h2>
-      <p>Pay for <strong>Pandit Ji</strong> securely using your UPI app.</p>
+      <p>Pay using the UPI ID or scan the QR code below. After payment, send your screenshot on WhatsApp.</p>
     </div>
 
     <div class="payment-orderid" id="orderIdBox" hidden>Order ID: <strong id="orderIdText"></strong><span>Please type this ID in the payment note / remark of your UPI app.</span></div>
@@ -1399,9 +1388,8 @@ h2.section-title{letter-spacing:-.015em}
             <span>UPI ID</span>
             <strong>BHARATPE2K0C0A6B6I26442@unitype</strong>
           </div>
-          <button type="button" onclick="copyUPI()">Copy</button>
+          <button type="button" onclick="copyUPI()">Copy UPI ID</button>
         </div>
-        <button class="upi-btn" type="button" onclick="payWithUPI()">Pay with UPI</button>
       </div>
 
       <div class="payment-divider"><span>OR</span></div>
@@ -1420,26 +1408,29 @@ h2.section-title{letter-spacing:-.015em}
     <div class="payment-total">Order total: <strong id="paymentTotal">₹1,049</strong></div>
     <div class="payment-proof">
       <div class="payment-proof-title">STEP 2 · PAYMENT VERIFICATION</div>
-      <h3>After paying, share your payment screenshot</h3>
-      <p>Once your UPI payment is complete, upload the payment-success screenshot. It will be sent to us on WhatsApp for verification.</p>
-      <label class="upload-proof">
-        <input id="paymentScreenshot" type="file" accept="image/*" onchange="handlePaymentScreenshot(event)">
-        <span id="paymentScreenshotLabel">📷 Upload payment screenshot</span>
-      </label>
-      <img id="paymentScreenshotPreview" class="payment-proof-preview" alt="Payment screenshot preview" hidden>
-      <button type="button" id="shareProofBtn" class="whatsapp-btn proof-btn" onclick="sharePaymentProof()" disabled>Share screenshot on WhatsApp →</button>
-      <div id="verificationStatus" class="verification-status" hidden>
-        <strong>Payment proof submitted.</strong>
-        <span>Your order is confirmed once we manually verify the payment. We will message you on WhatsApp.</span>
+      <h3>Payment done?</h3>
+      <p>After completing your payment, continue to WhatsApp. Your complete order details and Order ID will already be filled in the chat. Simply attach your payment screenshot there and send it to us.</p>
+      <button type="button" class="whatsapp-btn proof-btn" onclick="openOrderWhatsApp()">Chat on WhatsApp →</button>
+      <div class="verification-status" style="margin-top:14px">
+        <strong>Payment verification</strong>
+        <span>Please attach your payment screenshot in WhatsApp and send it. We will verify the payment and confirm your order.</span>
       </div>
     </div>
-    <p class="payment-disclaimer">This website does not verify payments automatically. Your screenshot is sent to the seller on WhatsApp, and the order is confirmed after the payment is verified.</p>
+    <p class="payment-disclaimer">Payment is verified manually. Please send your payment screenshot on WhatsApp after completing the payment.</p>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* Optional: paste your Google Apps Script / Formspree URL here to record every order. Leave empty to turn off. */
 window.PANDIT_ORDER_WEBHOOK = "";
+
+const SUPABASE_URL = 'https://fvmfvhzsfmxjioexsrrs.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Rgc4WSPTrO08VozVdW5bcw_Wg5K1gly';
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 let qty = 1;
 
 /* ================= PRICE SETTINGS =================
@@ -1597,12 +1588,15 @@ function makeOrderId(){
 }
 async function sendOrderRecord(status){
   const c = window.panditCustomer;
-  if(!c || !window.panditOrderId) return;
+  if(!c || !window.panditOrderId) return false;
 
   try{
-    const { data: customer, error: customerError } = await supabaseClient
+    const customerId = crypto.randomUUID();
+
+    const { error: customerError } = await supabaseClient
       .from('customers')
       .insert({
+        id: customerId,
         name: c.name,
         email: c.email || null,
         phone: c.phone,
@@ -1610,60 +1604,66 @@ async function sendOrderRecord(status){
         city: c.city,
         state: c.state,
         pincode: c.pincode
-      })
-      .select('id')
-      .single();
+      });
 
-    if(customerError) throw customerError;
+    if(customerError){
+      console.error('AKARRA CUSTOMER SAVE ERROR:', customerError);
+      alert('Order save failed. Please try again.');
+      return false;
+    }
 
-    const totalAmount = Number(
-      document.getElementById('cartPrice').textContent.replace(/[₹,]/g,'')
-    ) || 0;
+    const totalText = document.getElementById('cartPrice').textContent || '₹0';
+    const totalAmount = Number(totalText.replace(/[₹,]/g,'').trim()) || 0;
 
-    const { data: order, error: orderError } = await supabaseClient
+    const { error: orderError } = await supabaseClient
       .from('orders')
       .insert({
         order_number: window.panditOrderId,
-        customer_id: customer.id,
+        customer_id: customerId,
         subtotal: window.panditItemsTotal || 0,
         discount: window.panditQuantityDiscount || 0,
         coupon_discount: window.panditCouponDiscount || 0,
         payment_status: 'pending',
         payment_method: 'UPI',
-        order_status: status,
+        order_status: 'pending',
         total_amount: totalAmount
-      })
-      .select('id')
-      .single();
+      });
 
-    if(orderError) throw orderError;
+    if(orderError){
+      console.error('AKARRA ORDER SAVE ERROR:', orderError);
+      alert('Order save failed. Please try again.');
+      return false;
+    }
 
-    console.log('AKARRA ORDER SAVED:', order);
+    console.log('AKARRA ORDER SAVED:', window.panditOrderId, status);
+    return true;
 
   }catch(error){
-    console.error('AKARRA ORDER SAVE ERROR:', error);
+    console.error('AKARRA SAVE ERROR:', error);
+    alert('Order save failed. Please try again.');
+    return false;
   }
 }
-
-function payWithUPI(){
-  const amount = document.getElementById('cartPrice').textContent.replace('₹','').replace(/,/g,'');
-  const orderId = window.panditOrderId || '';
-
-  const upiUrl =
-    'upi://pay?pa=BHARATPE2K0C0A6B6I26442%40unitype' +
-    '&pn=HIMANSHU%20MEENA' +
-    (orderId ? '&tr=' + encodeURIComponent(orderId) : '') +
-    (orderId ? '&tn=' + encodeURIComponent(orderId) : '') +
-    '&am=' + encodeURIComponent(amount) +
-    '&cu=INR';
-
-  window.location.href = upiUrl;
-}
-function copyUPI(){
+async function copyUPI(){
   const id = 'BHARATPE2K0C0A6B6I26442@unitype';
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(id).then(() => alert('UPI ID copied.'));
-  } else {
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(id);
+    }else{
+      const ta = document.createElement('textarea');
+      ta.value = id;
+      ta.setAttribute('readonly','');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if(!ok) throw new Error('copy failed');
+    }
+    alert('UPI ID copied.');
+  }catch(error){
     alert('UPI ID: ' + id);
   }
 }
@@ -1826,8 +1826,12 @@ if(pincodeInput){
   });
 }
 
-document.getElementById('customerForm').addEventListener('submit', function(e){
+document.getElementById('customerForm').addEventListener('submit', async function(e){
   e.preventDefault();
+
+  const submitBtn = this.querySelector('button[type="submit"]');
+  const originalText = submitBtn ? submitBtn.textContent : '';
+
   const name = document.getElementById('customerName').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
   const phone = document.getElementById('customerPhone').value.trim();
@@ -1835,45 +1839,49 @@ document.getElementById('customerForm').addEventListener('submit', function(e){
   const city = document.getElementById('customerCity').value.trim();
   const state = document.getElementById('customerState').value.trim();
   const pincode = document.getElementById('customerPincode').value.trim();
+
   if(!name || !phone || !address || !city || !state || !pincode) return;
+
   if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     alert('Please enter a valid email address or leave it blank.');
     return;
   }
+
   if(!/^[0-9]{6}$/.test(pincode)){
     alert('Please enter a valid 6-digit PIN code.');
     return;
   }
+
   updatePrice();
   document.getElementById('customerTotal').textContent = document.getElementById('cartPrice').textContent;
+
   window.panditCustomer = {name,email,phone,address,city,state,pincode};
   window.panditOrderId = makeOrderId();
-  sendOrderRecord('Details submitted - payment pending');
+
+  if(submitBtn){
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving order...';
+  }
+
+  const saved = await sendOrderRecord('Details submitted - payment pending');
+
+  if(submitBtn){
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  }
+
+  if(!saved) return;
+
   closeCustomerModal();
   openPaymentModal();
 });
 
-let paymentScreenshotFile = null;
-
-function handlePaymentScreenshot(event){
-  const file = event.target.files && event.target.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('image/')){
-    alert('Please select an image screenshot.');
-    event.target.value = '';
-    return;
-  }
-  paymentScreenshotFile = file;
-  const preview = document.getElementById('paymentScreenshotPreview');
-  preview.src = URL.createObjectURL(file);
-  preview.hidden = false;
-  document.getElementById('paymentScreenshotLabel').textContent = '✓ Screenshot selected — tap to change';
-  document.getElementById('shareProofBtn').disabled = false;
-}
-
 function buildOrderWhatsAppMessage(){
   const c = window.panditCustomer;
+  if(!c) return '';
+
   const total = document.getElementById('cartPrice').textContent;
+
   return [
     'Pandit Ji Order',
     'Order ID: '+(window.panditOrderId||'-'),
@@ -1894,47 +1902,22 @@ function buildOrderWhatsAppMessage(){
     'Order total: '+total,
     'Policy accepted: no returns; replacement only for damage with an unboxing video.',
     '',
-    'Payment screenshot attached for verification.',
+    'Payment screenshot will be attached in WhatsApp for verification.',
     'Please verify the payment and confirm the order.'
   ].join('\n');
 }
 
-async function sharePaymentProof(){
+function openOrderWhatsApp(){
   const c = window.panditCustomer;
-  if(!c){ alert('Please enter delivery details first.'); return; }
-  if(!paymentScreenshotFile){ alert('Please upload the payment screenshot first.'); return; }
+  if(!c){
+    alert('Please enter delivery details first.');
+    return;
+  }
 
   const message = buildOrderWhatsAppMessage();
   const waTextUrl = 'https://wa.me/917014809238?text='+encodeURIComponent(message);
-
-  if(navigator.share && navigator.canShare){
-    try{
-      const shareData = {title:'Pandit Ji Payment Proof', text:message, files:[paymentScreenshotFile]};
-      if(navigator.canShare({files:[paymentScreenshotFile]})){
-        await navigator.share(shareData);
-        markPaymentProofSubmitted();
-        return;
-      }
-    }catch(err){
-      if(err && err.name === 'AbortError') return;
-    }
-  }
-
-  window.open(waTextUrl,'_blank');
-  markPaymentProofSubmitted(true);
+  window.open(waTextUrl,'_blank','noopener');
 }
-
-function markPaymentProofSubmitted(fallback=false){
-  sendOrderRecord('Payment proof shared');
-  const status = document.getElementById('verificationStatus');
-  status.hidden = false;
-  status.querySelector('span').textContent = fallback
-    ? 'WhatsApp has opened. Please attach your payment screenshot in the chat and send it. We will confirm your order on WhatsApp once the payment is verified.'
-    : 'Payment screenshot shared on WhatsApp. We will confirm your order there once the payment is verified.';
-  document.getElementById('shareProofBtn').textContent = '✓ Payment proof shared';
-  document.getElementById('shareProofBtn').disabled = true;
-}
-
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){
     closePaymentModal();
@@ -2045,16 +2028,6 @@ window.PANDIT_REVIEW_WEBHOOK = "";
     form.reset();rating=0;[].forEach.call(document.querySelectorAll('#rvStars button'),function(x){x.classList.remove('on')});form.classList.remove('open');thanks.classList.add('show');
   });
 })();
-</script>
-<script>
-  // Test Supabase connection
-  supabaseClient
-    .from('admin_users')
-    .select('*')
-    .limit(1)
-    .then(({ data, error }) => {
-      console.log('Supabase test:', data, error);
-    });
 </script>
 </body>
 </html>
