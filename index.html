@@ -2048,29 +2048,106 @@ window.PANDIT_REVIEW_WEBHOOK = "";
 </script>
 <script>
 
-function openPasswordReset(){document.getElementById('resetPanel').classList.add('open')}
-function closePasswordReset(){document.getElementById('resetPanel').classList.remove('open')}
-async function updateAdminPassword(){
-  const p=document.getElementById('newPassword').value;
-  const c=document.getElementById('confirmPassword').value;
-  const msg=document.getElementById('resetMsg');
-  if(p.length<6){msg.textContent='Password must be at least 6 characters.';msg.style.color='#a31a08';return}
-  if(p!==c){msg.textContent='Passwords do not match.';msg.style.color='#a31a08';return}
-  const {error}=await supabaseClient.auth.updateUser({password:p});
-  if(error){msg.textContent=error.message;msg.style.color='#a31a08';return}
-  msg.textContent='Password updated successfully. You can now login to Admin.';msg.style.color='#286553';
-  setTimeout(()=>{window.location.hash='';closePasswordReset()},1200);
+function openPasswordReset(){
+  const panel=document.getElementById('resetPanel');
+  if(panel){
+    panel.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
 }
 
-function checkPasswordRecovery(){
-  const hash=window.location.hash;
-  if(hash.includes('type=recovery') || hash.includes('access_token=')){openPasswordReset();}
+function closePasswordReset(){
+  const panel=document.getElementById('resetPanel');
+  if(panel){
+    panel.classList.remove('open');
+    document.body.style.overflow='';
+  }
 }
+
+async function updateAdminPassword(){
+  const p=document.getElementById('newPassword').value.trim();
+  const c=document.getElementById('confirmPassword').value.trim();
+  const msg=document.getElementById('resetMsg');
+
+  if(p.length<6){
+    msg.textContent='Password must be at least 6 characters.';
+    msg.style.color='#a31a08';
+    return;
+  }
+  if(p!==c){
+    msg.textContent='Passwords do not match.';
+    msg.style.color='#a31a08';
+    return;
+  }
+
+  msg.textContent='Updating password…';
+  msg.style.color='#6f6963';
+
+  const {error}=await supabaseClient.auth.updateUser({password:p});
+  if(error){
+    msg.textContent=error.message;
+    msg.style.color='#a31a08';
+    return;
+  }
+
+  msg.textContent='Password updated successfully. You can now login to Admin.';
+  msg.style.color='#286553';
+
+  // Remove recovery tokens/code from the visible URL after the password is saved.
+  setTimeout(async()=>{
+    try{ await supabaseClient.auth.signOut(); }catch(e){}
+    window.history.replaceState({},document.title,window.location.pathname);
+    closePasswordReset();
+  },1200);
+}
+
+async function checkPasswordRecovery(){
+  try{
+    const hash=window.location.hash || '';
+    const search=window.location.search || '';
+    const hashParams=new URLSearchParams(hash.replace(/^#/,''));
+    const searchParams=new URLSearchParams(search);
+
+    // Supabase implicit recovery flow: #type=recovery&access_token=...
+    const recoveryType=hashParams.get('type')==='recovery' || searchParams.get('type')==='recovery';
+    const accessToken=hashParams.get('access_token');
+
+    // Supabase PKCE flow can return ?code=... instead of an access token.
+    const code=searchParams.get('code');
+    if(code){
+      const result=await supabaseClient.auth.exchangeCodeForSession(code);
+      if(result.error){
+        console.error('AKARRA PASSWORD RECOVERY CODE ERROR:',result.error);
+      }else{
+        openPasswordReset();
+        return;
+      }
+    }
+
+    if(recoveryType || accessToken){
+      openPasswordReset();
+      return;
+    }
+
+    // Final fallback: if Supabase already restored a recovery session, show the reset UI.
+    const sessionResult=await supabaseClient.auth.getSession();
+    if(sessionResult.data && sessionResult.data.session && (hash.includes('recovery') || hash.includes('access_token'))){
+      openPasswordReset();
+    }
+  }catch(error){
+    console.error('AKARRA PASSWORD RECOVERY CHECK ERROR:',error);
+  }
+}
+
 supabaseClient.auth.onAuthStateChange((event)=>{
-  if(event==='PASSWORD_RECOVERY') openPasswordReset();
+  if(event==='PASSWORD_RECOVERY'){
+    setTimeout(openPasswordReset,0);
+  }
 });
+
 window.addEventListener('hashchange',checkPasswordRecovery);
-setTimeout(checkPasswordRecovery,300);
+window.addEventListener('load',checkPasswordRecovery);
+setTimeout(checkPasswordRecovery,500);
 </script>
 </body>
 </html>
