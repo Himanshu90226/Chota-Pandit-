@@ -38,6 +38,19 @@ th{font-size:12px;text-transform:uppercase;color:#777}
 .empty{padding:35px;text-align:center;color:#777}
 .loading{color:#777}
 @media(max-width:700px){.stats{grid-template-columns:1fr}.stat strong{font-size:24px}header{padding:14px 16px}}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;padding:20px;overflow:auto}
+.modal-box{background:#fff;max-width:650px;margin:5vh auto;border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.modal-head h2{margin:0}
+.close-btn{border:0;background:#f3f3f3;width:36px;height:36px;border-radius:50%;font-size:24px;cursor:pointer}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail{background:#f8f7fa;padding:12px;border-radius:10px}
+.detail small{display:block;color:#777;margin-bottom:5px}
+.detail strong{word-break:break-word}
+.manage{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
+.order-link{border:0;background:none;color:#6a1b9a;font-weight:700;cursor:pointer;padding:0}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -73,6 +86,16 @@ th{font-size:12px;text-transform:uppercase;color:#777}
     <h2>Recent Orders</h2>
     <div id="ordersArea" class="loading">Loading orders…</div>
   </div>
+
+  <div id="orderModal" class="modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Order Details</h2>
+        <button id="closeModal" class="close-btn">×</button>
+      </div>
+      <div id="orderDetails">Loading…</div>
+    </div>
+  </div>
 </main>
 </div>
 
@@ -107,7 +130,7 @@ async function loadDashboard(){
 
   const {data:orders,error}=await supabaseClient
     .from('orders')
-    .select('id,order_number,total_amount,payment_status,order_status,created_at')
+    .select('id,order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,order_status,created_at')
     .order('created_at',{ascending:false})
     .limit(50);
 
@@ -116,14 +139,34 @@ async function loadDashboard(){
     document.getElementById('totalOrders').textContent='—';
     document.getElementById('pendingOrders').textContent='—';
     document.getElementById('revenue').textContent='—';
-    area.innerHTML='<div class="empty">Orders cannot be read yet. Admin read-access/RLS needs to be configured in Supabase.</div>';
+    area.innerHTML='<div class="empty">Orders cannot be read yet. Check Supabase RLS.</div>';
     return;
   }
 
   const rows=orders||[];
+  const customerIds=[...new Set(rows.map(o=>o.customer_id).filter(Boolean))];
+  let customers=[];
+
+  if(customerIds.length){
+    const customerResult=await supabaseClient
+      .from('customers')
+      .select('id,name,email,phone,address,city,state,pincode')
+      .in('id',customerIds);
+    if(customerResult.error){
+      console.error(customerResult.error);
+    }else{
+      customers=customerResult.data||[];
+    }
+  }
+
+  const customerMap=Object.fromEntries(customers.map(c=>[c.id,c]));
+
   document.getElementById('totalOrders').textContent=rows.length;
   document.getElementById('pendingOrders').textContent=rows.filter(o=>String(o.order_status||'').toLowerCase()==='pending').length;
-  document.getElementById('revenue').textContent=money(rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').reduce((s,o)=>s+Number(o.total_amount||0),0));
+  document.getElementById('revenue').textContent=money(
+    rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid')
+      .reduce((s,o)=>s+Number(o.total_amount||0),0)
+  );
 
   if(!rows.length){
     area.innerHTML='<div class="empty">No orders found.</div>';
@@ -131,17 +174,79 @@ async function loadDashboard(){
   }
 
   area.innerHTML=`<table>
-    <thead><tr><th>Order ID</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
-    <tbody>${rows.map(o=>`
-      <tr>
-        <td><strong>${escapeHtml(o.order_number||'-')}</strong></td>
+    <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>${rows.map(o=>{
+      const c=customerMap[o.customer_id]||{};
+      return `<tr>
+        <td><button class="order-link" onclick="openOrder('${escapeHtml(o.id)}')">${escapeHtml(o.order_number||'-')}</button></td>
+        <td>${escapeHtml(c.name||'—')}</td>
         <td>${money(o.total_amount)}</td>
-        <td><span class="badge">${escapeHtml(o.payment_status||'pending')}</span></td>
-        <td><span class="badge">${escapeHtml(o.order_status||'pending')}</span></td>
+        <td>
+          <select onchange="updateOrder('${escapeHtml(o.id)}', null, this.value)">
+            <option value="pending" ${o.payment_status==='pending'?'selected':''}>Pending</option>
+            <option value="paid" ${o.payment_status==='paid'?'selected':''}>Paid</option>
+          </select>
+        </td>
+        <td>
+          <select onchange="updateOrder('${escapeHtml(o.id)}', this.value, null)">
+            ${['pending','confirmed','packed','shipped','delivered'].map(s=>`<option value="${s}" ${String(o.order_status||'pending')===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+          </select>
+        </td>
         <td>${o.created_at?new Date(o.created_at).toLocaleString('en-IN'):'-'}</td>
-      </tr>`).join('')}</tbody>
+      </tr>`;
+    }).join('')}</tbody>
   </table>`;
+
+  window.adminOrders=rows;
+  window.adminCustomers=customerMap;
 }
+
+window.openOrder=async function(id){
+  const o=(window.adminOrders||[]).find(x=>x.id===id);
+  if(!o)return;
+  const c=(window.adminCustomers||{})[o.customer_id]||{};
+  document.getElementById('orderDetails').innerHTML=`
+    <div class="detail-grid">
+      <div class="detail"><small>Order ID</small><strong>${escapeHtml(o.order_number||'-')}</strong></div>
+      <div class="detail"><small>Order Total</small><strong>${money(o.total_amount)}</strong></div>
+      <div class="detail"><small>Name</small><strong>${escapeHtml(c.name||'-')}</strong></div>
+      <div class="detail"><small>Phone</small><strong>${escapeHtml(c.phone||'-')}</strong></div>
+      <div class="detail"><small>Email</small><strong>${escapeHtml(c.email||'-')}</strong></div>
+      <div class="detail"><small>PIN</small><strong>${escapeHtml(c.pincode||'-')}</strong></div>
+      <div class="detail"><small>City</small><strong>${escapeHtml(c.city||'-')}</strong></div>
+      <div class="detail"><small>State</small><strong>${escapeHtml(c.state||'-')}</strong></div>
+      <div class="detail" style="grid-column:1/-1"><small>Address</small><strong>${escapeHtml(c.address||'-')}</strong></div>
+      <div class="detail"><small>Payment</small><strong>${escapeHtml(o.payment_status||'pending')}</strong></div>
+      <div class="detail"><small>Status</small><strong>${escapeHtml(o.order_status||'pending')}</strong></div>
+    </div>
+    <div style="margin-top:15px;color:#666;font-size:13px">
+      Subtotal: ${money(o.subtotal)} · Quantity discount: ${money(o.discount)} · Coupon discount: ${money(o.coupon_discount)}
+    </div>`;
+  document.getElementById('orderModal').style.display='block';
+};
+
+window.updateOrder=async function(id,status,payment){
+  const patch={};
+  if(status) patch.order_status=status;
+  if(payment) patch.payment_status=payment;
+  if(!Object.keys(patch).length)return;
+
+  const {error}=await supabaseClient.from('orders').update(patch).eq('id',id);
+  if(error){
+    console.error(error);
+    alert('Update failed. Supabase admin UPDATE policy is not configured yet.');
+    await loadDashboard();
+    return;
+  }
+  await loadDashboard();
+};
+
+document.getElementById('closeModal').addEventListener('click',()=>{
+  document.getElementById('orderModal').style.display='none';
+});
+document.getElementById('orderModal').addEventListener('click',(e)=>{
+  if(e.target.id==='orderModal') e.currentTarget.style.display='none';
+});
 
 function escapeHtml(v){
   return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
