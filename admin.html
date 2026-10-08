@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AKARRA Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f3f7;color:#222}
+button,input{font:inherit}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}
+.card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 10px 35px rgba(0,0,0,.08)}
+.login-card{width:min(420px,100%)}
+.logo{font-size:30px;font-weight:800;letter-spacing:2px;text-align:center;margin-bottom:8px}
+.sub{text-align:center;color:#777;margin-bottom:24px}
+label{display:block;font-size:14px;font-weight:600;margin:14px 0 7px}
+input{width:100%;padding:13px 14px;border:1px solid #ddd;border-radius:10px;outline:none}
+input:focus{border-color:#8e2de2}
+.btn{width:100%;border:0;border-radius:10px;padding:13px 16px;background:#8e2de2;color:white;font-weight:700;cursor:pointer;margin-top:18px}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.msg{margin-top:14px;font-size:14px;text-align:center}
+.error{color:#c62828}.success{color:#2e7d32}
+#app{display:none}
+header{background:#fff;border-bottom:1px solid #eee;padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:15px;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;letter-spacing:1.5px}
+.logout{border:1px solid #ddd;background:white;padding:9px 14px;border-radius:9px;cursor:pointer}
+main{max-width:1200px;margin:auto;padding:25px 18px}
+h1{margin:0 0 20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:22px}
+.stat{background:white;border-radius:15px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,.05)}
+.stat small{color:#777}.stat strong{display:block;font-size:28px;margin-top:8px}
+.table-card{background:white;border-radius:15px;padding:18px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:800px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #eee;font-size:14px}
+th{font-size:12px;text-transform:uppercase;color:#777}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#f0e7f8;color:#6a1b9a;font-size:12px}
+.empty{padding:35px;text-align:center;color:#777}
+.loading{color:#777}
+@media(max-width:700px){.stats{grid-template-columns:1fr}.stat strong{font-size:24px}header{padding:14px 16px}}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-wrap">
+  <div class="card login-card">
+    <div class="logo">AKARRA</div>
+    <div class="sub">Admin Panel</div>
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label>Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button id="loginBtn" class="btn" type="submit">Login</button>
+      <div id="loginMsg" class="msg"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app">
+<header>
+  <div class="brand">AKARRA ADMIN</div>
+  <button id="logoutBtn" class="logout">Logout</button>
+</header>
+<main>
+  <h1>Dashboard</h1>
+  <div class="stats">
+    <div class="stat"><small>Total Orders</small><strong id="totalOrders">—</strong></div>
+    <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">—</strong></div>
+    <div class="stat"><small>Revenue</small><strong id="revenue">—</strong></div>
+  </div>
+  <div class="table-card">
+    <h2>Recent Orders</h2>
+    <div id="ordersArea" class="loading">Loading orders…</div>
+  </div>
+</main>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://fvmfvhzsfmxjioexsrrs.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Rgc4WSPTrO08VozVdW5bcw_Wg5K1gly';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const loginScreen = document.getElementById('loginScreen');
+const app = document.getElementById('app');
+const loginForm = document.getElementById('loginForm');
+const loginBtn = document.getElementById('loginBtn');
+const loginMsg = document.getElementById('loginMsg');
+
+function showLogin(message='', error=true){
+  loginScreen.style.display='grid';
+  app.style.display='none';
+  loginMsg.textContent=message;
+  loginMsg.className='msg '+(error?'error':'success');
+}
+function showApp(){
+  loginScreen.style.display='none';
+  app.style.display='block';
+}
+function money(n){
+  return '₹'+Number(n||0).toLocaleString('en-IN');
+}
+
+async function loadDashboard(){
+  const area=document.getElementById('ordersArea');
+  area.innerHTML='<div class="loading">Loading orders…</div>';
+
+  const {data:orders,error}=await supabaseClient
+    .from('orders')
+    .select('id,order_number,total_amount,payment_status,order_status,created_at')
+    .order('created_at',{ascending:false})
+    .limit(50);
+
+  if(error){
+    console.error(error);
+    document.getElementById('totalOrders').textContent='—';
+    document.getElementById('pendingOrders').textContent='—';
+    document.getElementById('revenue').textContent='—';
+    area.innerHTML='<div class="empty">Orders cannot be read yet. Admin read-access/RLS needs to be configured in Supabase.</div>';
+    return;
+  }
+
+  const rows=orders||[];
+  document.getElementById('totalOrders').textContent=rows.length;
+  document.getElementById('pendingOrders').textContent=rows.filter(o=>String(o.order_status||'').toLowerCase()==='pending').length;
+  document.getElementById('revenue').textContent=money(rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').reduce((s,o)=>s+Number(o.total_amount||0),0));
+
+  if(!rows.length){
+    area.innerHTML='<div class="empty">No orders found.</div>';
+    return;
+  }
+
+  area.innerHTML=`<table>
+    <thead><tr><th>Order ID</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>${rows.map(o=>`
+      <tr>
+        <td><strong>${escapeHtml(o.order_number||'-')}</strong></td>
+        <td>${money(o.total_amount)}</td>
+        <td><span class="badge">${escapeHtml(o.payment_status||'pending')}</span></td>
+        <td><span class="badge">${escapeHtml(o.order_status||'pending')}</span></td>
+        <td>${o.created_at?new Date(o.created_at).toLocaleString('en-IN'):'-'}</td>
+      </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function escapeHtml(v){
+  return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+loginForm.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  loginBtn.disabled=true;
+  loginBtn.textContent='Logging in…';
+  loginMsg.textContent='';
+  try{
+    const {data,error}=await supabaseClient.auth.signInWithPassword({
+      email:document.getElementById('email').value.trim(),
+      password:document.getElementById('password').value
+    });
+    if(error) throw error;
+    if(!data.session) throw new Error('Login session was not created.');
+    showApp();
+    await loadDashboard();
+  }catch(err){
+    console.error(err);
+    showLogin(err.message||'Login failed.');
+  }finally{
+    loginBtn.disabled=false;
+    loginBtn.textContent='Login';
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click',async()=>{
+  await supabaseClient.auth.signOut();
+  showLogin();
+});
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(session) showApp();
+  else showLogin();
+});
+
+(async()=>{
+  const {data}=await supabaseClient.auth.getSession();
+  if(data.session){
+    showApp();
+    await loadDashboard();
+  }else{
+    showLogin();
+  }
+})();
+</script>
+</body>
+</html>
