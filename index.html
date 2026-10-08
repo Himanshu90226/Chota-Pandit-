@@ -1644,7 +1644,7 @@ async function sendOrderRecord(status){
     console.error('AKARRA ORDER SAVE ERROR:', error);
   }
 }
-}
+
 function payWithUPI(){
   const amount = document.getElementById('cartPrice').textContent.replace('₹','').replace(/,/g,'');
   const orderId = window.panditOrderId || '';
