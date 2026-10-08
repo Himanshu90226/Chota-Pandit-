@@ -1094,8 +1094,25 @@ h2.section-title{letter-spacing:-.015em}
   .bulk-inline-btn{padding:13px 16px!important;font-size:12.5px!important;border-radius:16px!important}
 }
 </style>
+
+<style id="password-reset-ui">
+.reset-panel{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(24,13,8,.65);backdrop-filter:blur(8px)}
+.reset-panel.open{display:flex}.reset-box{width:min(430px,100%);background:#fffdf9;border-radius:22px;padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.3);color:#17110e}.reset-box h2{margin:0 0 8px;font:500 34px "Playfair Display",serif}.reset-box p{color:#6f6963;line-height:1.5;font-size:14px}.reset-box input{width:100%;padding:13px;border:1px solid #ddd2c6;border-radius:10px;margin:8px 0 14px;font:inherit}.reset-box button{width:100%;padding:14px;border:0;border-radius:12px;background:#17110e;color:#fff;font-weight:800;cursor:pointer}.reset-msg{margin-top:12px;font-size:13px}.reset-close{float:right;border:0;background:#f1ebe3;border-radius:50%;width:32px;height:32px;font-size:20px;cursor:pointer}
+</style>
 </head>
 <body>
+<div id="resetPanel" class="reset-panel">
+  <div class="reset-box">
+    <button class="reset-close" onclick="closePasswordReset()">×</button>
+    <h2>Reset Password</h2>
+    <p>Set a new password for your AKARRA admin account.</p>
+    <input id="newPassword" type="password" minlength="6" placeholder="New password">
+    <input id="confirmPassword" type="password" minlength="6" placeholder="Confirm new password">
+    <button onclick="updateAdminPassword()">Update Password</button>
+    <div id="resetMsg" class="reset-msg"></div>
+  </div>
+</div>
+
 
 <header class="nav container">
   <a class="logo" href="#" aria-label="Akarra home"><img class="brand-logo" src="assets/akarra-logo.png" alt="Akarra"></a>
@@ -2028,6 +2045,32 @@ window.PANDIT_REVIEW_WEBHOOK = "";
     form.reset();rating=0;[].forEach.call(document.querySelectorAll('#rvStars button'),function(x){x.classList.remove('on')});form.classList.remove('open');thanks.classList.add('show');
   });
 })();
+</script>
+<script>
+
+function openPasswordReset(){document.getElementById('resetPanel').classList.add('open')}
+function closePasswordReset(){document.getElementById('resetPanel').classList.remove('open')}
+async function updateAdminPassword(){
+  const p=document.getElementById('newPassword').value;
+  const c=document.getElementById('confirmPassword').value;
+  const msg=document.getElementById('resetMsg');
+  if(p.length<6){msg.textContent='Password must be at least 6 characters.';msg.style.color='#a31a08';return}
+  if(p!==c){msg.textContent='Passwords do not match.';msg.style.color='#a31a08';return}
+  const {error}=await supabaseClient.auth.updateUser({password:p});
+  if(error){msg.textContent=error.message;msg.style.color='#a31a08';return}
+  msg.textContent='Password updated successfully. You can now login to Admin.';msg.style.color='#286553';
+  setTimeout(()=>{window.location.hash='';closePasswordReset()},1200);
+}
+
+function checkPasswordRecovery(){
+  const hash=window.location.hash;
+  if(hash.includes('type=recovery') || hash.includes('access_token=')){openPasswordReset();}
+}
+supabaseClient.auth.onAuthStateChange((event)=>{
+  if(event==='PASSWORD_RECOVERY') openPasswordReset();
+});
+window.addEventListener('hashchange',checkPasswordRecovery);
+setTimeout(checkPasswordRecovery,300);
 </script>
 </body>
 </html>
