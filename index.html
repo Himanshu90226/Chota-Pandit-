@@ -1461,9 +1461,134 @@ const PRICING = {
   quantityDiscounts: {
     2: 100
   },
-  coupons: { TEST698: { discount: 1, minOrder: 0, expires: '2026-12-31' }, HIMANSHU1: { discount: 698, minOrder: 0, expires: '2026-12-31' } }
+  coupons: {}
 };
 let appliedCoupon = null;
+let storefrontStock = 100;
+let storefrontOffers = [];
+
+/* Storefront integration: read the active Pandit Ji product from Supabase.
+   If the database request fails, keep the existing storefront defaults intact. */
+async function loadStorefrontProduct(){
+  try{
+    const {data:product,error}=await supabaseClient
+      .from('products')
+      .select('name,category,price,mrp,stock,image_url,video_url,slug,description,is_featured,is_active')
+      .eq('slug','pandit-ji')
+      .eq('is_active',true)
+      .maybeSingle();
+
+    if(error){
+      console.warn('AKARRA storefront product load failed; using existing page defaults.',error);
+      return;
+    }
+    if(!product){
+      console.warn('No active Supabase product found for slug pandit-ji; keeping existing storefront content.');
+      return;
+    }
+
+    window.panditProduct=product;
+    if(Number.isFinite(Number(product.stock))) storefrontStock=Math.max(0,Number(product.stock));
+    const qtyEl=document.getElementById('qty');
+    if(qtyEl && qty>storefrontStock && storefrontStock>0){qty=storefrontStock;qtyEl.textContent=String(qty);}
+    if(storefrontStock<=0){
+      document.querySelectorAll('#buyPanel button, .buy-panel button').forEach(b=>{if(/buy|cart|order/i.test((b.textContent||'')+' '+(b.getAttribute('onclick')||''))){b.disabled=true;b.setAttribute('aria-disabled','true');}});
+      const noteEl=document.getElementById('buyNote'); if(noteEl) noteEl.textContent='Currently out of stock.';
+    }
+    if(Number.isFinite(Number(product.price)) && Number(product.price)>=0){
+      PRICING.sellingPrice=Number(product.price);
+    }
+    if(Number.isFinite(Number(product.mrp)) && Number(product.mrp)>=0){
+      PRICING.mrp=Number(product.mrp);
+    }
+
+    if(product.name){
+      const title=document.querySelector('.buy-title');
+      if(title) title.textContent=product.name;
+      const label=document.querySelector('.buy-label');
+      if(label && product.category) label.textContent=product.name+' · '+product.category;
+      document.title=product.name+' | Akarra';
+      const ogTitle=document.querySelector('meta[property="og:title"]');
+      if(ogTitle) ogTitle.content=product.name+' | Akarra';
+    }
+    if(product.description){
+      const description=document.querySelector('.buy-description');
+      if(description) description.textContent=product.description;
+    }
+    if(product.image_url){
+      const mainImage=document.getElementById('buyMainImg');
+      if(mainImage) mainImage.src=product.image_url;
+      if(mainImage && product.name) mainImage.alt=product.name;
+      const firstThumb=document.querySelector('.buy-thumbs button');
+      if(firstThumb){
+        firstThumb.dataset.src=product.image_url;
+        const thumbImage=firstThumb.querySelector('img');
+        if(thumbImage) thumbImage.src=product.image_url;
+      }
+      const firstMomentImage=document.querySelector('.moments-reference-grid .moment-reference-image img');
+      if(firstMomentImage) firstMomentImage.src=product.image_url;
+      const ogImage=document.querySelector('meta[property="og:image"]');
+      if(ogImage) ogImage.content=product.image_url;
+    }
+    if(product.video_url){
+      const video=document.querySelector('.gallery-video');
+      const source=video && video.querySelector('source');
+      if(source && source.src!==product.video_url){
+        source.src=product.video_url;
+        video.load();
+      }
+    }
+    await loadStorefrontPromotions();
+    updatePrice();
+    console.info('AKARRA storefront product loaded from Supabase:',product.slug);
+  }catch(err){
+    console.warn('AKARRA storefront product integration error; using existing page defaults.',err);
+  }
+}
+
+async function loadStorefrontPromotions(){
+  const now=new Date();
+  const activeNow=row=>{
+    if(row.is_active===false) return false;
+    const start=row.starts_at||row.start_date;
+    const end=row.expires_at||row.end_date||row.expiry_date;
+    if(start && new Date(start)>now) return false;
+    if(end && new Date(end)<now) return false;
+    return true;
+  };
+  try{
+    const [offersResult,couponsResult]=await Promise.all([
+      supabaseClient.from('offers').select('*').eq('is_active',true),
+      supabaseClient.from('coupons').select('*').eq('is_active',true)
+    ]);
+    if(!offersResult.error) storefrontOffers=(offersResult.data||[]).filter(activeNow);
+    if(!couponsResult.error){
+      const map={};
+      (couponsResult.data||[]).filter(activeNow).forEach(c=>{
+        const code=String(c.code||'').trim().toUpperCase();
+        if(!code) return;
+        map[code]={
+          discount:Number(c.discount_value||0),
+          discountType:String(c.discount_type||'fixed').toLowerCase(),
+          minOrder:Number(c.min_order_amount||0),
+          maxDiscount:c.max_discount==null?null:Number(c.max_discount),
+          expires:c.expires_at||c.expiry_date||c.end_date||null
+        };
+      });
+      PRICING.coupons=map;
+    }
+    if(storefrontOffers.length){
+      let banner=document.getElementById('storefrontOfferBanner');
+      if(!banner){
+        banner=document.createElement('div');banner.id='storefrontOfferBanner';
+        banner.style.cssText='margin:12px 0;padding:12px 14px;border:1px solid rgba(142,45,226,.25);border-radius:12px;background:rgba(142,45,226,.06);font-size:13px;line-height:1.5';
+        const label=document.querySelector('.buy-label');
+        if(label) label.insertAdjacentElement('afterend',banner);
+      }
+      banner.textContent=storefrontOffers.map(o=>[o.title||o.name,o.description].filter(Boolean).join(' — ')).join(' | ');
+    } else {const banner=document.getElementById('storefrontOfferBanner');if(banner)banner.remove();}
+  }catch(err){console.warn('Offers/coupons could not be loaded from Supabase.',err);}
+}
 
 function openBuyPanel(){
   const panel = document.getElementById('buyPanel');
@@ -1479,7 +1604,7 @@ function closeBuyPanel(){
   document.body.style.overflow = '';
 }
 function changeQty(amount){
-  qty = Math.min(20, Math.max(1, qty + amount));
+  qty = Math.min(Math.max(1,Math.min(20,storefrontStock||20)), Math.max(1, qty + amount));
   document.getElementById('qty').textContent = qty;
   updatePrice();
 }
@@ -1492,7 +1617,10 @@ function getQuantityUnitPrice(){
 }
 function getCouponDiscount(itemsTotal){
   if(!appliedCoupon) return 0;
-  return Math.min(appliedCoupon.discount || 0, itemsTotal);
+  let value=Number(appliedCoupon.discount||0);
+  if(appliedCoupon.discountType==='percentage' || appliedCoupon.discountType==='percent') value=itemsTotal*value/100;
+  if(appliedCoupon.maxDiscount!=null && Number.isFinite(appliedCoupon.maxDiscount)) value=Math.min(value,appliedCoupon.maxDiscount);
+  return Math.min(Math.max(0,Math.round(value)),itemsTotal);
 }
 function updatePrice(){
   const baseItems = qty * PRICING.sellingPrice;
@@ -1572,7 +1700,7 @@ function applyPromoCode(){
     updatePrice();
     return;
   }
-  const currentItems = qty * PRICING.sellingPrice;
+  const currentItems = Math.max(0,qty * PRICING.sellingPrice - (qty===2 ? qty*PRICING.quantityDiscounts[2] : 0));
   if(currentItems < (coupon.minOrder || 0)){
     appliedCoupon = null;
     if(message){ message.textContent = 'This promo code is not available for this order.'; message.className = 'promo-message error'; }
@@ -1582,7 +1710,7 @@ function applyPromoCode(){
   appliedCoupon = {...coupon, code: raw};
   if(input) input.value = raw;
   if(message){
-    message.textContent = 'Promo code applied. You save ₹' + coupon.discount.toLocaleString('en-IN') + '.';
+    message.textContent = 'Promo code applied. Your discount is calculated in the order total.';
     message.className = 'promo-message';
   }
   updatePrice();
@@ -1685,6 +1813,8 @@ async function copyUPI(){
   }
 }
 function addToCart(){
+  if(storefrontStock<=0){alert('This product is currently out of stock.');return;}
+  if(qty>storefrontStock){qty=storefrontStock;const q=document.getElementById('qty');if(q)q.textContent=String(qty);}
   updatePrice();
   closeBuyPanel();
   const modal = document.getElementById('customerModal');
@@ -2048,106 +2178,32 @@ window.PANDIT_REVIEW_WEBHOOK = "";
 </script>
 <script>
 
-function openPasswordReset(){
-  const panel=document.getElementById('resetPanel');
-  if(panel){
-    panel.classList.add('open');
-    document.body.style.overflow='hidden';
-  }
-}
-
-function closePasswordReset(){
-  const panel=document.getElementById('resetPanel');
-  if(panel){
-    panel.classList.remove('open');
-    document.body.style.overflow='';
-  }
-}
-
+function openPasswordReset(){document.getElementById('resetPanel').classList.add('open')}
+function closePasswordReset(){document.getElementById('resetPanel').classList.remove('open')}
 async function updateAdminPassword(){
-  const p=document.getElementById('newPassword').value.trim();
-  const c=document.getElementById('confirmPassword').value.trim();
+  const p=document.getElementById('newPassword').value;
+  const c=document.getElementById('confirmPassword').value;
   const msg=document.getElementById('resetMsg');
-
-  if(p.length<6){
-    msg.textContent='Password must be at least 6 characters.';
-    msg.style.color='#a31a08';
-    return;
-  }
-  if(p!==c){
-    msg.textContent='Passwords do not match.';
-    msg.style.color='#a31a08';
-    return;
-  }
-
-  msg.textContent='Updating password…';
-  msg.style.color='#6f6963';
-
+  if(p.length<6){msg.textContent='Password must be at least 6 characters.';msg.style.color='#a31a08';return}
+  if(p!==c){msg.textContent='Passwords do not match.';msg.style.color='#a31a08';return}
   const {error}=await supabaseClient.auth.updateUser({password:p});
-  if(error){
-    msg.textContent=error.message;
-    msg.style.color='#a31a08';
-    return;
-  }
-
-  msg.textContent='Password updated successfully. You can now login to Admin.';
-  msg.style.color='#286553';
-
-  // Remove recovery tokens/code from the visible URL after the password is saved.
-  setTimeout(async()=>{
-    try{ await supabaseClient.auth.signOut(); }catch(e){}
-    window.history.replaceState({},document.title,window.location.pathname);
-    closePasswordReset();
-  },1200);
+  if(error){msg.textContent=error.message;msg.style.color='#a31a08';return}
+  msg.textContent='Password updated successfully. You can now login to Admin.';msg.style.color='#286553';
+  setTimeout(()=>{window.location.hash='';closePasswordReset()},1200);
 }
 
-async function checkPasswordRecovery(){
-  try{
-    const hash=window.location.hash || '';
-    const search=window.location.search || '';
-    const hashParams=new URLSearchParams(hash.replace(/^#/,''));
-    const searchParams=new URLSearchParams(search);
-
-    // Supabase implicit recovery flow: #type=recovery&access_token=...
-    const recoveryType=hashParams.get('type')==='recovery' || searchParams.get('type')==='recovery';
-    const accessToken=hashParams.get('access_token');
-
-    // Supabase PKCE flow can return ?code=... instead of an access token.
-    const code=searchParams.get('code');
-    if(code){
-      const result=await supabaseClient.auth.exchangeCodeForSession(code);
-      if(result.error){
-        console.error('AKARRA PASSWORD RECOVERY CODE ERROR:',result.error);
-      }else{
-        openPasswordReset();
-        return;
-      }
-    }
-
-    if(recoveryType || accessToken){
-      openPasswordReset();
-      return;
-    }
-
-    // Final fallback: if Supabase already restored a recovery session, show the reset UI.
-    const sessionResult=await supabaseClient.auth.getSession();
-    if(sessionResult.data && sessionResult.data.session && (hash.includes('recovery') || hash.includes('access_token'))){
-      openPasswordReset();
-    }
-  }catch(error){
-    console.error('AKARRA PASSWORD RECOVERY CHECK ERROR:',error);
-  }
+function checkPasswordRecovery(){
+  const hash=window.location.hash;
+  if(hash.includes('type=recovery') || hash.includes('access_token=')){openPasswordReset();}
 }
-
 supabaseClient.auth.onAuthStateChange((event)=>{
-  if(event==='PASSWORD_RECOVERY'){
-    setTimeout(openPasswordReset,0);
-  }
+  if(event==='PASSWORD_RECOVERY') openPasswordReset();
 });
-
 window.addEventListener('hashchange',checkPasswordRecovery);
-window.addEventListener('load',checkPasswordRecovery);
-setTimeout(checkPasswordRecovery,500);
+setTimeout(checkPasswordRecovery,300);
+
+// Load current product fields from Supabase without changing the page layout.
+loadStorefrontProduct();
 </script>
 </body>
 </html>
