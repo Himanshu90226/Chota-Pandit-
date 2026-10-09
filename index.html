@@ -1593,14 +1593,11 @@ async function loadStorefrontProduct(){
       const safeAttr=value=>String(value).replace(/&/g,'&amp;').replace(/\"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       if(thumbs){
         thumbs.innerHTML=productImages.map((url,i)=>`<button type="button" class="${i===0?'on':''}" data-src="${safeAttr(url)}" data-alt="${safeAttr((product.name||'Pandit Ji')+' product view '+(i+1))}" data-fit="contain" aria-label="Product image ${i+1}"><img ${i?'loading="lazy"':''} src="${safeAttr(url)}" alt=""></button>`).join('');
-        // Rebind gallery controls because the image buttons now come from Supabase.
-        const buttons=[...thumbs.querySelectorAll('button')];
-        buttons.forEach((button,index)=>button.addEventListener('click',()=>{
-          buttons.forEach(b=>b.classList.remove('on'));button.classList.add('on');
-          if(mainImage){mainImage.src=button.dataset.src;mainImage.alt=button.dataset.alt||product.name||'Pandit Ji';mainImage.style.objectFit='contain';}
-        }));
       }
       if(mainImage){mainImage.src=productImages[0];mainImage.alt=product.name||'Pandit Ji';mainImage.style.objectFit='contain';}
+      // The gallery buttons were replaced asynchronously from Supabase. Refresh the
+      // slider's button references so the large image cannot keep cycling old HTML images.
+      if(typeof window.refreshBuyGalleryAutoSlide==='function') window.refreshBuyGalleryAutoSlide();
       const firstMomentImage=document.querySelector('.moments-reference-grid .moment-reference-image img');
       if(firstMomentImage) firstMomentImage.src=productImages[0];
       const ogImage=document.querySelector('meta[property="og:image"]');
@@ -2183,21 +2180,35 @@ addEventListener('scroll',u,{passive:true});new MutationObserver(u).observe(p,{a
 @keyframes buyGallerySlideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
 </style>
 <script>
-(function(){var box=document.getElementById('buyThumbs'),img=document.getElementById('buyMainImg'),main=document.getElementById('buyMain');
-if(!box)return;var btns=[].slice.call(box.querySelectorAll('button')),cur=0,timer=null,paused=false;
-function show(i,animate){cur=(i+btns.length)%btns.length;var b=btns[cur];btns.forEach(function(x){x.classList.remove('on')});b.classList.add('on');
-if(animate){main.classList.remove('is-sliding');void main.offsetWidth;main.classList.add('is-sliding');}
-img.src=b.getAttribute('data-src');img.alt=b.getAttribute('data-alt');img.style.objectFit=b.getAttribute('data-fit');}
+(function(){
+var box=document.getElementById('buyThumbs'),img=document.getElementById('buyMainImg'),main=document.getElementById('buyMain');
+if(!box||!img||!main)return;
+var btns=[],cur=0,timer=null,paused=false,x0=null;
 function stopAuto(){if(timer){clearInterval(timer);timer=null}}
-function startAuto(){stopAuto();if(!paused)timer=setInterval(function(){show(cur+1,true)},3500)}
-btns.forEach(function(b,i){b.addEventListener('click',function(){show(i,true);startAuto()})});
+function show(i,animate){
+  btns=[].slice.call(box.querySelectorAll('button'));
+  if(!btns.length){stopAuto();return}
+  cur=(i+btns.length)%btns.length;var b=btns[cur];
+  btns.forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+  if(animate){main.classList.remove('is-sliding');void main.offsetWidth;main.classList.add('is-sliding');}
+  img.src=b.getAttribute('data-src');img.alt=b.getAttribute('data-alt')||'Pandit Ji product image';img.style.objectFit=b.getAttribute('data-fit')||'contain';
+}
+function startAuto(){stopAuto();btns=[].slice.call(box.querySelectorAll('button'));if(!paused&&btns.length>1)timer=setInterval(function(){show(cur+1,true)},3500)}
+window.refreshBuyGalleryAutoSlide=function(){
+  stopAuto();btns=[].slice.call(box.querySelectorAll('button'));cur=0;
+  if(!btns.length)return;
+  // Replace stale thumbnails and ensure the main slide starts from the newly saved first image.
+  show(0,false);
+  startAuto();
+};
+box.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;btns=[].slice.call(box.querySelectorAll('button'));var i=btns.indexOf(b);if(i>=0){show(i,true);startAuto()}});
 main.addEventListener('mouseenter',function(){paused=true;stopAuto()});
 main.addEventListener('mouseleave',function(){paused=false;startAuto()});
 main.addEventListener('focusin',function(){paused=true;stopAuto()});
 main.addEventListener('focusout',function(){paused=false;startAuto()});
-var x0=null;main.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;paused=true;stopAuto()},{passive:true});
+main.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;paused=true;stopAuto()},{passive:true});
 main.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(cur+(dx<0?1:-1),true);x0=null;paused=false;startAuto()});
-show(0,false);startAuto();
+window.refreshBuyGalleryAutoSlide();
 })();
 </script>
 
