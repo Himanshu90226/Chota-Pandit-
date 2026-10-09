@@ -662,6 +662,10 @@ h2.section-title{letter-spacing:-.015em}
 .buy-thumbs button{flex:1;aspect-ratio:1;padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:#e8d6bf;cursor:pointer}
 .buy-thumbs button.on{border-color:#17110e}
 .buy-thumbs img{width:100%;height:100%;object-fit:cover;display:block;max-width:none;max-height:none;filter:none}
+.buy-product-video-wrap{padding:0 10px 12px;background:#f2e7d8}
+.buy-product-video-label{font-size:12px;font-weight:700;letter-spacing:.04em;margin:0 0 7px}
+.buy-product-video-wrap video{display:block;width:100%;max-height:230px;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:10px}
+@media(max-width:700px){.buy-product-video-wrap video{max-height:160px}}
 .buy-title{letter-spacing:-.02em}
 .buy-subtitle{font:500 26px/1.25 "Playfair Display",serif;color:#A31A08}
 .cart-btn,.upi-btn{background:#17110e;color:#fff}
@@ -1281,6 +1285,10 @@ h2.section-title{letter-spacing:-.015em}
         <button type="button" data-src="assets/buy-05.webp" data-alt="Pandit Ji, front close view" data-fit="cover" aria-label="Close view"><img loading="lazy" decoding="async" src="assets/buy-05.webp" alt=""></button>
         <button type="button" data-src="assets/buy-06.jpg" data-alt="Pandit Ji size: 12.7 cm tall, 8 cm base" data-fit="contain" aria-label="Size"><img loading="lazy" decoding="async" src="assets/buy-06.jpg" alt=""></button>
       </div>
+      <div class="buy-product-video-wrap" id="buyProductVideoWrap" hidden>
+        <div class="buy-product-video-label">Product video</div>
+        <video id="buyProductVideo" controls playsinline preload="metadata" muted></video>
+      </div>
     </div>
 
     <div class="buy-content">
@@ -1524,12 +1532,19 @@ async function loadStorefrontProduct(){
       if(ogImage) ogImage.content=productImages[0];
     }
     if(product.video_url){
-      const video=document.querySelector('.gallery-video');
-      const source=video && video.querySelector('source');
-      if(source && source.src!==product.video_url){
-        source.src=product.video_url;
-        video.load();
-      }
+      document.querySelectorAll('.gallery-video, #buyProductVideo').forEach(video=>{
+        const source=video.querySelector('source');
+        const target=source||video;
+        if(target.getAttribute('src')!==product.video_url){
+          target.setAttribute('src',product.video_url);
+          video.load();
+        }
+      });
+      const videoWrap=document.getElementById('buyProductVideoWrap');
+      if(videoWrap) videoWrap.hidden=false;
+    } else {
+      const videoWrap=document.getElementById('buyProductVideoWrap');
+      if(videoWrap) videoWrap.hidden=true;
     }
     await loadStorefrontPromotions();
     updatePrice();
