@@ -403,9 +403,20 @@ window.saveProduct=async function(id){
   const formMsg=document.getElementById('formMsg');
   try{
   const uploaded=await uploadProductImages(document.getElementById('p_files')?.files);
-  const manualUrls=document.getElementById('p_images').value.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean).slice(0,10);
+  const rawManual=document.getElementById('p_images').value.trim();
+  let manualUrls=[];
+  if(rawManual){
+    try{const parsed=JSON.parse(rawManual);manualUrls=Array.isArray(parsed)?parsed.map(v=>String(v||'').trim()).filter(Boolean):rawManual.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean);}
+    catch(_){manualUrls=rawManual.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean);}
+  }
+  manualUrls=manualUrls.slice(0,10);
   const existing=(window.adminProducts||[]).find(x=>String(x.id)===String(id));
-  const imageUrls=uploaded&&uploaded.length?uploaded:(manualUrls.length?manualUrls:(Array.isArray(existing?.image_urls)?existing.image_urls:[]));
+  let existingUrls=existing?.image_urls||[];
+  if(typeof existingUrls==='string'){
+    try{const parsed=JSON.parse(existingUrls);existingUrls=Array.isArray(parsed)?parsed:existingUrls.split(/[\n\r,]+/).filter(Boolean);}
+    catch(_){existingUrls=existingUrls.split(/[\n\r,]+/).filter(Boolean);}
+  }
+  const imageUrls=uploaded&&uploaded.length?uploaded:(manualUrls.length?manualUrls:(Array.isArray(existingUrls)?existingUrls:[]));
   const primaryInput=document.getElementById('p_image').value.trim();
   const payload={
     name:document.getElementById('p_name').value.trim(),
@@ -414,7 +425,7 @@ window.saveProduct=async function(id){
     mrp:Number(document.getElementById('p_mrp').value||0),
     stock:Number(document.getElementById('p_stock').value||0),
     sku:document.getElementById('p_sku').value.trim()||null,
-    image_url:(uploaded&&uploaded.length?uploaded[0]:(primaryInput||imageUrls[0]||null)),
+    image_url:(imageUrls.length?imageUrls[0]:(primaryInput||null)),
     image_urls:imageUrls,
     video_url:document.getElementById('p_video').value.trim()||null,
     slug:document.getElementById('p_slug').value.trim()||null,
