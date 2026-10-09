@@ -349,8 +349,9 @@ window.openProductForm=function(id=''){
       ${field('MRP','p_mrp','number',p.mrp??'')}
       ${field('Stock','p_stock','number',p.stock??0)}
       ${field('SKU','p_sku','text',p.sku||'')}
-      ${field('Image URL','p_image','text',p.image_url||'',true)}
-      ${field('Video URL','p_video','text',p.video_url||'',true)}
+      ${field('Product Image URLs (one URL per line, 4–5 images supported)','p_images','textarea',(Array.isArray(p.image_urls)&&p.image_urls.length?p.image_urls:(p.image_url?[p.image_url]:[])).join('\n'),true,'Paste each full image URL on a new line')}
+      ${field('Product Video URL (MP4)','p_video','text',p.video_url||'',true,'https://.../video.mp4')}
+      <div class="full" style="color:#777;font-size:12px;margin-top:-6px">Images must be public direct image links (JPG, PNG, WEBP). Video must be a direct MP4 link. Put each image URL on its own line.</div>
       ${field('Slug','p_slug','text',p.slug||'')}
       ${field('Description','p_desc','textarea',p.description||'',true)}
       <div class="full"><label><input id="p_featured" type="checkbox" ${p.is_featured?'checked':''} style="width:auto;margin-right:8px"> Featured Product</label></div>
@@ -369,7 +370,8 @@ window.saveProduct=async function(id){
     mrp:Number(document.getElementById('p_mrp').value||0),
     stock:Number(document.getElementById('p_stock').value||0),
     sku:document.getElementById('p_sku').value.trim()||null,
-    image_url:document.getElementById('p_image').value.trim()||null,
+    image_urls:[...new Set(document.getElementById('p_images').value.split(/\r?\n/).map(url=>url.trim()).filter(Boolean))],
+    image_url:(document.getElementById('p_images').value.split(/\r?\n/).map(url=>url.trim()).filter(Boolean)[0]||null),
     video_url:document.getElementById('p_video').value.trim()||null,
     slug:document.getElementById('p_slug').value.trim()||null,
     description:document.getElementById('p_desc').value.trim()||null,
