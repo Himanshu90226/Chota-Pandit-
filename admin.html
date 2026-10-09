@@ -312,7 +312,7 @@ tabButtons.forEach(btn=>btn.addEventListener('click',async()=>{
   if(btn.dataset.tab==='productsTab') await loadProducts();
   if(btn.dataset.tab==='offersTab') await loadOffers();
   if(btn.dataset.tab==='couponsTab') await loadCoupons();
-});
+}));
 
 function field(label,id,type='text',value='',full=false,placeholder=''){
   return `<div class="${full?'full':''}"><label>${label}</label><${type==='textarea'?'textarea':'input'} id="${id}" type="${type==='textarea'?'':type}" value="${type==='textarea'?'':escapeAttr(value)}" placeholder="${escapeAttr(placeholder)}">${type==='textarea'?escapeHtml(value):''}</${type==='textarea'?'textarea':'input'}></div>`;
