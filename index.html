@@ -132,7 +132,10 @@ h1{font:600 clamp(64px,7vw,105px)/.92 "Playfair Display",serif;letter-spacing:-.
 
 /* STORY */
 .section{padding:110px 0}.split{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center}
-\n.story-image{width:100%;max-width:620px;background:#e5d7c6;border-radius:28px;overflow:hidden;position:relative}\n.story-image > img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}\n.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:none;color:var(--orange);font-weight:700}
+
+.story-image{width:100%;max-width:620px;background:#e5d7c6;border-radius:28px;overflow:hidden;position:relative}
+.story-image > img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:none;color:var(--orange);font-weight:700}
 h2.section-title{font:500 clamp(42px,5vw,70px)/1 "Playfair Display",serif;letter-spacing:-.04em;margin:14px 0 25px}
 .lead{font-size:19px;line-height:1.7;color:#685d54}
 .story-image{background:#e5d7c6;border-radius:28px;overflow:visible;position:relative}
@@ -1141,7 +1144,13 @@ h2.section-title{letter-spacing:-.015em}
 }
 </style>
 
-<style id="disable-top-announcement-banner">#akOfferBanner{display:none!important}</style>\n</head>
+<style id="disable-top-announcement-banner">#akOfferBanner{display:none!important}</style>
+
+<style id="offer-popup-first-paint-fix">
+/* Prevent unstyled festival popup flash during refresh; the existing .open rule shows it when ready. */
+#akOfferPopup{display:none}
+</style>
+</head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
 <div id="akOfferPopup" aria-hidden="true"><div class="ak-popup-card" role="dialog" aria-modal="true" aria-labelledby="akPopupHeading"><button class="ak-popup-close" id="akPopupClose" aria-label="Close offer">×</button><img class="ak-popup-image" id="akPopupImage" alt="Festival offer" hidden><div class="ak-popup-content"><div class="ak-popup-brand">AKARRA</div><h2 id="akPopupHeading">Festival Offer</h2><p id="akPopupSubheading">Bring home a little nostalgia</p><div class="ak-popup-discount" id="akPopupDiscount">Special offer</div><div class="ak-countdown" id="akPopupCountdown"><span><b>--</b>Days</span><span><b>--</b>Hours</span><span><b>--</b>Minutes</span><span><b>--</b>Seconds</span></div><a class="ak-popup-cta" id="akPopupCta" href="#shop">Shop Now</a></div></div></div>
