@@ -1143,6 +1143,8 @@ h2.section-title{letter-spacing:-.015em}
 
 </head>
 <body>
+<div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
+<div id="akOfferPopup" aria-hidden="true"><div class="ak-popup-card" role="dialog" aria-modal="true" aria-labelledby="akPopupHeading"><button class="ak-popup-close" id="akPopupClose" aria-label="Close offer">×</button><img class="ak-popup-image" id="akPopupImage" alt="Festival offer" hidden><div class="ak-popup-content"><div class="ak-popup-brand">AKARRA</div><h2 id="akPopupHeading">Festival Offer</h2><p id="akPopupSubheading">Bring home a little nostalgia</p><div class="ak-popup-discount" id="akPopupDiscount">Special offer</div><div class="ak-countdown" id="akPopupCountdown"><span><b>--</b>Days</span><span><b>--</b>Hours</span><span><b>--</b>Minutes</span><span><b>--</b>Seconds</span></div><a class="ak-popup-cta" id="akPopupCta" href="#shop">Shop Now</a></div></div></div>
 <div id="resetPanel" class="reset-panel">
   <div class="reset-box">
     <button class="reset-close" onclick="closePasswordReset()">×</button>
@@ -1224,7 +1226,7 @@ h2.section-title{letter-spacing:-.015em}
     <div class="eyebrow">Look closer</div>
     <h2 class="section-title">Every detail matters.</h2>
     <div class="gallery-video-wrap">
-      <video class="gallery-video" autoplay muted loop playsinline controls preload="metadata" poster="assets/media-05-poster.jpg">
+      <video class="gallery-video" autoplay muted loop playsinline controls preload="metadata" poster="assets/media-01.jpg">
         <source src="assets/media-05.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -1338,6 +1340,7 @@ h2.section-title{letter-spacing:-.015em}
         <span class="mrp-discount" id="mrpDiscount">30% OFF</span>
         <span class="buy-note" id="buyNote">FREE delivery · Total ₹699</span>
       </div>
+      <div id="akProductOffer"><div class="ak-product-offer-title" id="akProductOfferTitle">Limited-time offer</div><div class="ak-product-offer-row"><div><span class="ak-product-offer-price" id="akProductOfferPrice"></span><span class="ak-product-offer-old" id="akProductOfferOld"></span></div><span class="ak-product-offer-timer" id="akProductOfferTimer"></span></div></div>
 
       <div class="buy-perks">
         <div class="buy-perk">
@@ -1506,6 +1509,10 @@ const PRICING = {
 let appliedCoupon = null;
 let storefrontStock = 100;
 let storefrontOffers = [];
+let activeStorefrontOffer = null;
+let offerCountdownInterval = null;
+let baseStorefrontSellingPrice = null;
+let baseStorefrontMrp = null;
 
 /* Storefront integration: product images must come only from the active Supabase product. */
 function clearStorefrontProductGallery(){
@@ -1544,10 +1551,12 @@ async function loadStorefrontProduct(){
       const noteEl=document.getElementById('buyNote'); if(noteEl) noteEl.textContent='Currently out of stock.';
     }
     if(Number.isFinite(Number(product.price)) && Number(product.price)>=0){
-      PRICING.sellingPrice=Number(product.price);
+      baseStorefrontSellingPrice=Number(product.price);
+      PRICING.sellingPrice=baseStorefrontSellingPrice;
     }
     if(Number.isFinite(Number(product.mrp)) && Number(product.mrp)>=0){
-      PRICING.mrp=Number(product.mrp);
+      baseStorefrontMrp=Number(product.mrp);
+      PRICING.mrp=baseStorefrontMrp;
     }
 
     if(product.name){
@@ -1598,8 +1607,6 @@ async function loadStorefrontProduct(){
       // The gallery buttons were replaced asynchronously from Supabase. Refresh the
       // slider's button references so the large image cannot keep cycling old HTML images.
       if(typeof window.refreshBuyGalleryAutoSlide==='function') window.refreshBuyGalleryAutoSlide();
-      const firstMomentImage=document.querySelector('.moments-reference-grid .moment-reference-image img');
-      if(firstMomentImage) firstMomentImage.src=productImages[0];
       const ogImage=document.querySelector('meta[property="og:image"]');
       if(ogImage) ogImage.content=productImages[0];
     }
@@ -1619,49 +1626,124 @@ async function loadStorefrontProduct(){
   }
 }
 
-async function loadStorefrontPromotions(){
+function offerIsCurrentlyActive(row){
+  if(row.is_active===false) return false;
   const now=new Date();
-  const activeNow=row=>{
-    if(row.is_active===false) return false;
-    const start=row.starts_at||row.start_date;
-    const end=row.expires_at||row.end_date||row.expiry_date;
-    if(start && new Date(start)>now) return false;
-    if(end && new Date(end)<now) return false;
-    return true;
-  };
+  const start=row.starts_at||row.start_date, end=row.expires_at||row.end_date||row.expiry_date;
+  if(start && new Date(start)>now) return false;
+  if(end && new Date(end)<=now) return false;
+  return true;
+}
+function offerFinalUnitPrice(offer,basePrice,mrp){
+  if(!offer) return basePrice;
+  if(offer.final_price!==null && offer.final_price!==undefined && offer.final_price!=='' && Number.isFinite(Number(offer.final_price))) return Math.max(0,Math.min(Number(basePrice),Number(offer.final_price)));
+  const val=Math.max(0,Number(offer.discount_value||0));
+  let result=basePrice;
+  if(['percentage','percent'].includes(String(offer.discount_type||'percentage').toLowerCase())) result=basePrice-(basePrice*val/100);
+  else result=basePrice-val;
+  return Math.max(0,Math.min(Number(mrp||basePrice),Math.round(result*100)/100));
+}
+function formatOfferTime(end){
+  if(!end) return 'Limited-time offer';
+  const ms=new Date(end).getTime()-Date.now();
+  if(!Number.isFinite(ms)||ms<=0) return 'Offer ended';
+  const sec=Math.floor(ms/1000), d=Math.floor(sec/86400), h=Math.floor(sec%86400/3600), m=Math.floor(sec%3600/60), s=sec%60;
+  return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function offerDiscountLabel(offer){
+  if(!offer) return '';
+  const base=Number(baseStorefrontSellingPrice||PRICING.sellingPrice||0), final=offerFinalUnitPrice(offer,base,baseStorefrontMrp||PRICING.mrp);
+  if(final<base) return `₹${Math.round(base-final).toLocaleString('en-IN')} OFF`;
+  if(String(offer.discount_type).toLowerCase()==='percentage') return `${Number(offer.discount_value||0)}% OFF`;
+  return 'Special offer';
+}
+function renderOfferCountdowns(){
+  if(!activeStorefrontOffer) return;
+  const end=activeStorefrontOffer.expires_at||activeStorefrontOffer.end_date||activeStorefrontOffer.expiry_date;
+  const label=formatOfferTime(end);
+  ['akBannerTimer','akProductOfferTimer'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=end?'Ends in '+label:label;});
+  const popupTimer=document.getElementById('akPopupCountdown');
+  if(popupTimer){
+    if(!end){popupTimer.hidden=true;}else{
+      popupTimer.hidden=false;const ms=Math.max(0,new Date(end).getTime()-Date.now()),sec=Math.floor(ms/1000);
+      const vals=[Math.floor(sec/86400),Math.floor(sec%86400/3600),Math.floor(sec%3600/60),sec%60];
+      const labels=['Days','Hours','Minutes','Seconds'];
+      popupTimer.innerHTML=vals.map((v,i)=>`<span><b>${String(v).padStart(i?2:1,'0')}</b>${labels[i]}</span>`).join('');
+    }
+  }
+}
+function showOfferPopup(){
+  const offer=activeStorefrontOffer, popup=document.getElementById('akOfferPopup');
+  if(!offer||!offer.show_popup||!popup) return;
+  try{if(sessionStorage.getItem('akOfferPopupDismissed')===String(offer.id||offer.title||'active'))return;}catch(_){}
+  const img=document.getElementById('akPopupImage');
+  if(offer.popup_image_url){img.src=offer.popup_image_url;img.hidden=false;}else{img.removeAttribute('src');img.hidden=true;}
+  document.getElementById('akPopupHeading').textContent=offer.popup_heading||offer.title||'Festival Offer';
+  img.alt=offer.popup_heading||offer.title||'Festival offer';
+  document.getElementById('akPopupSubheading').textContent=offer.popup_subheading||offer.description||'';
+  document.getElementById('akPopupDiscount').textContent=offer.coupon_code?`${offerDiscountLabel(offer)} · Code ${offer.coupon_code}`:offerDiscountLabel(offer);
+  const cta=document.getElementById('akPopupCta');cta.textContent=offer.cta_text||'Shop Now';cta.href=offer.cta_url||'#shop';
+  popup.classList.add('open');popup.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+}
+function closeOfferPopup(){
+  const popup=document.getElementById('akOfferPopup');if(!popup)return;
+  popup.classList.remove('open');popup.setAttribute('aria-hidden','true');document.body.style.overflow='';
+  try{sessionStorage.setItem('akOfferPopupDismissed',String(activeStorefrontOffer?.id||activeStorefrontOffer?.title||'active'));}catch(_){}
+}
+function renderStorefrontOffer(){
+  const offer=activeStorefrontOffer;
+  const banner=document.getElementById('akOfferBanner');
+  const productBox=document.getElementById('akProductOffer');
+  if(!offer){if(banner)banner.style.display='none';if(productBox)productBox.style.display='none';return;}
+  const end=offer.expires_at||offer.end_date||offer.expiry_date;
+  if(banner){
+    if(offer.show_banner){banner.style.display='block';document.getElementById('akBannerText').textContent=offer.banner_text||offer.title||'Special offer';const cta=document.getElementById('akBannerCta');cta.textContent=offer.cta_text||'Shop Now';cta.href=offer.cta_url||'#shop';}
+    else banner.style.display='none';
+  }
+  if(productBox){
+    if(offer.show_product_offer){productBox.style.display='block';document.getElementById('akProductOfferTitle').textContent=offer.title||'Limited-time offer';document.getElementById('akProductOfferPrice').textContent='₹'+Number(PRICING.sellingPrice).toLocaleString('en-IN');document.getElementById('akProductOfferOld').textContent=baseStorefrontMrp>PRICING.sellingPrice?'₹'+Number(baseStorefrontMrp).toLocaleString('en-IN'):'';}
+    else productBox.style.display='none';
+  }
+  renderOfferCountdowns();
+}
+async function loadStorefrontPromotions(){
   try{
     const [offersResult,couponsResult]=await Promise.all([
       supabaseClient.from('offers').select('*').eq('is_active',true),
       supabaseClient.from('coupons').select('*').eq('is_active',true)
     ]);
-    if(!offersResult.error) storefrontOffers=(offersResult.data||[]).filter(activeNow);
+    if(!offersResult.error){
+      storefrontOffers=(offersResult.data||[]).filter(offerIsCurrentlyActive);
+      // Choose the most recently created active campaign to prevent stacking multiple automatic prices.
+      activeStorefrontOffer=storefrontOffers.slice().sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0]||null;
+    }else console.warn('Offers could not be loaded:',offersResult.error.message);
     if(!couponsResult.error){
       const map={};
-      (couponsResult.data||[]).filter(activeNow).forEach(c=>{
-        const code=String(c.code||'').trim().toUpperCase();
-        if(!code) return;
-        map[code]={
-          discount:Number(c.discount_value||0),
-          discountType:String(c.discount_type||'fixed').toLowerCase(),
-          minOrder:Number(c.min_order_amount||0),
-          maxDiscount:c.max_discount==null?null:Number(c.max_discount),
-          expires:c.expires_at||c.expiry_date||c.end_date||null
-        };
+      (couponsResult.data||[]).filter(offerIsCurrentlyActive).forEach(c=>{
+        const code=String(c.code||'').trim().toUpperCase();if(!code)return;
+        map[code]={discount:Number(c.discount_value||0),discountType:String(c.discount_type||'fixed').toLowerCase(),minOrder:Number(c.min_order_amount||0),maxDiscount:c.max_discount==null?null:Number(c.max_discount),expires:c.expires_at||c.expiry_date||c.end_date||null};
       });
       PRICING.coupons=map;
+    }else console.warn('Coupons could not be loaded:',couponsResult.error.message);
+    if(activeStorefrontOffer && baseStorefrontSellingPrice!==null){
+      PRICING.sellingPrice=offerFinalUnitPrice(activeStorefrontOffer,baseStorefrontSellingPrice,baseStorefrontMrp||PRICING.mrp);
     }
-    if(storefrontOffers.length){
-      let banner=document.getElementById('storefrontOfferBanner');
-      if(!banner){
-        banner=document.createElement('div');banner.id='storefrontOfferBanner';
-        banner.style.cssText='margin:12px 0;padding:12px 14px;border:1px solid rgba(142,45,226,.25);border-radius:12px;background:rgba(142,45,226,.06);font-size:13px;line-height:1.5';
-        const label=document.querySelector('.buy-label');
-        if(label) label.insertAdjacentElement('afterend',banner);
+    renderStorefrontOffer();
+    if(offerCountdownInterval) clearInterval(offerCountdownInterval);
+    offerCountdownInterval=setInterval(()=>{
+      if(activeStorefrontOffer && !offerIsCurrentlyActive(activeStorefrontOffer)){
+        activeStorefrontOffer=null;PRICING.sellingPrice=baseStorefrontSellingPrice??PRICING.sellingPrice;renderStorefrontOffer();updatePrice();clearInterval(offerCountdownInterval);return;
       }
-      banner.textContent=storefrontOffers.map(o=>[o.title||o.name,o.description].filter(Boolean).join(' — ')).join(' | ');
-    } else {const banner=document.getElementById('storefrontOfferBanner');if(banner)banner.remove();}
+      renderOfferCountdowns();
+    },1000);
+    if(activeStorefrontOffer?.show_popup) setTimeout(showOfferPopup,650);
   }catch(err){console.warn('Offers/coupons could not be loaded from Supabase.',err);}
 }
+document.getElementById('akPopupClose')?.addEventListener('click',closeOfferPopup);
+document.getElementById('akPopupCta')?.addEventListener('click',closeOfferPopup);
+document.getElementById('akOfferPopup')?.addEventListener('click',e=>{if(e.target.id==='akOfferPopup')closeOfferPopup();});
+document.getElementById('akBannerClose')?.addEventListener('click',()=>{document.getElementById('akOfferBanner').style.display='none';});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOfferPopup();});
 
 function openBuyPanel(){
   const panel = document.getElementById('buyPanel');
@@ -1712,6 +1794,8 @@ function updatePrice(){
   document.getElementById('totalPrice').textContent = f(itemsAfterQuantityDiscount);
   document.getElementById('oldPrice').textContent = f(mrpTotal);
   document.getElementById('mrpDiscount').textContent = baseDiscountPercent + '% OFF';
+  const offerPriceEl=document.getElementById('akProductOfferPrice'); if(offerPriceEl) offerPriceEl.textContent=f(PRICING.sellingPrice);
+  const offerOldEl=document.getElementById('akProductOfferOld'); if(offerOldEl) offerOldEl.textContent=(baseStorefrontMrp||PRICING.mrp)>PRICING.sellingPrice?f(baseStorefrontMrp||PRICING.mrp):'';
   document.getElementById('cartPrice').textContent = f(total);
   const sticky = document.getElementById('stickyPrice');
   if(sticky) sticky.textContent = f(total);
@@ -2178,6 +2262,35 @@ addEventListener('scroll',u,{passive:true});new MutationObserver(u).observe(p,{a
 .buy-main img{transition:opacity .32s ease,transform .32s ease;}
 .buy-main.is-sliding img{animation:buyGallerySlideIn .38s ease both;}
 @keyframes buyGallerySlideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+
+/* Festival campaign components: configured from the admin Offers form. */
+#akOfferBanner{display:none;position:relative;z-index:40;background:#9d101d;color:#fff;padding:10px 42px 10px 16px;text-align:center;font:600 14px/1.4 Arial,sans-serif;letter-spacing:.01em}
+#akOfferBanner .ak-banner-inner{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;max-width:1200px;margin:auto}
+#akOfferBanner .ak-banner-timer{font-variant-numeric:tabular-nums;white-space:nowrap}
+#akOfferBanner a{display:inline-block;background:#e7c27b;color:#21150d;text-decoration:none;border-radius:8px;padding:7px 15px;font-weight:800}
+#akOfferBanner .ak-banner-close{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}
+#akOfferPopup{display:none;position:fixed;inset:0;z-index:9999;background:rgba(18,10,6,.72);padding:18px;align-items:center;justify-content:center}
+#akOfferPopup.open{display:flex}
+#akOfferPopup .ak-popup-card{position:relative;overflow:hidden;width:min(520px,100%);max-height:92vh;overflow-y:auto;border:2px solid #e9c77d;border-radius:22px;background:linear-gradient(145deg,#650b13,#a71925 60%,#4b0810);color:#fff;text-align:center;box-shadow:0 25px 80px #0008}
+#akOfferPopup .ak-popup-content{padding:30px 25px 25px}
+#akOfferPopup .ak-popup-image{width:100%;max-height:210px;object-fit:cover;display:block}
+#akOfferPopup .ak-popup-brand{font-size:12px;letter-spacing:.28em;margin-bottom:12px;color:#f3d99e}
+#akOfferPopup h2{font:normal clamp(34px,7vw,52px)/1.05 Georgia,serif;margin:5px 0 12px}
+#akOfferPopup p{margin:8px 0 18px;line-height:1.5}
+#akOfferPopup .ak-popup-discount{font-size:clamp(28px,6vw,42px);font-weight:900;border:2px solid #f6dba0;border-radius:14px;padding:10px;margin:18px auto 12px;max-width:310px}
+#akOfferPopup .ak-countdown{display:flex;justify-content:center;gap:8px;margin:15px 0 20px}
+#akOfferPopup .ak-countdown span{display:block;background:#7f101a;border-radius:9px;padding:9px 8px;min-width:60px;font-size:11px}
+#akOfferPopup .ak-countdown b{display:block;font-size:23px}
+#akOfferPopup .ak-popup-cta{display:block;background:#e7c27b;color:#21150d;text-decoration:none;font-weight:900;border-radius:12px;padding:14px 16px;margin-top:12px}
+#akOfferPopup .ak-popup-close{position:absolute;right:10px;top:8px;border:0;background:#fff2;color:#fff;border-radius:50%;width:36px;height:36px;font-size:24px;cursor:pointer;z-index:2}
+#akProductOffer{display:none;margin:10px 0 15px;padding:13px 15px;border:1px solid #d7a65a;border-radius:14px;background:linear-gradient(110deg,#fff4d8,#fffaf1);color:#5c1118}
+#akProductOffer .ak-product-offer-title{font-weight:900;font-size:15px}
+#akProductOffer .ak-product-offer-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-top:5px}
+#akProductOffer .ak-product-offer-price{font-size:20px;font-weight:900}
+#akProductOffer .ak-product-offer-old{text-decoration:line-through;color:#76685e;font-size:13px;margin-left:6px}
+#akProductOffer .ak-product-offer-timer{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+@media(max-width:600px){#akOfferBanner{font-size:12px;padding:8px 32px 8px 8px}#akOfferBanner .ak-banner-inner{gap:5px 9px}#akOfferBanner a{padding:6px 10px}#akOfferPopup{padding:10px}#akOfferPopup .ak-popup-content{padding:24px 16px 18px}#akOfferPopup .ak-popup-image{max-height:155px}#akOfferPopup .ak-countdown{gap:5px}#akOfferPopup .ak-countdown span{min-width:53px;padding:8px 5px}#akOfferPopup .ak-countdown b{font-size:20px}}
+
 </style>
 <script>
 (function(){
