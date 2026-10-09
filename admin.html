@@ -352,9 +352,10 @@ window.openProductForm=function(id=''){
       ${field('MRP','p_mrp','number',p.mrp??'')}
       ${field('Stock','p_stock','number',p.stock??0)}
       ${field('SKU','p_sku','text',p.sku||'')}
+      <div class="full"><label for="p_files">Upload product images (select multiple)</label><input id="p_files" type="file" accept="image/*" multiple style="padding:10px;background:#fafafa"><p class="muted" style="font-size:12px;margin-top:7px">Select all photos together. When files are selected, they replace the current gallery after saving (up to 10 images).</p><div id="p_upload_preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div></div>
       ${field('Primary Image URL','p_image','text',p.image_url||'',true)}
-      ${field('Product Image URLs (one URL per line)','p_images','textarea',Array.isArray(p.image_urls)?p.image_urls.join('\n'):(p.image_urls||''),true,'Paste 4–5 direct image URLs, one per line')}
-      <p class="muted full">Use direct image links, one per line. The first image is used as the primary image.</p>
+      ${field('Product Image URLs (optional, one URL per line)','p_images','textarea',Array.isArray(p.image_urls)?p.image_urls.join('\n'):(p.image_urls||''),true,'Paste direct image URLs, one per line')}
+      <p class="muted full">Uploaded files take priority over the URLs above. First image becomes the main image.</p>
       ${field('Video URL','p_video','text',p.video_url||'',true)}
       ${field('Slug','p_slug','text',p.slug||'')}
       ${field('Description','p_desc','textarea',p.description||'',true)}
@@ -363,9 +364,49 @@ window.openProductForm=function(id=''){
     <div id="formMsg" class="msg"></div>
     <div class="form-actions"><button class="secondary" onclick="closeManage()">Cancel</button><button class="primary" onclick="saveProduct('${escapeAttr(id)}')">Save Product</button></div>`;
   document.getElementById('manageModal').style.display='block';
+  const fileInput=document.getElementById('p_files');
+  fileInput.addEventListener('change',()=>{
+    const preview=document.getElementById('p_upload_preview');
+    preview.innerHTML='';
+    [...(fileInput.files||[])].slice(0,10).forEach(file=>{
+      const img=document.createElement('img'); img.alt=file.name; img.title=file.name;
+      img.style.cssText='width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #ddd';
+      img.src=URL.createObjectURL(file); preview.appendChild(img);
+    });
+    if(fileInput.files.length>10) preview.insertAdjacentHTML('beforeend','<small class="muted">Only first 10 images will be uploaded.</small>');
+  });
 };
 
+async function uploadProductImages(files){
+  const selected=[...(files||[])].slice(0,10);
+  if(!selected.length) return null;
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session) throw new Error('Admin session expired. Please log in again.');
+  const urls=[];
+  for(let i=0;i<selected.length;i++){
+    const file=selected[i];
+    if(!file.type.startsWith('image/')) throw new Error('Only image files are allowed.');
+    if(file.size>8*1024*1024) throw new Error(file.name+' is larger than 8 MB.');
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+    const path='products/'+Date.now()+'-'+Math.random().toString(36).slice(2,9)+'-'+i+'.'+ext;
+    const {error}=await supabaseClient.storage.from('product-images').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
+    if(error) throw new Error('Image upload failed ('+file.name+'): '+error.message+' — check product-images bucket and Storage policies.');
+    const {data}=supabaseClient.storage.from('product-images').getPublicUrl(path);
+    urls.push(data.publicUrl);
+  }
+  return urls;
+}
+
 window.saveProduct=async function(id){
+  const saveBtn=document.querySelector('#manageBody .form-actions .primary');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saving…';}
+  const formMsg=document.getElementById('formMsg');
+  try{
+  const uploaded=await uploadProductImages(document.getElementById('p_files')?.files);
+  const manualUrls=document.getElementById('p_images').value.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean).slice(0,10);
+  const existing=(window.adminProducts||[]).find(x=>String(x.id)===String(id));
+  const imageUrls=uploaded&&uploaded.length?uploaded:(manualUrls.length?manualUrls:(Array.isArray(existing?.image_urls)?existing.image_urls:[]));
+  const primaryInput=document.getElementById('p_image').value.trim();
   const payload={
     name:document.getElementById('p_name').value.trim(),
     category:document.getElementById('p_category').value.trim()||null,
@@ -373,8 +414,8 @@ window.saveProduct=async function(id){
     mrp:Number(document.getElementById('p_mrp').value||0),
     stock:Number(document.getElementById('p_stock').value||0),
     sku:document.getElementById('p_sku').value.trim()||null,
-    image_url:document.getElementById('p_image').value.trim()||null,
-    image_urls:document.getElementById('p_images').value.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean).slice(0,10),
+    image_url:(uploaded&&uploaded.length?uploaded[0]:(primaryInput||imageUrls[0]||null)),
+    image_urls:imageUrls,
     video_url:document.getElementById('p_video').value.trim()||null,
     slug:document.getElementById('p_slug').value.trim()||null,
     description:document.getElementById('p_desc').value.trim()||null,
@@ -384,8 +425,11 @@ window.saveProduct=async function(id){
   const result=id
     ? await supabaseClient.from('products').update(payload).eq('id',id)
     : await supabaseClient.from('products').insert(payload);
-  if(result.error){document.getElementById('formMsg').textContent=result.error.message;document.getElementById('formMsg').className='msg error';return;}
+  if(result.error) throw new Error(result.error.message);
   closeManage(); await loadProducts();
+  }catch(error){
+    if(formMsg){formMsg.textContent=error.message||'Save failed.';formMsg.className='msg error';}
+  }finally{if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='Save Product';}}
 };
 
 window.toggleProduct=async function(id,currentlyInactive){
