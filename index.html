@@ -1473,7 +1473,7 @@ async function loadStorefrontProduct(){
   try{
     const {data:product,error}=await supabaseClient
       .from('products')
-      .select('name,category,price,mrp,stock,image_url,video_url,slug,description,is_featured,is_active')
+      .select('name,category,price,mrp,stock,image_url,image_urls,video_url,slug,description,is_featured,is_active')
       .eq('slug','pandit-ji')
       .eq('is_active',true)
       .maybeSingle();
@@ -1515,20 +1515,13 @@ async function loadStorefrontProduct(){
       const description=document.querySelector('.buy-description');
       if(description) description.textContent=product.description;
     }
-    if(product.image_url){
-      const mainImage=document.getElementById('buyMainImg');
-      if(mainImage) mainImage.src=product.image_url;
-      if(mainImage && product.name) mainImage.alt=product.name;
-      const firstThumb=document.querySelector('.buy-thumbs button');
-      if(firstThumb){
-        firstThumb.dataset.src=product.image_url;
-        const thumbImage=firstThumb.querySelector('img');
-        if(thumbImage) thumbImage.src=product.image_url;
-      }
+    const productImages=[...new Set([...(Array.isArray(product.image_urls)?product.image_urls:[]),product.image_url].filter(url=>typeof url==='string'&&url.trim()).map(url=>url.trim()))];
+    if(productImages.length){
+      if(typeof window.setBuyGalleryImages==='function') window.setBuyGalleryImages(productImages,product.name||'Pandit Ji');
       const firstMomentImage=document.querySelector('.moments-reference-grid .moment-reference-image img');
-      if(firstMomentImage) firstMomentImage.src=product.image_url;
+      if(firstMomentImage) firstMomentImage.src=productImages[0];
       const ogImage=document.querySelector('meta[property="og:image"]');
-      if(ogImage) ogImage.content=product.image_url;
+      if(ogImage) ogImage.content=productImages[0];
     }
     if(product.video_url){
       const video=document.querySelector('.gallery-video');
@@ -2107,21 +2100,41 @@ addEventListener('scroll',u,{passive:true});new MutationObserver(u).observe(p,{a
 @keyframes buyGallerySlideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
 </style>
 <script>
-(function(){var box=document.getElementById('buyThumbs'),img=document.getElementById('buyMainImg'),main=document.getElementById('buyMain');
-if(!box)return;var btns=[].slice.call(box.querySelectorAll('button')),cur=0,timer=null,paused=false;
-function show(i,animate){cur=(i+btns.length)%btns.length;var b=btns[cur];btns.forEach(function(x){x.classList.remove('on')});b.classList.add('on');
-if(animate){main.classList.remove('is-sliding');void main.offsetWidth;main.classList.add('is-sliding');}
-img.src=b.getAttribute('data-src');img.alt=b.getAttribute('data-alt');img.style.objectFit=b.getAttribute('data-fit');}
-function stopAuto(){if(timer){clearInterval(timer);timer=null}}
-function startAuto(){stopAuto();if(!paused)timer=setInterval(function(){show(cur+1,true)},3500)}
-btns.forEach(function(b,i){b.addEventListener('click',function(){show(i,true);startAuto()})});
-main.addEventListener('mouseenter',function(){paused=true;stopAuto()});
-main.addEventListener('mouseleave',function(){paused=false;startAuto()});
-main.addEventListener('focusin',function(){paused=true;stopAuto()});
-main.addEventListener('focusout',function(){paused=false;startAuto()});
-var x0=null;main.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;paused=true;stopAuto()},{passive:true});
-main.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(cur+(dx<0?1:-1),true);x0=null;paused=false;startAuto()});
-show(0,false);startAuto();
+(function(){
+  var box=document.getElementById('buyThumbs'),img=document.getElementById('buyMainImg'),main=document.getElementById('buyMain');
+  if(!box||!img||!main)return;
+  var btns=[],cur=0,timer=null,paused=false;
+  function stopAuto(){if(timer){clearInterval(timer);timer=null}}
+  function show(i,animate){
+    if(!btns.length)return;
+    cur=(i+btns.length)%btns.length;var b=btns[cur];
+    btns.forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+    if(animate){main.classList.remove('is-sliding');void main.offsetWidth;main.classList.add('is-sliding');}
+    img.src=b.getAttribute('data-src');img.alt=b.getAttribute('data-alt')||'Pandit Ji product image';img.style.objectFit=b.getAttribute('data-fit')||'contain';
+  }
+  function startAuto(){stopAuto();if(!paused&&btns.length>1)timer=setInterval(function(){show(cur+1,true)},3500)}
+  function bindButtons(){
+    btns=[].slice.call(box.querySelectorAll('button'));
+    btns.forEach(function(b,i){b.onclick=function(){show(i,true);startAuto()}});
+    cur=0;show(0,false);startAuto();
+  }
+  window.setBuyGalleryImages=function(urls,productName){
+    var clean=[...new Set((urls||[]).filter(function(u){return typeof u==='string'&&/^https?:\/\//i.test(u.trim())}).map(function(u){return u.trim()}))].slice(0,10);
+    if(!clean.length)return;
+    stopAuto();box.innerHTML='';
+    clean.forEach(function(url,i){
+      var b=document.createElement('button');b.type='button';b.className=i===0?'on':'';b.setAttribute('data-src',url);b.setAttribute('data-alt',(productName||'Pandit Ji')+' — image '+(i+1));b.setAttribute('data-fit','contain');b.setAttribute('aria-label','Product image '+(i+1));
+      var thumb=document.createElement('img');thumb.src=url;thumb.alt='';thumb.loading=i===0?'eager':'lazy';thumb.onerror=function(){b.style.display='none'};b.appendChild(thumb);box.appendChild(b);
+    });
+    bindButtons();
+  };
+  main.addEventListener('mouseenter',function(){paused=true;stopAuto()});
+  main.addEventListener('mouseleave',function(){paused=false;startAuto()});
+  main.addEventListener('focusin',function(){paused=true;stopAuto()});
+  main.addEventListener('focusout',function(){paused=false;startAuto()});
+  var x0=null;main.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;paused=true;stopAuto()},{passive:true});
+  main.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(cur+(dx<0?1:-1),true);x0=null;paused=false;startAuto()});
+  bindButtons();
 })();
 </script>
 
