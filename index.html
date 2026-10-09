@@ -1507,8 +1507,14 @@ let appliedCoupon = null;
 let storefrontStock = 100;
 let storefrontOffers = [];
 
-/* Storefront integration: read the active Pandit Ji product from Supabase.
-   If the database request fails, keep the existing storefront defaults intact. */
+/* Storefront integration: product images must come only from the active Supabase product. */
+function clearStorefrontProductGallery(){
+  const thumbs=document.getElementById('buyThumbs');
+  const mainImage=document.getElementById('buyMainImg');
+  if(thumbs) thumbs.innerHTML='';
+  if(mainImage){mainImage.removeAttribute('src');mainImage.alt='Product image unavailable';}
+}
+
 async function loadStorefrontProduct(){
   try{
     const {data:product,error}=await supabaseClient
@@ -1519,11 +1525,13 @@ async function loadStorefrontProduct(){
       .maybeSingle();
 
     if(error){
-      console.warn('AKARRA storefront product load failed; using existing page defaults.',error);
+      console.error('AKARRA storefront product load failed. Hiding static fallback gallery to avoid showing stale product images.',error);
+      clearStorefrontProductGallery();
       return;
     }
     if(!product){
-      console.warn('No active Supabase product found for slug pandit-ji; keeping existing storefront content.');
+      console.error('No active Supabase product found for slug pandit-ji. Hiding stale static product images.');
+      clearStorefrontProductGallery();
       return;
     }
 
@@ -1573,6 +1581,10 @@ async function loadStorefrontProduct(){
       const primary=String(product.image_url).trim();
       const normalizedPrimary=/^https?:\/\//i.test(primary)||/^data:/i.test(primary)?primary:'https://himanshu90226.github.io/Chota-Pandit-/'+primary.replace(/^\.\//,'').replace(/^\//,'');
       productImages=[normalizedPrimary];
+    }
+    if(!productImages.length){
+      clearStorefrontProductGallery();
+      console.error('Supabase product has no saved image_urls or image_url. Static images have been cleared.');
     }
     productImages=[...new Set(productImages)].slice(0,10);
     if(productImages.length){
