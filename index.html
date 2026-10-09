@@ -1103,6 +1103,31 @@ h2.section-title{letter-spacing:-.015em}
 .reset-panel{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(24,13,8,.65);backdrop-filter:blur(8px)}
 .reset-panel.open{display:flex}.reset-box{width:min(430px,100%);background:#fffdf9;border-radius:22px;padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.3);color:#17110e}.reset-box h2{margin:0 0 8px;font:500 34px "Playfair Display",serif}.reset-box p{color:#6f6963;line-height:1.5;font-size:14px}.reset-box input{width:100%;padding:13px;border:1px solid #ddd2c6;border-radius:10px;margin:8px 0 14px;font:inherit}.reset-box button{width:100%;padding:14px;border:0;border-radius:12px;background:#17110e;color:#fff;font-weight:800;cursor:pointer}.reset-msg{margin-top:12px;font-size:13px}.reset-close{float:right;border:0;background:#f1ebe3;border-radius:50%;width:32px;height:32px;font-size:20px;cursor:pointer}
 </style>
+
+<style id="akarrra-buy-image-whitespace-fix">
+/* Keep the product image frame close to the image ratio on small screens; avoid tall empty bands. */
+@media (max-width: 820px) {
+  .buy-image { height: auto !important; min-height: 0 !important; flex: none !important; padding: 0 !important; }
+  .buy-image .buy-main { width: 100% !important; height: auto !important; min-height: 0 !important; aspect-ratio: 4 / 3 !important; flex: none !important; overflow: hidden !important; }
+  .buy-image .buy-main img { width: 100% !important; height: 100% !important; object-fit: cover !important; object-position: 65% center !important; }
+  .buy-thumbs { flex: none !important; }
+}
+@media (min-width: 821px) {
+  .buy-image .buy-main { min-height: 0 !important; height: min(58vh, 560px) !important; flex: none !important; }
+  .buy-image .buy-main img { object-fit: cover !important; object-position: 65% center !important; }
+}
+</style>
+
+<style id="akarrra-mobile-buy-image-final-fix">
+/* Final fix: keep the mobile product image frame proportional so it has no large blank bands. */
+@media (max-width: 820px) {
+  #buyPanel .buy-box { grid-template-columns: minmax(0, 1fr) !important; }
+  #buyPanel .buy-image { display: flex !important; flex-direction: column !important; width: 100% !important; height: auto !important; min-height: 0 !important; padding: 0 !important; gap: 10px !important; }
+  #buyPanel .buy-main { display: block !important; position: relative !important; width: 100% !important; height: auto !important; min-height: 0 !important; max-height: none !important; aspect-ratio: 4 / 3 !important; flex: 0 0 auto !important; overflow: hidden !important; background: #efe3d3 !important; }
+  #buyPanel .buy-main img, #buyPanel #buyMainImg { display: block !important; position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; object-fit: cover !important; object-position: center 58% !important; }
+  #buyPanel .buy-thumbs { display: flex !important; flex-wrap: nowrap !important; width: 100% !important; height: auto !important; overflow-x: auto !important; }
+}
+</style>
 </head>
 <body>
 <div id="resetPanel" class="reset-panel">
@@ -1284,10 +1309,6 @@ h2.section-title{letter-spacing:-.015em}
         <button type="button" data-src="assets/buy-04.webp" data-alt="Pandit Ji, left side view" data-fit="cover" aria-label="Left side view"><img loading="lazy" decoding="async" src="assets/buy-04.webp" alt=""></button>
         <button type="button" data-src="assets/buy-05.webp" data-alt="Pandit Ji, front close view" data-fit="cover" aria-label="Close view"><img loading="lazy" decoding="async" src="assets/buy-05.webp" alt=""></button>
         <button type="button" data-src="assets/buy-06.jpg" data-alt="Pandit Ji size: 12.7 cm tall, 8 cm base" data-fit="contain" aria-label="Size"><img loading="lazy" decoding="async" src="assets/buy-06.jpg" alt=""></button>
-      </div>
-      <div class="buy-product-video-wrap" id="buyProductVideoWrap" hidden>
-        <div class="buy-product-video-label">Product video</div>
-        <video id="buyProductVideo" controls playsinline preload="metadata" muted></video>
       </div>
     </div>
 
@@ -1523,7 +1544,18 @@ async function loadStorefrontProduct(){
       const description=document.querySelector('.buy-description');
       if(description) description.textContent=product.description;
     }
-    const productImages=[...new Set([...(Array.isArray(product.image_urls)?product.image_urls:[]),product.image_url].filter(url=>typeof url==='string'&&url.trim()).map(url=>url.trim()))];
+    let storedImages=product.image_urls;
+    if(typeof storedImages==='string'){
+      try{storedImages=JSON.parse(storedImages)}catch(_){storedImages=storedImages.split(/\r?\n/)}
+    }
+    if(!Array.isArray(storedImages)) storedImages=[];
+    const fallbackImages=[
+      'https://himanshu90226.github.io/Chota-Pandit-/assets/media-01.jpg',
+      'https://himanshu90226.github.io/Chota-Pandit-/assets/media-02.jpg',
+      'https://himanshu90226.github.io/Chota-Pandit-/assets/media-03.jpg',
+      'https://himanshu90226.github.io/Chota-Pandit-/assets/media-04.jpg'
+    ];
+    const productImages=[...new Set([...storedImages,product.image_url,...fallbackImages].filter(url=>typeof url==='string'&&/^https?:\/\//i.test(url.trim())).map(url=>url.trim()))].slice(0,8);
     if(productImages.length){
       if(typeof window.setBuyGalleryImages==='function') window.setBuyGalleryImages(productImages,product.name||'Pandit Ji');
       const firstMomentImage=document.querySelector('.moments-reference-grid .moment-reference-image img');
@@ -1531,20 +1563,13 @@ async function loadStorefrontProduct(){
       const ogImage=document.querySelector('meta[property="og:image"]');
       if(ogImage) ogImage.content=productImages[0];
     }
+    /* The product video belongs in the details gallery only, never inside Buy Now. */
     if(product.video_url){
-      document.querySelectorAll('.gallery-video, #buyProductVideo').forEach(video=>{
+      document.querySelectorAll('.gallery-video').forEach(video=>{
         const source=video.querySelector('source');
         const target=source||video;
-        if(target.getAttribute('src')!==product.video_url){
-          target.setAttribute('src',product.video_url);
-          video.load();
-        }
+        if(target.getAttribute('src')!==product.video_url){target.setAttribute('src',product.video_url);video.load();}
       });
-      const videoWrap=document.getElementById('buyProductVideoWrap');
-      if(videoWrap) videoWrap.hidden=false;
-    } else {
-      const videoWrap=document.getElementById('buyProductVideoWrap');
-      if(videoWrap) videoWrap.hidden=true;
     }
     await loadStorefrontPromotions();
     updatePrice();
@@ -2139,7 +2164,9 @@ addEventListener('scroll',u,{passive:true});new MutationObserver(u).observe(p,{a
     stopAuto();box.innerHTML='';
     clean.forEach(function(url,i){
       var b=document.createElement('button');b.type='button';b.className=i===0?'on':'';b.setAttribute('data-src',url);b.setAttribute('data-alt',(productName||'Pandit Ji')+' — image '+(i+1));b.setAttribute('data-fit','contain');b.setAttribute('aria-label','Product image '+(i+1));
-      var thumb=document.createElement('img');thumb.src=url;thumb.alt='';thumb.loading=i===0?'eager':'lazy';thumb.onerror=function(){b.style.display='none'};b.appendChild(thumb);box.appendChild(b);
+      var thumb=document.createElement('img');thumb.src=url;thumb.alt='';thumb.loading=i===0?'eager':'lazy';
+      thumb.onerror=function(){b.remove();btns=[].slice.call(box.querySelectorAll('button'));if(btns.length){if(cur>=btns.length)cur=0;show(cur,false)}else{img.src='https://himanshu90226.github.io/Chota-Pandit-/assets/media-01.jpg';}};
+      b.appendChild(thumb);box.appendChild(b);
     });
     bindButtons();
   };
@@ -2237,3 +2264,24 @@ loadStorefrontProduct();
 </html>
 
 
+
+<style id="akarrra-final-buy-gallery-layout-fix">
+/* Final purchase-gallery layout: no blank bands, gallery visible on mobile/desktop. */
+#buyPanel .buy-box{grid-template-columns:minmax(0, .95fr) minmax(0, 1.05fr)!important;}
+#buyPanel .buy-image{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:10px!important;min-width:0!important;min-height:0!important;overflow:hidden!important;padding:12px!important;background:#f2e7d8!important;}
+#buyPanel .buy-main{position:relative!important;width:100%!important;height:clamp(300px,62vh,620px)!important;min-height:0!important;flex:1 1 auto!important;aspect-ratio:auto!important;overflow:hidden!important;background:#f2e7d8!important;}
+#buyPanel #buyMainImg{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center!important;}
+#buyPanel .buy-thumbs{display:flex!important;flex:0 0 auto!important;gap:7px!important;width:100%!important;height:76px!important;padding:0!important;overflow-x:auto!important;overflow-y:hidden!important;}
+#buyPanel .buy-thumbs button{display:block!important;flex:0 0 64px!important;width:64px!important;height:64px!important;aspect-ratio:1!important;}
+#buyPanel .buy-thumbs button img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;}
+#buyPanel #buyProductVideoWrap{display:none!important;}
+@media(max-width:820px){
+  #buyPanel .buy-box{grid-template-columns:minmax(0,1fr)!important;width:min(100%,520px)!important;height:calc(100dvh - 20px)!important;max-height:calc(100dvh - 20px)!important;overflow-y:auto!important;}
+  #buyPanel .buy-image{width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;flex:none!important;padding:10px!important;border-radius:22px 22px 0 0!important;gap:8px!important;}
+  #buyPanel .buy-main{width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:4/3!important;flex:none!important;}
+  #buyPanel #buyMainImg{object-fit:contain!important;object-position:center!important;}
+  #buyPanel .buy-thumbs{height:54px!important;padding:0!important;gap:6px!important;}
+  #buyPanel .buy-thumbs button{flex:0 0 46px!important;width:46px!important;height:46px!important;}
+  #buyPanel .buy-content{padding:20px 18px 26px!important;}
+}
+</style>
