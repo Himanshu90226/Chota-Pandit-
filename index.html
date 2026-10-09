@@ -1567,10 +1567,12 @@ async function loadStorefrontProduct(){
       if(/^https?:\/\//i.test(url) || /^data:/i.test(url)) return url;
       return 'https://himanshu90226.github.io/Chota-Pandit-/' + url.replace(/^\.\//,'').replace(/^\//,'');
     });
-    if(product.image_url){
+    // If the admin has saved an image gallery, show ONLY that gallery.
+    // Use the legacy single image_url only when image_urls is empty.
+    if(!productImages.length && product.image_url){
       const primary=String(product.image_url).trim();
       const normalizedPrimary=/^https?:\/\//i.test(primary)||/^data:/i.test(primary)?primary:'https://himanshu90226.github.io/Chota-Pandit-/'+primary.replace(/^\.\//,'').replace(/^\//,'');
-      if(!productImages.includes(normalizedPrimary)) productImages.unshift(normalizedPrimary);
+      productImages=[normalizedPrimary];
     }
     productImages=[...new Set(productImages)].slice(0,10);
     if(productImages.length){
