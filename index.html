@@ -1697,8 +1697,8 @@ function renderStorefrontOffer(){
   if(!offer){if(banner)banner.style.display='none';if(productBox)productBox.style.display='none';return;}
   const end=offer.expires_at||offer.end_date||offer.expiry_date;
   if(banner){
-    if(offer.show_banner){banner.style.display='block';document.getElementById('akBannerText').textContent=offer.banner_text||offer.title||'Special offer';const cta=document.getElementById('akBannerCta');cta.textContent=offer.cta_text||'Shop Now';cta.href=offer.cta_url||'#shop';}
-    else banner.style.display='none';
+    if(offer.show_banner){banner.style.display='block';document.body.classList.add('ak-has-offer-banner');document.getElementById('akBannerText').textContent=offer.banner_text||offer.title||'Special offer';const cta=document.getElementById('akBannerCta');cta.textContent=offer.cta_text||'Shop Now';cta.href=offer.cta_url||'#shop';}
+    else {banner.style.display='none';document.body.classList.remove('ak-has-offer-banner');}
   }
   if(productBox){
     if(offer.show_product_offer){productBox.style.display='block';document.getElementById('akProductOfferTitle').textContent=offer.title||'Limited-time offer';document.getElementById('akProductOfferPrice').textContent='₹'+Number(PRICING.sellingPrice).toLocaleString('en-IN');document.getElementById('akProductOfferOld').textContent=baseStorefrontMrp>PRICING.sellingPrice?'₹'+Number(baseStorefrontMrp).toLocaleString('en-IN'):'';}
@@ -2264,11 +2264,23 @@ addEventListener('scroll',u,{passive:true});new MutationObserver(u).observe(p,{a
 @keyframes buyGallerySlideIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
 
 /* Festival campaign components: configured from the admin Offers form. */
-#akOfferBanner{display:none;position:relative;z-index:40;background:#9d101d;color:#fff;padding:10px 42px 10px 16px;text-align:center;font:600 14px/1.4 Arial,sans-serif;letter-spacing:.01em}
-#akOfferBanner .ak-banner-inner{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;max-width:1200px;margin:auto}
-#akOfferBanner .ak-banner-timer{font-variant-numeric:tabular-nums;white-space:nowrap}
-#akOfferBanner a{display:inline-block;background:#e7c27b;color:#21150d;text-decoration:none;border-radius:8px;padding:7px 15px;font-weight:800}
-#akOfferBanner .ak-banner-close{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer}
+#akOfferBanner{display:none;position:relative;z-index:1100;box-sizing:border-box;width:100%;background:#f5ead9;color:#552b24;padding:9px 44px 9px 16px;text-align:center;font:600 13px/1.35 Arial,sans-serif;letter-spacing:.01em;border-bottom:1px solid rgba(85,43,36,.12)}
+#akOfferBanner .ak-banner-inner{display:flex;justify-content:center;align-items:center;gap:8px 14px;flex-wrap:wrap;max-width:1200px;margin:auto}
+#akBannerText{min-width:0}
+#akOfferBanner .ak-banner-timer{font-variant-numeric:tabular-nums;white-space:nowrap;color:#75483d;font-weight:600}
+#akOfferBanner a{display:inline-block;background:#21150d;color:#fff;text-decoration:none;border-radius:999px;padding:7px 15px;font-weight:700;white-space:nowrap}
+#akOfferBanner .ak-banner-close{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#552b24;font-size:21px;cursor:pointer;padding:4px;line-height:1}
+/* The site navigation is layered over the hero; reserve a clear strip above it for the banner. */
+body.ak-has-offer-banner .nav{top:44px}
+@media(max-width:600px){
+  #akOfferBanner{padding:8px 34px 8px 10px;font-size:11px;line-height:1.3}
+  #akOfferBanner .ak-banner-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;justify-content:stretch;gap:4px 8px;text-align:left}
+  #akBannerText{grid-column:1;overflow-wrap:anywhere}
+  #akOfferBanner .ak-banner-timer{grid-column:1;white-space:normal;font-size:10px}
+  #akOfferBanner a{grid-column:2;grid-row:1 / span 2;align-self:center;padding:7px 10px;font-size:11px}
+  #akOfferBanner .ak-banner-close{right:5px;font-size:18px}
+  body.ak-has-offer-banner .nav{top:76px}
+}
 #akOfferPopup{display:none;position:fixed;inset:0;z-index:9999;background:rgba(18,10,6,.72);padding:18px;align-items:center;justify-content:center}
 #akOfferPopup.open{display:flex}
 #akOfferPopup .ak-popup-card{position:relative;overflow:hidden;width:min(520px,100%);max-height:92vh;overflow-y:auto;border:2px solid #e9c77d;border-radius:22px;background:linear-gradient(145deg,#650b13,#a71925 60%,#4b0810);color:#fff;text-align:center;box-shadow:0 25px 80px #0008}
