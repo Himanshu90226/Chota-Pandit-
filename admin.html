@@ -88,7 +88,10 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
 <div id="app">
 <header>
   <div class="brand">AKARRA ADMIN</div>
-  <button id="logoutBtn" class="logout">Logout</button>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+    <a href="./index.html" class="logout" style="display:inline-block;text-decoration:none;color:inherit">View Storefront</a>
+    <button id="logoutBtn" class="logout">Logout</button>
+  </div>
 </header>
 <main>
   <div class="tabs">
@@ -349,9 +352,10 @@ window.openProductForm=function(id=''){
       ${field('MRP','p_mrp','number',p.mrp??'')}
       ${field('Stock','p_stock','number',p.stock??0)}
       ${field('SKU','p_sku','text',p.sku||'')}
-      ${field('Product Image URLs (one URL per line, 4–5 images supported)','p_images','textarea',(Array.isArray(p.image_urls)&&p.image_urls.length?p.image_urls:(p.image_url?[p.image_url]:[])).join('\n'),true,'Paste each full image URL on a new line')}
-      ${field('Product Video URL (MP4)','p_video','text',p.video_url||'',true,'https://.../video.mp4')}
-      <div class="full" style="color:#777;font-size:12px;margin-top:-6px">Images must be public direct image links (JPG, PNG, WEBP). Video must be a direct MP4 link. Put each image URL on its own line.</div>
+      ${field('Primary Image URL','p_image','text',p.image_url||'',true)}
+      ${field('Product Image URLs (one URL per line)','p_images','textarea',Array.isArray(p.image_urls)?p.image_urls.join('\n'):(p.image_urls||''),true,'Paste 4–5 direct image URLs, one per line')}
+      <p class="muted full">Use direct image links, one per line. The first image is used as the primary image.</p>
+      ${field('Video URL','p_video','text',p.video_url||'',true)}
       ${field('Slug','p_slug','text',p.slug||'')}
       ${field('Description','p_desc','textarea',p.description||'',true)}
       <div class="full"><label><input id="p_featured" type="checkbox" ${p.is_featured?'checked':''} style="width:auto;margin-right:8px"> Featured Product</label></div>
@@ -362,7 +366,6 @@ window.openProductForm=function(id=''){
 };
 
 window.saveProduct=async function(id){
-  const existing=(window.adminProducts||[]).find(x=>String(x.id)===String(id));
   const payload={
     name:document.getElementById('p_name').value.trim(),
     category:document.getElementById('p_category').value.trim()||null,
@@ -370,13 +373,13 @@ window.saveProduct=async function(id){
     mrp:Number(document.getElementById('p_mrp').value||0),
     stock:Number(document.getElementById('p_stock').value||0),
     sku:document.getElementById('p_sku').value.trim()||null,
-    image_urls:[...new Set(document.getElementById('p_images').value.split(/\r?\n/).map(url=>url.trim()).filter(Boolean))],
-    image_url:(document.getElementById('p_images').value.split(/\r?\n/).map(url=>url.trim()).filter(Boolean)[0]||null),
+    image_url:document.getElementById('p_image').value.trim()||null,
+    image_urls:document.getElementById('p_images').value.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean).slice(0,10),
     video_url:document.getElementById('p_video').value.trim()||null,
     slug:document.getElementById('p_slug').value.trim()||null,
     description:document.getElementById('p_desc').value.trim()||null,
     is_featured:document.getElementById('p_featured').checked,
-    is_active:existing ? existing.is_active!==false : true
+    is_active:id ? ((window.adminProducts||[]).find(x=>String(x.id)===String(id))?.is_active!==false) : true
   };
   const result=id
     ? await supabaseClient.from('products').update(payload).eq('id',id)
@@ -420,8 +423,7 @@ window.openOfferForm=function(id=''){
   document.getElementById('manageModal').style.display='block';
 };
 window.saveOffer=async function(id){
-  const existing=(window.adminOffers||[]).find(x=>String(x.id)===String(id));
-  const payload={title:document.getElementById('o_title').value.trim(),description:document.getElementById('o_desc').value.trim()||null,discount_type:document.getElementById('o_type').value.trim()||'percentage',discount_value:Number(document.getElementById('o_value').value||0),starts_at:document.getElementById('o_start').value||null,expires_at:document.getElementById('o_end').value||null,is_active:existing ? existing.is_active!==false : true};
+  const payload={title:document.getElementById('o_title').value.trim(),description:document.getElementById('o_desc').value.trim()||null,discount_type:document.getElementById('o_type').value.trim()||'percentage',discount_value:Number(document.getElementById('o_value').value||0),starts_at:document.getElementById('o_start').value||null,expires_at:document.getElementById('o_end').value||null,is_active:id ? ((window.adminOffers||[]).find(x=>String(x.id)===String(id))?.is_active!==false) : true};
   const result=id?await supabaseClient.from('offers').update(payload).eq('id',id):await supabaseClient.from('offers').insert(payload);
   if(result.error){document.getElementById('formMsg').textContent=result.error.message;document.getElementById('formMsg').className='msg error';return;}
   closeManage();await loadOffers();
@@ -462,8 +464,7 @@ window.openCouponForm=function(id=''){
   document.getElementById('manageModal').style.display='block';
 };
 window.saveCoupon=async function(id){
-  const existing=(window.adminCoupons||[]).find(x=>String(x.id)===String(id));
-  const payload={code:document.getElementById('c_code').value.trim().toUpperCase(),discount_type:document.getElementById('c_type').value.trim()||'percentage',discount_value:Number(document.getElementById('c_value').value||0),min_order_amount:Number(document.getElementById('c_min').value||0),max_discount:document.getElementById('c_max').value===''?null:Number(document.getElementById('c_max').value),starts_at:document.getElementById('c_start').value||null,expires_at:document.getElementById('c_end').value||null,is_active:existing ? existing.is_active!==false : true};
+  const payload={code:document.getElementById('c_code').value.trim().toUpperCase(),discount_type:document.getElementById('c_type').value.trim()||'percentage',discount_value:Number(document.getElementById('c_value').value||0),min_order_amount:Number(document.getElementById('c_min').value||0),max_discount:document.getElementById('c_max').value===''?null:Number(document.getElementById('c_max').value),starts_at:document.getElementById('c_start').value||null,expires_at:document.getElementById('c_end').value||null,is_active:id ? ((window.adminCoupons||[]).find(x=>String(x.id)===String(id))?.is_active!==false) : true};
   const result=id?await supabaseClient.from('coupons').update(payload).eq('id',id):await supabaseClient.from('coupons').insert(payload);
   if(result.error){document.getElementById('formMsg').textContent=result.error.message;document.getElementById('formMsg').className='msg error';return;}
   closeManage();await loadCoupons();
