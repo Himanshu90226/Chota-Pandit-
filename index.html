@@ -1141,7 +1141,7 @@ h2.section-title{letter-spacing:-.015em}
 }
 </style>
 
-</head>
+<style id="disable-top-announcement-banner">#akOfferBanner{display:none!important}</style>\n</head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
 <div id="akOfferPopup" aria-hidden="true"><div class="ak-popup-card" role="dialog" aria-modal="true" aria-labelledby="akPopupHeading"><button class="ak-popup-close" id="akPopupClose" aria-label="Close offer">×</button><img class="ak-popup-image" id="akPopupImage" alt="Festival offer" hidden><div class="ak-popup-content"><div class="ak-popup-brand">AKARRA</div><h2 id="akPopupHeading">Festival Offer</h2><p id="akPopupSubheading">Bring home a little nostalgia</p><div class="ak-popup-discount" id="akPopupDiscount">Special offer</div><div class="ak-countdown" id="akPopupCountdown"><span><b>--</b>Days</span><span><b>--</b>Hours</span><span><b>--</b>Minutes</span><span><b>--</b>Seconds</span></div><a class="ak-popup-cta" id="akPopupCta" href="#shop">Shop Now</a></div></div></div>
@@ -1696,10 +1696,10 @@ function renderStorefrontOffer(){
   const productBox=document.getElementById('akProductOffer');
   if(!offer){if(banner)banner.style.display='none';if(productBox)productBox.style.display='none';return;}
   const end=offer.expires_at||offer.end_date||offer.expiry_date;
-  if(banner){
-    if(offer.show_banner){banner.style.display='block';document.body.classList.add('ak-has-offer-banner');document.getElementById('akBannerText').textContent=offer.banner_text||offer.title||'Special offer';const cta=document.getElementById('akBannerCta');cta.textContent=offer.cta_text||'Shop Now';cta.href=offer.cta_url||'#shop';}
-    else {banner.style.display='none';document.body.classList.remove('ak-has-offer-banner');}
-  }
+  // Top announcement banner is intentionally disabled on desktop and mobile.
+  // Keep popup and product offer rendering active.
+  if(banner) banner.style.display='none';
+  document.body.classList.remove('ak-has-offer-banner');
   if(productBox){
     if(offer.show_product_offer){productBox.style.display='block';document.getElementById('akProductOfferTitle').textContent=offer.title||'Limited-time offer';document.getElementById('akProductOfferPrice').textContent='₹'+Number(PRICING.sellingPrice).toLocaleString('en-IN');document.getElementById('akProductOfferOld').textContent=baseStorefrontMrp>PRICING.sellingPrice?'₹'+Number(baseStorefrontMrp).toLocaleString('en-IN'):'';}
     else productBox.style.display='none';
