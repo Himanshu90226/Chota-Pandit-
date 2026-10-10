@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Prevent campaign placeholder/backend text flashing before the page styles and Supabase data load. -->
-<style id="ak-early-campaign-visibility">#akOfferPopup:not(.open){display:none!important}#akOfferBanner{display:none!important}#akProductOffer{display:none}</style>
+<style id="ak-early-campaign-visibility">#akOfferPopup:not(.open){display:none!important}#akOfferBanner{display:none!important}#akProductOffer{display:none}
+.available-coupons{display:grid;gap:7px;margin-top:10px}.available-coupon{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px dashed #d9b78b;border-radius:10px;background:#fffaf3;font-size:12px}.available-coupon-copy{min-width:0}.available-coupon-code{font-weight:800;letter-spacing:.04em;color:#6f4327}.available-coupon-desc{color:#716961;margin-top:2px;line-height:1.35}.available-coupon button{flex-shrink:0;border:0;border-radius:7px;padding:7px 10px;background:#286553;color:#fff;font-size:11px;font-weight:800;cursor:pointer}
+</style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600&display=swap">
 
@@ -1389,6 +1391,7 @@ h2.section-title{letter-spacing:-.015em}
           <button type="button" id="promoRemoveBtn" class="promo-remove" onclick="removePromoCode()" hidden>Remove</button>
         </div>
         <div class="promo-message" id="promoMessage" role="status" aria-live="polite"></div>
+        <div id="availableCoupons" class="available-coupons" hidden aria-label="Available promo codes"></div>
         <div class="promo-discount" id="promoDiscountRow" hidden><span id="promoDiscountLabel">Discount</span><span id="promoDiscountAmount">- ₹0</span></div>
       </div>
 
@@ -1445,6 +1448,7 @@ h2.section-title{letter-spacing:-.015em}
       <label class="policy-check"><input type="checkbox" id="policyAgree" required><span>I understand there are <b>no returns</b>. A damaged item is replaced only with an <b>unboxing video</b> that starts <b>before I open the parcel</b>.</span></label>
       <div class="delivery-price-breakdown" aria-live="polite">
         <div><span>Items subtotal</span><strong id="deliveryItemsSubtotal">₹699</strong></div>
+        <div id="deliveryFestivalRow" hidden><span>Indian Festival Celebration</span><strong id="deliveryFestivalDiscount">− ₹0</strong></div>
         <div id="deliveryBundleRow" hidden><span>Quantity offer</span><strong id="deliveryBundleDiscount">− ₹0</strong></div>
         <div id="deliveryCouponRow" hidden><span id="deliveryCouponLabel">Promo code discount</span><strong id="deliveryCouponDiscount">− ₹0</strong></div>
         <div><span>Delivery</span><strong class="delivery-free-label">FREE</strong></div>
@@ -1737,6 +1741,26 @@ function renderStorefrontOffer(){
   const applyMsg=document.getElementById('akOfferApplyMessage');if(applyMsg)applyMsg.textContent=festivalOfferApplied?'Festival offer applied to your price. You can remove it anytime.':'Offer is optional. Apply it only if you want this offer.';
   renderOfferCountdowns();
 }
+function renderAvailableCoupons(){
+  const host=document.getElementById('availableCoupons'); if(!host)return;
+  const coupons=Object.entries(PRICING.coupons||{});
+  host.innerHTML='';
+  if(!coupons.length || appliedCoupon){host.hidden=true;return;}
+  coupons.forEach(([code,c])=>{
+    const type=String(c.discountType||'fixed').toLowerCase();
+    const value=Number(c.discount||0);
+    const offerText=(type==='percentage'||type==='percent')?`${value}% off`:`₹${value} off`;
+    const row=document.createElement('div');row.className='available-coupon';
+    const copy=document.createElement('div');copy.className='available-coupon-copy';
+    const codeEl=document.createElement('div');codeEl.className='available-coupon-code';codeEl.textContent=code;
+    const desc=document.createElement('div');desc.className='available-coupon-desc';desc.textContent=offerText+(c.minOrder>0?` · Min. order ₹${Number(c.minOrder).toLocaleString('en-IN')}`:'');
+    copy.append(codeEl,desc);
+    const btn=document.createElement('button');btn.type='button';btn.textContent='Use code';btn.addEventListener('click',()=>{const input=document.getElementById('promoCode');if(input)input.value=code;applyPromoCode();});
+    row.append(copy,btn);host.append(row);
+  });
+  host.hidden=false;
+}
+
 async function loadStorefrontPromotions(){
   try{
     const [offersResult,couponsResult]=await Promise.all([
@@ -1755,6 +1779,7 @@ async function loadStorefrontPromotions(){
         map[code]={discount:Number(c.discount_value||0),discountType:String(c.discount_type||'fixed').toLowerCase(),minOrder:Number(c.min_order_amount||0),maxDiscount:c.max_discount==null?null:Number(c.max_discount),expires:c.expires_at||c.expiry_date||c.end_date||null};
       });
       PRICING.coupons=map;
+      renderAvailableCoupons();
     }else console.warn('Coupons could not be loaded:',couponsResult.error.message);
     // Festival/product offers are opt-in: keep the backend product price until customer applies the offer.
     PRICING.sellingPrice=baseStorefrontSellingPrice??PRICING.sellingPrice;
@@ -1837,9 +1862,12 @@ function getCouponDiscount(itemsTotal){
 function updatePrice(){
   // All calculations use the latest active Supabase product/offer price in PRICING.sellingPrice.
   const unitPrice = Math.max(0, Number(PRICING.sellingPrice) || 0);
-  const baseItems = qty * unitPrice;
+  const activeBaseUnitPrice = Math.max(0, Number(baseStorefrontSellingPrice ?? unitPrice) || 0);
+  const baseItems = qty * (festivalOfferApplied ? activeBaseUnitPrice : unitPrice);
+  const festivalDiscount = festivalOfferApplied ? Math.max(0, baseItems - qty * unitPrice) : 0;
+  const itemsAtCurrentPrice = Math.max(0, qty * unitPrice);
   const quantityDiscount = qty * getQuantityDiscountPerUnit();
-  const itemsAfterQuantityDiscount = Math.max(0, baseItems - quantityDiscount);
+  const itemsAfterQuantityDiscount = Math.max(0, itemsAtCurrentPrice - quantityDiscount);
   const couponDiscount = getCouponDiscount(itemsAfterQuantityDiscount);
   const finalPrice = Math.max(0, itemsAfterQuantityDiscount - couponDiscount);
   const deliveryFee = 0;
@@ -1890,6 +1918,9 @@ function updatePrice(){
   if (customerDeliveryNote) customerDeliveryNote.textContent = 'FREE delivery';
   const deliveryItemsSubtotal = document.getElementById('deliveryItemsSubtotal');
   if(deliveryItemsSubtotal) deliveryItemsSubtotal.textContent = f(baseItems);
+  const deliveryFestivalRow=document.getElementById('deliveryFestivalRow');
+  const deliveryFestivalDiscount=document.getElementById('deliveryFestivalDiscount');
+  if(deliveryFestivalRow && deliveryFestivalDiscount){deliveryFestivalRow.hidden=festivalDiscount<=0;deliveryFestivalDiscount.textContent='− '+f(festivalDiscount);}
   const deliveryBundleRow = document.getElementById('deliveryBundleRow');
   const deliveryBundleDiscount = document.getElementById('deliveryBundleDiscount');
   if(deliveryBundleRow && deliveryBundleDiscount){
@@ -1910,6 +1941,7 @@ function updatePrice(){
   window.panditItemsTotal = baseItems;
   window.panditMrpTotal = mrpTotal;
   window.panditQuantityDiscount = quantityDiscount;
+  window.panditFestivalDiscount = festivalDiscount;
   window.panditCouponCode = appliedCoupon ? appliedCoupon.code : '';
   window.panditCouponDiscount = couponDiscount;
   window.panditDeliveryFee = 0;
@@ -1949,6 +1981,7 @@ function applyPromoCode(){
     message.textContent = 'Promo code applied. Your discount is calculated in the order total.';
     message.className = 'promo-message';
   }
+  renderAvailableCoupons();
   updatePrice();
 }
 function removePromoCode(){
@@ -1957,6 +1990,7 @@ function removePromoCode(){
   const message = document.getElementById('promoMessage');
   if(input) input.value = '';
   if(message){ message.textContent = 'Promo code removed.'; message.className = 'promo-message'; }
+  renderAvailableCoupons();
   updatePrice();
 }
 
@@ -2002,7 +2036,7 @@ async function sendOrderRecord(status){
         order_number: window.panditOrderId,
         customer_id: customerId,
         subtotal: window.panditItemsTotal || 0,
-        discount: window.panditQuantityDiscount || 0,
+        discount: (window.panditQuantityDiscount || 0) + (window.panditFestivalDiscount || 0),
         coupon_discount: window.panditCouponDiscount || 0,
         payment_status: 'pending',
         payment_method: 'UPI',
