@@ -187,7 +187,13 @@ h2.section-title{font:500 clamp(42px,5vw,70px)/1 "Playfair Display",serif;letter
 .buy{background:#211713;color:white;padding:90px 0}.buy-inner{display:flex;align-items:center;justify-content:space-between;gap:30px}.buy h2{font:500 56px "Playfair Display",serif;margin:8px 0}.buy p{color:#cfc2b8}.buy .cta{margin:0}
 
 /* FOOTER */
-footer{padding:22px 0 18px;background:#14151d;color:#aeb4c4;font-size:13px}.footer-inner{display:flex;justify-content:flex-start;gap:10px;flex-direction:column;align-items:flex-start;max-width:100%;}.footer-logo{margin:0 0 2px;line-height:0}.footer-logo img{display:block;width:170px;height:auto;max-width:100%;object-fit:contain}.footer-description{max-width:330px;color:#aeb4c4;font-size:13px;line-height:1.4;margin:0 0 6px}.footer-heading{color:#f5f6fb;font-size:11px;font-weight:700;letter-spacing:2px;margin:0 0 5px}.footer-contact{display:flex;flex-direction:column;gap:5px}.footer-contact a{display:flex;align-items:center;gap:10px;color:#aeb4c4;text-decoration:none;font-size:13px}.footer-contact a:hover,.footer-social a:hover{color:#fff}.footer-contact svg{width:15px;height:15px;flex:0 0 15px;stroke:currentColor;fill:none;stroke-width:1.7}.footer-social{display:flex;gap:10px;margin-top:7px}.footer-social a{width:38px;height:38px;border:1px solid #414452;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#aeb4c4;text-decoration:none}.footer-social svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7}.footer-social .wa-fill{fill:currentColor;stroke:none}@media(min-width:768px){footer{padding:24px 0 20px}.footer-inner{max-width:330px;margin-left:0}}
+footer{padding:22px 0 18px;background:#14151d;color:#aeb4c4;font-size:13px}.footer-inner{display:flex;justify-content:flex-start;gap:10px;flex-direction:column;align-items:flex-start;max-width:100%;}.footer-logo{margin:0 0 2px;line-height:0}.footer-logo img{display:block;width:170px;height:auto;max-width:100%;object-fit:contain}.footer-description{max-width:330px;color:#aeb4c4;font-size:13px;line-height:1.4;margin:0 0 6px}.footer-heading{color:#f5f6fb;font-size:11px;font-weight:700;letter-spacing:2px;margin:0 0 5px}.footer-contact{display:flex;flex-direction:column;gap:5px}.footer-contact a{display:flex;align-items:center;gap:10px;color:#aeb4c4;text-decoration:none;font-size:13px}.footer-contact a:hover,.footer-social a:hover{color:#fff}.footer-contact svg{width:15px;height:15px;flex:0 0 15px;stroke:currentColor;fill:none;stroke-width:1.7}.footer-social{display:flex;gap:10px;margin-top:7px}.footer-social a{width:38px;height:38px;border:1px solid #414452;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#aeb4c4;text-decoration:none}.footer-social svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7}.footer-social .wa-fill{fill:currentColor;stroke:none}@media(min-width:768px){
+  footer{padding:34px 0 28px}
+  .footer-inner{max-width:1180px;width:calc(100% - 60px);margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,420px);grid-template-areas:"logo policies" "description policies" "heading policies" "contact policies" "social policies";column-gap:64px;row-gap:16px;align-items:start}
+  .footer-logo{grid-area:logo}.footer-description{grid-area:description}.footer-heading{grid-area:heading}.footer-contact{grid-area:contact}.footer-social{grid-area:social}
+  .footer-policies{grid-area:policies;align-self:center;display:flex;flex-direction:column;flex-wrap:nowrap;gap:15px;margin:0;padding:0 0 0 30px;border-top:0;border-left:1px solid #343642;width:100%;max-width:none;min-height:210px;justify-content:center}
+  .footer-policies a{font-size:14px;line-height:1.5}
+}
 
 
 /* BUY NOW PRODUCT PANEL */
@@ -1161,6 +1167,15 @@ h2.section-title{letter-spacing:-.015em}
 </style>
 
 <style id="disable-top-announcement-banner">#akOfferBanner{display:none!important}</style>
+
+<style id="akarra-policy-footer">
+.footer-policies{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:18px;padding-top:14px;border-top:1px solid #343642;width:100%;max-width:760px}
+.footer-policies a{color:#aeb4c4;text-decoration:none;font-size:12px;line-height:1.6;transition:color .2s}
+.footer-policies a:hover{color:#fff}
+.footer-legal{color:#777e90;font-size:11px;line-height:1.6;margin-top:8px}
+@media(max-width:760px){.footer-policies{gap:8px 14px}.footer-policies a{font-size:12px}}
+</style>
+
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
@@ -1305,13 +1320,13 @@ h2.section-title{letter-spacing:-.015em}
 
 <section class="faq" id="faq"><div class="container">
 <h2>You asked. We answered.</h2>
-<details><summary>When will my order arrive?</summary><p>Pandit Ji is made to order and dispatches in 4 days. Delivery is free on every order.</p></details>
+<details><summary>When will my order arrive?</summary><p>Orders are generally dispatched within 1–2 working days after payment confirmation. Estimated delivery is 3–7 working days after dispatch. Delivery is free on every order.</p></details>
 <details><summary>How can I pay for my order?</summary><p>Enter your delivery details, then pay with any UPI app (GPay, PhonePe, Paytm, BHIM) using the UPI ID or QR code. After paying, share the screenshot with us on WhatsApp.</p></details>
 <details><summary>What material and size is Pandit Ji?</summary><p>Cold-cast marble composite, painted and sealed by hand. Height 5 inches (12.7 cm), width 3.5 inches (9 cm).</p></details>
 <details><summary>What comes inside the box?</summary><p>The box contains one Pandit Ji figure. Use a heat-resistant tray to catch ash, keep it away from children, pets and flammable things, and never leave burning incense unattended.</p></details>
 <details><summary>Can I save when buying multiple pieces?</summary><p>Yes. Buy 2 and save ₹50 per piece, or buy 3 and save ₹100 per piece. The discount applies automatically.</p></details>
-<details><summary>What is your return policy?</summary><p>No, Pandit Ji cannot be returned. Because each piece is made to order, we do not accept returns.</p></details>
-<details><summary>What happens if my order arrives damaged?</summary><p>We will replace it. To qualify, you must record a video before you open the parcel and keep recording while you open it, showing the parcel sealed and the damage. Without this unboxing video we cannot replace the item. Send the video to us on WhatsApp.</p></details>
+<details><summary>What is your replacement policy?</summary><p>Only eligible damaged, defective or incorrect items may qualify for replacement. Report the issue within 24 hours of delivery. A complete, continuous and unedited unboxing video starting when you receive or pick up the sealed parcel is mandatory for the standard replacement review. See our Replacement Policy for details.</p></details>
+<details><summary>What happens if my order arrives damaged?</summary><p>Please report a damaged or wrong item within 24 hours of delivery. Contact support with your order details, clear product photos and a complete, continuous and unedited unboxing video recorded from the time you receive/pick up the sealed parcel, clearly showing the sealed package and the entire opening process. This video is mandatory for our standard replacement review; replacement eligibility and the process are described in our Replacement Policy. Your statutory consumer rights remain unaffected.</p></details>
 <details><summary>Need help with something else?</summary><p>Message us on WhatsApp and we will reply.</p></details>
 </div></section>
 <div class="sticky-buy" id="stickyBuy"><button class="sb-main" type="button" onclick="openBuyPanel()">Buy Now · <span id="stickyPrice">₹699</span></button><a class="sb-wa" href="https://wa.me/917014809238?text=Hi%2C%20I%20have%20a%20question%20about%20Pandit%20Ji" target="_blank" rel="noopener" aria-label="Ask on WhatsApp"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 3.5A11.7 11.7 0 0 0 12.1 0C5.7 0 .5 5.2.5 11.6c0 2 .5 4 1.5 5.7L.4 24l6.9-1.8a11.6 11.6 0 0 0 4.8 1c6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.2-8.1Z" fill="white"/><path d="M17.3 13.8c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.5.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.2.2 2 3.1 4.9 4.2.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.3Z" fill="#25d366"/></svg></a></div>
@@ -1364,7 +1379,7 @@ h2.section-title{letter-spacing:-.015em}
       <div class="buy-perks">
         <div class="buy-perk">
           <div class="buy-perk-icon">🚚</div>
-          <div><strong>Made to order · Dispatches in 4 days</strong><span>Delivery address is collected before payment.</span></div>
+          <div><strong>Dispatches in 1–2 working days</strong><span>Delivery address is collected before payment.</span></div>
         </div>
       </div>
 
@@ -1377,10 +1392,10 @@ h2.section-title{letter-spacing:-.015em}
         </div>
       </div>
 
-      <div class="policy-note"><strong>Before you order:</strong> No returns. A damaged item is replaced only if you record a video <u>before opening the parcel</u> and keep recording while you open it.</div>
+      <div class="policy-note"><strong>Before you order:</strong> Only eligible damaged, defective or incorrect items may qualify for replacement. Report within 24 hours of delivery. A complete, continuous, unedited unboxing video starting when you receive or pick up the sealed parcel is mandatory for the standard replacement review.</div>
       <div class="bulk-note" id="bundleOffer" aria-label="Automatic quantity discounts">
-        <div class="bundle-tier" id="bundleTier2"><strong>Buy 2, ₹50 off each</strong><span>Save ₹100 on 2 pieces</span><em>APPLIED AUTOMATICALLY</em></div>
-        <div class="bundle-tier" id="bundleTier3"><strong>Buy 3, ₹100 off each</strong><span>Save ₹300 when you buy exactly 3 pieces</span><em>APPLIED AUTOMATICALLY</em></div>
+        <div class="bundle-tier" id="bundleTier2"><strong>Buy 2, ₹50 off each</strong><span>Save ₹100 on 2 pieces</span><em>APPLY AUTOMATICALLY</em></div>
+        <div class="bundle-tier" id="bundleTier3"><strong>Buy 3, ₹100 off each</strong><span>Save ₹300 when you buy exactly 3 pieces</span><em>APPLY AUTOMATICALLY</em></div>
       </div>
 
       <div class="promo-box">
@@ -1445,7 +1460,7 @@ h2.section-title{letter-spacing:-.015em}
         <label>State<input id="customerState" required autocomplete="address-level1" placeholder="State"></label>
         <label>PIN code<input id="customerPincode" required inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" title="Enter a 6-digit PIN code" placeholder="PIN"></label>
       </div>
-      <label class="policy-check"><input type="checkbox" id="policyAgree" required><span>I understand there are <b>no returns</b>. A damaged item is replaced only with an <b>unboxing video</b> that starts <b>before I open the parcel</b>.</span></label>
+      <label class="policy-check"><input type="checkbox" id="policyAgree" required><span>I understand that damaged or wrong items should be reported within <b>24 hours of delivery</b> and that a <b>continuous, unedited unboxing video starting when I receive/pick up the sealed parcel</b> is required for the standard replacement process, subject to applicable consumer rights.</span></label>
       <div class="delivery-price-breakdown" aria-live="polite">
         <div><span>Items subtotal</span><strong id="deliveryItemsSubtotal">₹699</strong></div>
         <div id="deliveryFestivalRow" hidden><span>Indian Festival Celebration</span><strong id="deliveryFestivalDiscount">− ₹0</strong></div>
@@ -2317,7 +2332,7 @@ function buildOrderWhatsAppMessage(){
     'Coupon discount: ₹'+(window.panditCouponDiscount||0).toLocaleString('en-IN'),
     'Delivery: '+(window.panditDeliveryFee === 0 ? 'FREE' : '₹'+window.panditDeliveryFee),
     'Order total: '+total,
-    'Policy accepted: no returns; replacement only for damage with an unboxing video.',
+    'Policy accepted: report damaged or wrong items within 24 hours; continuous unedited unboxing video from parcel receipt required for standard replacement review.',
     '',
     'Payment screenshot will be attached in WhatsApp for verification.',
     'Please verify the payment and confirm the order.'
@@ -2367,6 +2382,14 @@ document.getElementById('customerModal').addEventListener('click', function(e){
       <a href="https://www.instagram.com/akarra.online/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
       <a href="https://wa.me/917014809238" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-4.9A8.4 8.4 0 1 1 20.5 11.5Z"/><path d="M8.5 8.2c.3-.6.6-.6.9-.6h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.5.6c-.2.2-.2.4 0 .6.4.7 1 1.3 1.7 1.7.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.3.5 0 .4-.2 1-.6 1.3-.4.4-1.1.6-1.7.5-1-.2-2.2-.7-3.5-1.9-1.1-1-1.9-2.3-2.1-3.2-.2-.8.1-1.6.4-2Z"/></svg></a>
     </div>
+
+    <nav class="footer-policies" aria-label="Policies and customer information">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-and-conditions.html">Terms &amp; Conditions</a>
+      <a href="shipping-policy.html">Shipping Policy</a>
+      <a href="replacement-policy.html">Replacement Policy</a>
+      <a href="contact-us.html">Contact Us</a>
+    </nav>
   </div>
 </footer>
 
