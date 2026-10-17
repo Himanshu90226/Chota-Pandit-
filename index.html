@@ -1226,17 +1226,6 @@ h2.section-title{letter-spacing:-.015em}
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"AKARRA","url":"https://akarra.online/","logo":"https://akarra.online/assets/akarra-logo.png","email":"akarra.support@gmail.com","telephone":"+918005961431"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"AKARRA","url":"https://akarra.online/","inLanguage":"en-IN"}</script>
-
-<style id="ak-order-success-styles">
-#akOrderSuccess{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;overflow-y:auto;padding:24px;background:radial-gradient(circle at top,#fffaf3 0,#f7e8d5 48%,#f1dfc8 100%);color:#2A150E;font-family:"DM Sans",Arial,sans-serif}
-#akOrderSuccess.open{display:flex;animation:akSuccessFade .45s ease both}.ak-success-card{width:min(620px,100%);text-align:center;background:rgba(255,253,249,.96);border:1px solid rgba(135,111,69,.22);border-radius:28px;padding:clamp(28px,6vw,52px);box-shadow:0 24px 80px rgba(42,21,14,.14);animation:akSuccessRise .65s cubic-bezier(.2,.8,.2,1) both}
-.ak-success-check{width:92px;height:92px;margin:0 auto 25px;border-radius:50%;display:grid;place-items:center;background:#2fbd68;box-shadow:0 0 0 10px rgba(47,189,104,.11);animation:akSuccessPop .6s .12s cubic-bezier(.18,.89,.32,1.28) both}.ak-success-check svg{width:52px;height:52px;stroke:#fff;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.ak-success-kicker{font-size:11px;letter-spacing:.22em;font-weight:800;color:#a34a2d;text-transform:uppercase}.ak-success-title{font:600 clamp(32px,6vw,48px)/1.08 "Playfair Display",Georgia,serif;margin:13px 0 12px}.ak-success-copy{font-size:15px;line-height:1.65;color:#70645a;margin:0 auto 24px;max-width:430px}
-.ak-success-order{background:#f7efe5;border:1px solid #e7d7c4;border-radius:15px;padding:16px;margin:0 auto 22px;overflow-wrap:anywhere}.ak-success-order span{display:block;font-size:11px;color:#75695f;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}.ak-success-order strong{font-size:clamp(18px,4vw,23px);letter-spacing:.035em}.ak-success-amount{font-size:15px;color:#62564c;margin:0 0 23px}.ak-success-amount strong{color:#286553;font-size:21px;margin-left:5px}
-.ak-success-wa{width:100%;display:flex;align-items:center;justify-content:center;gap:11px;border:0;border-radius:14px;padding:17px 20px;background:#18864b;color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 10px 25px rgba(24,134,75,.2);transition:transform .2s,box-shadow .2s}.ak-success-wa:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(24,134,75,.28)}.ak-success-wa svg{width:22px;height:22px;fill:currentColor}.ak-success-foot{font-size:12px;line-height:1.55;color:#82776e;margin:16px 0 0}
-@keyframes akSuccessFade{from{opacity:0}to{opacity:1}}@keyframes akSuccessRise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes akSuccessPop{0%{opacity:0;transform:scale(.3) rotate(-18deg)}75%{opacity:1;transform:scale(1.12) rotate(3deg)}100%{transform:scale(1) rotate(0)}}@media(max-width:480px){#akOrderSuccess{padding:14px}.ak-success-card{border-radius:22px;padding:30px 20px}.ak-success-check{width:78px;height:78px}.ak-success-check svg{width:44px;height:44px}}@media(prefers-reduced-motion:reduce){#akOrderSuccess.open,.ak-success-card,.ak-success-check{animation:none!important}.ak-success-wa{transition:none}}
-</style>
-
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
@@ -1552,19 +1541,11 @@ h2.section-title{letter-spacing:-.015em}
     </div>
     <div class="payment-proof" style="margin-top:16px">
       <p>If payment succeeds, the order will be marked paid only after server-side signature verification. If it fails or is cancelled, it remains pending.</p>
-      <button type="button" class="whatsapp-btn proof-btn" onclick="openOrderWhatsApp()">Need help? Contact AKARRA on WhatsApp →</button>
+      <button type="button" class="whatsapp-btn proof-btn" onclick="openOrderWhatsApp()">Contact AKARRA on WhatsApp →</button>
     </div>
     <p class="payment-disclaimer">Never share your OTP, UPI PIN or card PIN with anyone.</p>
   </div>
 </div>
-
-
-<!-- SHOWN ONLY AFTER SERVER-SIDE RAZORPAY VERIFICATION SUCCEEDS -->
-<div id="akOrderSuccess" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="akSuccessTitle"><section class="ak-success-card">
-<div class="ak-success-check" aria-hidden="true"><svg viewBox="0 0 52 52"><path d="M11 27.5 21.5 38 42 15"/></svg></div><div class="ak-success-kicker">AKARRA · ORDER CONFIRMED</div><h1 class="ak-success-title" id="akSuccessTitle">Thank You for Your Order!</h1><p class="ak-success-copy">Your payment has been verified successfully. We’re getting your Pandit Ji order ready.</p>
-<div class="ak-success-order"><span>Your order number</span><strong id="akSuccessOrderId">—</strong></div><p class="ak-success-amount">Payment confirmed <strong id="akSuccessAmount">₹0</strong></p>
-<button type="button" class="ak-success-wa" id="akShareOrderWhatsApp" onclick="shareConfirmedOrderOnWhatsApp()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.85 11.85 0 0 0 12.08 0C5.53 0 .2 5.33.2 11.88c0 2.09.55 4.13 1.59 5.93L.1 24l6.35-1.67a11.9 11.9 0 0 0 5.63 1.43h.01c6.55 0 11.88-5.33 11.88-11.88a11.8 11.8 0 0 0-3.45-8.4ZM12.09 21.7h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.77.99 1.01-3.67-.23-.38a9.82 9.82 0 0 1-1.51-5.17c0-5.45 4.44-9.89 9.9-9.89a9.83 9.83 0 0 1 7 2.9 9.83 9.83 0 0 1 2.89 7c0 5.46-4.43 9.9-9.88 9.9Z"/></svg>Share Order Details on WhatsApp</button><p class="ak-success-foot">WhatsApp will open with your order details ready to share. Please review the message and tap Send.</p>
-</section></div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2140,12 +2121,12 @@ async function startRazorpayPayment(){
         const verifyResp=await fetch(RAZORPAY_VERIFY_PAYMENT_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify({...response,order_number:window.panditOrderId})});
         const verified=await verifyResp.json();
         if(!verifyResp.ok || verified.verified!==true) throw new Error(verified.error||'Payment verification did not succeed.');
-        window.panditPaymentDetails = {paymentId: response.razorpay_payment_id || '', razorpayOrderId: response.razorpay_order_id || '', paymentMethod: 'Razorpay', status: 'Paid'};
         if(status) status.innerHTML='<strong>Payment successful</strong><span>Payment verified and order marked paid. Order ID: '+window.panditOrderId+'.</span>';
         btn.disabled=true;
         btn.textContent='Payment successful ✓';
+        alert('Payment verified successfully! Order ID: '+window.panditOrderId);
         closePaymentModal();
-        showOrderSuccessPage();
+        openOrderWhatsApp();
       }catch(err){
         console.error('Razorpay verification error',err);
         if(status) status.innerHTML='<strong>Verification pending</strong><span>Payment response received but could not be verified or saved. Contact AKARRA with Order ID '+window.panditOrderId+'. Do not pay again until checked.</span>';
@@ -2415,31 +2396,11 @@ function buildOrderWhatsAppMessage(){
     'Coupon discount: ₹'+(window.panditCouponDiscount||0).toLocaleString('en-IN'),
     'Delivery: '+(window.panditDeliveryFee === 0 ? 'FREE' : '₹'+window.panditDeliveryFee),
     'Order total: '+total,
-    'Payment status: '+((window.panditPaymentDetails && window.panditPaymentDetails.status) || 'Pending'),
-    'Payment method: '+((window.panditPaymentDetails && window.panditPaymentDetails.paymentMethod) || 'Razorpay'),
-    'Razorpay Payment ID: '+((window.panditPaymentDetails && window.panditPaymentDetails.paymentId) || 'Not available'),
-    'Razorpay Order ID: '+((window.panditPaymentDetails && window.panditPaymentDetails.razorpayOrderId) || 'Not available'),
     'Policy accepted: no returns; replacement only for damage with an unboxing video.',
     '',
-    'Please confirm this order. Thank you — AKARRA customer.'
+    'Payment screenshot will be attached in WhatsApp for verification.',
+    'Please verify the payment and confirm the order.'
   ].join('\n');
-}
-
-function showOrderSuccessPage(){
-  const page=document.getElementById('akOrderSuccess');
-  const order=document.getElementById('akSuccessOrderId');
-  const amount=document.getElementById('akSuccessAmount');
-  if(order) order.textContent=window.panditOrderId || '—';
-  if(amount) amount.textContent=document.getElementById('cartPrice')?.textContent || '₹0';
-  if(page){page.setAttribute('aria-hidden','false');page.style.display='flex';void page.offsetWidth;page.classList.add('open');document.body.style.overflow='hidden';}
-}
-function shareConfirmedOrderOnWhatsApp(){
-  if(!window.panditPaymentDetails || window.panditPaymentDetails.status!=='Paid'){alert('Order details can be shared from here after payment verification.');return;}
-  const message=buildOrderWhatsAppMessage();
-  if(!message){alert('Order details are not available. Please contact AKARRA support.');return;}
-  const url='https://wa.me/918005961431?text='+encodeURIComponent(message);
-  const opened=window.open(url,'_blank','noopener,noreferrer');
-  if(!opened) window.location.href=url;
 }
 
 function openOrderWhatsApp(){
