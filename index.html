@@ -1371,7 +1371,7 @@ h2.section-title{letter-spacing:-.015em}
 <section class="faq" id="faq"><div class="container">
 <h2>You asked. We answered.</h2>
 <details><summary>When will my order arrive?</summary><p>Orders are generally dispatched within 1–2 working days after payment confirmation. Estimated delivery is 3–7 working days after dispatch. Delivery is free on every order.</p></details>
-<details><summary>How can I pay for my order?</summary><p>Enter your delivery details, then pay with any UPI app (GPay, PhonePe, Paytm, BHIM) using the UPI ID or QR code. After paying, share the screenshot with us on WhatsApp.</p></details>
+<details><summary>How can I pay for my order?</summary><p>Enter your delivery details and pay securely through Razorpay using the payment methods shown at checkout. Your order is marked paid only after server-side verification.</p></details>
 <details><summary>What material and size is Pandit Ji?</summary><p>Cold-cast marble composite, painted and sealed by hand. Height 5 inches (12.7 cm), width 3.5 inches (9 cm).</p></details>
 <details><summary>What comes inside the box?</summary><p>The box contains one Pandit Ji figure. Use a heat-resistant tray to catch ash, keep it away from children, pets and flammable things, and never leave burning incense unattended.</p></details>
 <details><summary>Can I save when buying multiple pieces?</summary><p>Yes. Buy 2 and save ₹50 per piece, or buy 3 and save ₹100 per piece. The discount applies automatically.</p></details>
@@ -1529,53 +1529,25 @@ h2.section-title{letter-spacing:-.015em}
   <div class="payment-box" role="dialog" aria-modal="true" aria-label="Pandit Ji payment options">
     <button class="payment-close" type="button" onclick="closePaymentModal()" aria-label="Close payment options">×</button>
     <div class="payment-head">
-      <div class="payment-kicker">ORDER READY</div>
-      <h2>Choose how you want to pay</h2>
-      <p>Pay using the UPI ID or scan the QR code below. After payment, send your screenshot on WhatsApp.</p>
+      <div class="payment-kicker">SECURE CHECKOUT</div>
+      <h2>Pay securely with Razorpay</h2>
+      <p>Use UPI, cards, netbanking or other methods shown by Razorpay. Your order stays pending until payment is verified.</p>
     </div>
-
-    <div class="payment-orderid" id="orderIdBox" hidden>Order ID: <strong id="orderIdText"></strong><span>Please type this ID in the payment note / remark of your UPI app.</span></div>
-    <div class="payment-options">
-      <div class="payment-option">
-        <div class="payment-option-title">Pay using UPI ID</div>
-        <div class="payment-option-subtitle">Copy the UPI ID and pay from any UPI app.</div>
-        <div class="upi-id-box payment-id-box">
-          <div>
-            <span>UPI ID</span>
-            <strong>BHARATPE2K0C0A6B6I26442@unitype</strong>
-          </div>
-          <button type="button" onclick="copyUPI()">Copy UPI ID</button>
-        </div>
-      </div>
-
-      <div class="payment-divider"><span>OR</span></div>
-
-      <div class="payment-option qr-option">
-        <div class="payment-option-title">Scan QR code</div>
-        <div class="payment-option-subtitle">Scan with PhonePe, GPay, Paytm, BHIM or any UPI app.</div>
-        <div class="upi-qr-wrap payment-qr-wrap">
-          <img class="upi-qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZoAAAGaAQAAAAAefbjOAAAC4UlEQVR4nO2bQa6rMAxFr3+QOqTSX0CXAjvr1mAp7ACGlYLuH9hJg/omVb+gLziD9KXp0QuqZfvaqRBvj/HP+wzgkEMOOeSQQw7VCYmNBtIvIsDSQKcxvaejP+R4Du0PdSTJGeCAQJHrKhivq6BjBIBAkuQW2u94Du0PLeYARG4R5Bwo9zkQ43UVDgBEpDnueA4dBnFYGkiflnKfGryMX/ZMDr0zfvi+AYxXSJ7+039y6HdBLanB4T6vojlDlybpAZCaURxzPIf2hkYREbkCAAKlz1pDJ6wqNY46nkN7R41nKZvjLQJoIwjEvNzWur/8mRz6BIJFiDmY+rRl2tYNmv5QlTp8+TM59AmkJmCliJbUyd4LmlskU4lwi6gfMosY2piWc8ghIvmNIS3dIuqHLEyg1XRhEyE0kli5snAebhGngZYGKjjGNIncHlIIjv7I4zm0B5S0xtKAwCoEQHn5mG7sfzyHDoLMM0ijlYliv5saiFwD5T5dvNN1AmijPgvVEaFtT+19tpZqeB5RP1RoDROZqjVs4oCUYw4tXWucAEo+gtE8g6oOhGQlLGWp+4j6oVyhSk6B2Ta63NrKOtR9RP1QrkeUzU4rV7YRKWBYudIton6ouB9BLH8jgbUB2ocQCJTx9hAAF0I3dj6eQwdBHLAK0D4Eo1yIbrpou4ucGqCbV1FteszxHDogagAwE8iJZtHSSDVujxr1QymzZLoVMQCpxflsZLSWbbrWqB8qMkvtfA8AkgS1RrgN73SdAso+wsZmI2okMZkxw33ECSBs7CBYsXpI8ePZF1e/4XlE9VBOJVMVIpeyNWB03JQi3EdUD5UXK5/VKOtrAM+MwrXGWaFuujDlk4F6WUZ9xNSkvPO3PZNDH0DStw8RuUUAWMX8BlaB36E6B/SSR1g3AyjKE+UtTI8alUMvWiPbhokL/StpU88jqodeftOlL/qbLhBAfN398mdyyCGHHHLIIYf2gf4BBQvCoo3I8nkAAAAASUVORK5CYII=" alt="UPI payment QR code">
-          <div class="upi-qr-note">Scan &amp; Pay using any UPI app</div>
-        </div>
-      </div>
+    <div class="payment-orderid" id="orderIdBox" hidden>Order ID: <strong id="orderIdText"></strong></div>
+    <div class="payment-total">Order total: <strong id="paymentTotal">₹699</strong></div>
+    <button type="button" class="upi-btn" id="razorpayPayBtn" onclick="startRazorpayPayment()">Pay securely →</button>
+    <div class="verification-status" id="razorpayStatus" style="margin-top:14px" aria-live="polite">
+      <strong>Payment status</strong><span>Complete payment in the secure Razorpay window. Do not close this page until the result appears.</span>
     </div>
-
-    <div class="payment-apps"><span>GPay</span><span>PhonePe</span><span>Paytm</span><span>BHIM</span></div>
-    <div class="payment-total">Order total: <strong id="paymentTotal">₹1,049</strong></div>
-    <div class="payment-proof">
-      <div class="payment-proof-title">STEP 2 · PAYMENT VERIFICATION</div>
-      <h3>Payment done?</h3>
-      <p>After completing your payment, continue to WhatsApp. Your complete order details and Order ID will already be filled in the chat. Simply attach your payment screenshot there and send it to us.</p>
-      <button type="button" class="whatsapp-btn proof-btn" onclick="openOrderWhatsApp()">Chat on WhatsApp →</button>
-      <div class="verification-status" style="margin-top:14px">
-        <strong>Payment verification</strong>
-        <span>Please attach your payment screenshot in WhatsApp and send it. We will verify the payment and confirm your order.</span>
-      </div>
+    <div class="payment-proof" style="margin-top:16px">
+      <p>If payment succeeds, the order will be marked paid only after server-side signature verification. If it fails or is cancelled, it remains pending.</p>
+      <button type="button" class="whatsapp-btn proof-btn" onclick="openOrderWhatsApp()">Contact AKARRA on WhatsApp →</button>
     </div>
-    <p class="payment-disclaimer">Payment is verified manually. Please send your payment screenshot on WhatsApp after completing the payment.</p>
+    <p class="payment-disclaimer">Never share your OTP, UPI PIN or card PIN with anyone.</p>
   </div>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.PANDIT_ORDER_WEBHOOK = "";
@@ -2104,7 +2076,7 @@ async function sendOrderRecord(status){
         discount: (window.panditQuantityDiscount || 0) + (window.panditFestivalDiscount || 0),
         coupon_discount: window.panditCouponDiscount || 0,
         payment_status: 'pending',
-        payment_method: 'UPI',
+        payment_method: 'Razorpay',
         order_status: 'pending',
         total_amount: totalAmount
       });
@@ -2123,6 +2095,40 @@ async function sendOrderRecord(status){
     alert('Order save failed. Please try again.');
     return false;
   }
+}
+// Razorpay frontend integration. Keep secret keys only in Supabase Edge Function secrets.
+const RAZORPAY_KEY_ID = 'rzp_live_TovhtCX8637MSc';
+const RAZORPAY_CREATE_ORDER_URL = SUPABASE_URL + '/functions/v1/razorpay-create-order';
+const RAZORPAY_VERIFY_PAYMENT_URL = SUPABASE_URL + '/functions/v1/razorpay-verify-payment';
+async function startRazorpayPayment(){
+  const btn=document.getElementById('razorpayPayBtn');
+  const status=document.getElementById('razorpayStatus');
+  if(!window.panditCustomer || !window.panditOrderId){alert('Please enter delivery details first.');return;}
+  if(RAZORPAY_KEY_ID.startsWith('SET_')){alert('Razorpay Key ID is not configured yet. Add your public Live Key ID in the website file before publishing.');return;}
+  if(!window.Razorpay){alert('Razorpay checkout could not load. Check your internet connection and try again.');return;}
+  const amountText=document.getElementById('cartPrice').textContent||'₹0';
+  const amount=Math.round((Number(amountText.replace(/[₹,]/g,'').trim())||0)*100);
+  if(amount<100){alert('Order total is invalid. Please refresh and try again.');return;}
+  btn.disabled=true;btn.textContent='Preparing secure payment…';
+  if(status) status.innerHTML='<strong>Payment status</strong><span>Creating secure payment order…</span>';
+  try{
+    const createResp=await fetch(RAZORPAY_CREATE_ORDER_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify({amount,currency:'INR',receipt:window.panditOrderId,order_number:window.panditOrderId,customer:window.panditCustomer})});
+    const created=await createResp.json();
+    if(!createResp.ok || !created.id){throw new Error(created.error||created.message||'Could not create Razorpay order.');}
+    const options={key:RAZORPAY_KEY_ID,amount:created.amount||amount,currency:created.currency||'INR',name:'AKARRA',description:'Pandit Ji Incense Holder',order_id:created.id,prefill:{name:window.panditCustomer.name,email:window.panditCustomer.email,contact:window.panditCustomer.phone},notes:{order_number:window.panditOrderId},theme:{color:'#6d4934'},handler:async function(response){
+      if(status) status.innerHTML='<strong>Verifying payment…</strong><span>Please wait while AKARRA verifies your payment securely.</span>';
+      try{
+        const verifyResp=await fetch(RAZORPAY_VERIFY_PAYMENT_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify({...response,order_number:window.panditOrderId})});
+        const verified=await verifyResp.json();
+        if(!verifyResp.ok || verified.verified!==true) throw new Error(verified.error||'Payment verification did not succeed.');
+        if(status) status.innerHTML='<strong>Payment successful</strong><span>Your payment has been verified. Order ID: '+window.panditOrderId+'.</span>';
+        alert('Payment verified successfully! Order ID: '+window.panditOrderId);
+        openOrderWhatsApp();
+      }catch(err){console.error('Razorpay verification error',err);if(status) status.innerHTML='<strong>Verification pending</strong><span>Payment response received but could not be verified here. Contact AKARRA with Order ID '+window.panditOrderId+'. Do not pay again until checked.</span>';alert('Payment response received, but verification is pending. Please contact AKARRA with Order ID '+window.panditOrderId+'.');}
+      finally{btn.disabled=false;btn.textContent='Pay securely →';}
+    },modal:{ondismiss:function(){if(status)status.innerHTML='<strong>Payment not completed</strong><span>Checkout was closed. Your order remains pending; you can try again.</span>';btn.disabled=false;btn.textContent='Pay securely →';}},retry:{enabled:true}};
+    const checkout=new Razorpay(options);checkout.on('payment.failed',function(resp){console.error('Razorpay payment failed',resp.error);if(status)status.innerHTML='<strong>Payment failed</strong><span>'+((resp.error&&resp.error.description)||'Please try again. Your order remains pending.')+'</span>';btn.disabled=false;btn.textContent='Try payment again →';});checkout.open();
+  }catch(err){console.error('Razorpay create order error',err);if(status)status.innerHTML='<strong>Could not start payment</strong><span>'+(err.message||'Please try again later.')+'</span>';alert('Could not start payment: '+(err.message||'Please try again later.'));btn.disabled=false;btn.textContent='Pay securely →';}
 }
 async function copyUPI(){
   const id = 'BHARATPE2K0C0A6B6I26442@unitype';
