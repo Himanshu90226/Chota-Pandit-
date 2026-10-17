@@ -64,11 +64,13 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
 .form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 .secondary{border:1px solid #ddd;background:#fff;padding:10px 15px;border-radius:9px;cursor:pointer}
 .danger{color:#b71c1c}
-.form-help{font-size:12px;color:#777;line-height:1.45;margin:5px 0 0}.check-field{display:flex;align-items:center;gap:9px;padding:10px 0}.check-field input{width:auto}.subhead{grid-column:1/-1;margin:14px 0 0;padding-top:12px;border-top:1px solid #eee;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#6a1b9a}
+.notify-banner{display:none;background:#efe4fa;border:1px solid #d9c2f2;color:#4c1d70;padding:12px 15px;border-radius:12px;margin:0 0 16px;font-weight:700}
+.tracking-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.tracking-fields input{width:100%;min-width:0}
+@media(max-width:600px){.tracking-fields{grid-template-columns:1fr}}
 .small-btn{border:1px solid #ddd;background:#fff;padding:7px 10px;border-radius:8px;cursor:pointer}
 @media(max-width:700px){.section-head{align-items:flex-start;flex-direction:column}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}}
 </style>
-<meta name="robots" content="noindex,nofollow,noarchive">
 </head>
 <body>
 
@@ -105,6 +107,8 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
 
   <section id="dashboardTab" class="tab-content">
   <h1>Dashboard</h1>
+  <div id="newOrderNotice" class="notify-banner" role="status"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:-8px 0 18px"><button class="secondary" type="button" onclick="enableOrderNotifications()">Enable order alerts</button><button class="secondary" type="button" onclick="loadDashboard()">Refresh orders</button></div>
   <div class="stats">
     <div class="stat"><small>Total Orders</small><strong id="totalOrders">—</strong></div>
     <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">—</strong></div>
@@ -185,7 +189,7 @@ async function loadDashboard(){
 
   const {data:orders,error}=await supabaseClient
     .from('orders')
-    .select('id,order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,order_status,created_at')
+    .select('id,order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,order_status,tracking_number,tracking_url,created_at')
     .order('created_at',{ascending:false})
     .limit(50);
 
@@ -275,8 +279,16 @@ window.openOrder=async function(id){
       <div class="detail"><small>Status</small><strong>${escapeHtml(o.order_status||'pending')}</strong></div>
     </div>
     <div style="margin-top:15px;color:#666;font-size:13px">
-      Subtotal: ${money(o.subtotal)} · Quantity discount: ${money(o.discount)} · Coupon discount: ${money(o.coupon_discount)}
-    </div>`;
+      Subtotal: ${money(o.subtotal)} · Discount: ${money(o.discount)} · Coupon discount: ${money(o.coupon_discount)}
+    </div>
+    <h3 style="margin:20px 0 6px">Shipping & tracking</h3>
+    <div class="tracking-fields">
+      <div><label for="trackingNumber">Tracking number</label><input id="trackingNumber" value="${escapeAttr(o.tracking_number||'')}" placeholder="Courier tracking ID"></div>
+      <div><label for="trackingUrl">Tracking URL</label><input id="trackingUrl" type="url" value="${escapeAttr(o.tracking_url||'')}" placeholder="https://courier-tracking-link"></div>
+    </div>
+    <button class="primary" style="margin-top:12px" onclick="saveTracking('${escapeAttr(o.id)}')">Save tracking details</button>
+    <button class="secondary" style="margin-top:12px" onclick="copyTrackingMessage('${escapeAttr(o.id)}')">Copy customer tracking message</button>
+    <div id="trackingMsg" class="msg" aria-live="polite"></div>`;
   document.getElementById('orderModal').style.display='block';
 };
 
@@ -294,6 +306,51 @@ window.updateOrder=async function(id,status,payment){
     return;
   }
   await loadDashboard();
+};
+
+window.saveTracking=async function(id){
+  const tracking_number=document.getElementById('trackingNumber').value.trim()||null;
+  const tracking_url=document.getElementById('trackingUrl').value.trim()||null;
+  if(tracking_url && !/^https:\/\//i.test(tracking_url)){
+    const msg=document.getElementById('trackingMsg');msg.textContent='Tracking URL must start with https://';msg.className='msg error';return;
+  }
+  const {error}=await supabaseClient.from('orders').update({tracking_number,tracking_url,updated_at:new Date().toISOString()}).eq('id',id);
+  const msg=document.getElementById('trackingMsg');
+  if(error){msg.textContent='Save failed: '+error.message;msg.className='msg error';return;}
+  const o=(window.adminOrders||[]).find(x=>x.id===id);if(o){o.tracking_number=tracking_number;o.tracking_url=tracking_url;}
+  msg.textContent='Tracking details saved.';msg.className='msg success';
+  await loadDashboard();
+};
+window.copyTrackingMessage=function(id){
+  const o=(window.adminOrders||[]).find(x=>x.id===id);if(!o)return;
+  const c=(window.adminCustomers||{})[o.customer_id]||{};
+  const url=o.tracking_url||('https://akarra.online/track.html');
+  const message=`Hi ${c.name||'there'}, your AKARRA order ${o.order_number} is now ${o.order_status||'pending'}.\nTracking number: ${o.tracking_number||'Not added yet'}\nTrack your order: ${url}\nThank you for shopping with AKARRA.`;
+  navigator.clipboard?.writeText(message).then(()=>{const m=document.getElementById('trackingMsg');m.textContent='Tracking message copied. Paste it into WhatsApp.';m.className='msg success';}).catch(()=>prompt('Copy this message:',message));
+};
+let orderAlertChannel=null;
+window.enableOrderNotifications=async function(){
+  if('Notification' in window){
+    const permission=await Notification.requestPermission();
+    if(permission!=='granted'){alert('Browser notification permission allow karo.');return;}
+  }else{alert('Is browser mein notifications supported nahi hain.');}
+  if(orderAlertChannel){alert('Live order alerts are already enabled while this admin panel stays open.');return;}
+  orderAlertChannel=supabaseClient.channel('akarra-admin-new-orders')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'orders'},async(payload)=>{
+      const o=payload.new||{};
+      const title='New AKARRA order received';
+      const body=`${o.order_number||'New order'} · ₹${Number(o.total_amount||0).toLocaleString('en-IN')} · Payment: ${o.payment_status||'pending'}`;
+      const notice=document.getElementById('newOrderNotice');
+      notice.textContent='🛍️ '+title+': '+body;notice.style.display='block';
+      if('Notification' in window && Notification.permission==='granted'){
+        try{new Notification(title,{body,icon:'/favicon.ico',tag:o.order_number||String(Date.now())});}catch(e){console.warn(e);}
+      }
+      try{await loadDashboard();}catch(e){console.error(e);}
+    }).subscribe((status)=>{
+      if(status==='SUBSCRIBED'){
+        const notice=document.getElementById('newOrderNotice');notice.textContent='🔔 Live order alerts enabled. Keep this admin page open to receive instant browser alerts.';notice.style.display='block';
+      }
+    });
 };
 
 document.getElementById('closeModal').addEventListener('click',()=>{
@@ -405,20 +462,9 @@ window.saveProduct=async function(id){
   const formMsg=document.getElementById('formMsg');
   try{
   const uploaded=await uploadProductImages(document.getElementById('p_files')?.files);
-  const rawManual=document.getElementById('p_images').value.trim();
-  let manualUrls=[];
-  if(rawManual){
-    try{const parsed=JSON.parse(rawManual);manualUrls=Array.isArray(parsed)?parsed.map(v=>String(v||'').trim()).filter(Boolean):rawManual.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean);}
-    catch(_){manualUrls=rawManual.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean);}
-  }
-  manualUrls=manualUrls.slice(0,10);
+  const manualUrls=document.getElementById('p_images').value.split(/[\n\r,]+/).map(url=>url.trim()).filter(Boolean).slice(0,10);
   const existing=(window.adminProducts||[]).find(x=>String(x.id)===String(id));
-  let existingUrls=existing?.image_urls||[];
-  if(typeof existingUrls==='string'){
-    try{const parsed=JSON.parse(existingUrls);existingUrls=Array.isArray(parsed)?parsed:existingUrls.split(/[\n\r,]+/).filter(Boolean);}
-    catch(_){existingUrls=existingUrls.split(/[\n\r,]+/).filter(Boolean);}
-  }
-  const imageUrls=uploaded&&uploaded.length?uploaded:(manualUrls.length?manualUrls:(Array.isArray(existingUrls)?existingUrls:[]));
+  const imageUrls=uploaded&&uploaded.length?uploaded:(manualUrls.length?manualUrls:(Array.isArray(existing?.image_urls)?existing.image_urls:[]));
   const primaryInput=document.getElementById('p_image').value.trim();
   const payload={
     name:document.getElementById('p_name').value.trim(),
@@ -427,7 +473,7 @@ window.saveProduct=async function(id){
     mrp:Number(document.getElementById('p_mrp').value||0),
     stock:Number(document.getElementById('p_stock').value||0),
     sku:document.getElementById('p_sku').value.trim()||null,
-    image_url:(imageUrls.length?imageUrls[0]:(primaryInput||null)),
+    image_url:(uploaded&&uploaded.length?uploaded[0]:(primaryInput||imageUrls[0]||null)),
     image_urls:imageUrls,
     video_url:document.getElementById('p_video').value.trim()||null,
     slug:document.getElementById('p_slug').value.trim()||null,
@@ -453,102 +499,37 @@ window.toggleProduct=async function(id,currentlyInactive){
 async function loadOffers(){
   const area=document.getElementById('offersArea'); area.textContent='Loading offers…';
   const {data,error}=await supabaseClient.from('offers').select('*').order('created_at',{ascending:false});
-  if(error){area.innerHTML='<div class="empty">Offers load failed: '+escapeHtml(error.message)+'<br><small>Check that the offer settings SQL migration has been run.</small></div>';return;}
+  if(error){area.innerHTML='<div class="empty">Offers load failed: '+escapeHtml(error.message)+'</div>';return;}
   window.adminOffers=data||[];
-  if(!data?.length){area.innerHTML='<div class="empty">No offers yet. Add an offer to configure the banner, popup and product price.</div>';return;}
-  area.innerHTML=`<table><thead><tr><th>Offer</th><th>Price setting</th><th>Dates</th><th>Display</th><th>Status</th><th>Action</th></tr></thead><tbody>${
-    data.map(o=>`<tr><td><strong>${escapeHtml(o.title||o.name||'-')}</strong><br><small>${escapeHtml(o.coupon_code||'')}</small></td>
-    <td>${o.final_price!=null?'Final ₹'+escapeHtml(o.final_price):escapeHtml(o.discount_type||'')+' '+escapeHtml(o.discount_value??'')}</td>
-    <td>${escapeHtml(o.starts_at||o.start_date||'Any time')}<br>${escapeHtml(o.expires_at||o.end_date||'No expiry')}</td>
-    <td>${[o.show_banner?'Banner':'',o.show_popup?'Popup':'',o.show_product_offer?'Product':''].filter(Boolean).join(', ')||'None'}</td>
+  if(!data?.length){area.innerHTML='<div class="empty">No offers yet.</div>';return;}
+  area.innerHTML=`<table><thead><tr><th>Offer</th><th>Discount</th><th>Start</th><th>End</th><th>Status</th><th>Action</th></tr></thead><tbody>${
+    data.map(o=>`<tr><td><strong>${escapeHtml(o.title||o.name||'-')}</strong></td>
+    <td>${escapeHtml(o.discount_type||'')}${o.discount_value!=null?' '+escapeHtml(o.discount_value):''}</td>
+    <td>${escapeHtml(o.starts_at||o.start_date||'-')}</td><td>${escapeHtml(o.expires_at||o.end_date||'-')}</td>
     <td><span class="badge">${o.is_active===false?'Inactive':'Active'}</span></td>
     <td><button class="small-btn" onclick="openOfferForm('${escapeHtml(o.id)}')">Edit</button>
     <button class="small-btn" onclick="toggleOffer('${escapeHtml(o.id)}',${o.is_active===false})">${o.is_active===false?'Activate':'Deactivate'}</button></td></tr>`).join('')
-  }</tbody></table><p class="form-help">Only active offers within their start/end dates appear on the storefront. Keep only one active automatic campaign at a time to avoid overlapping discounts.</p>`;
+  }</tbody></table>`;
 }
-function localDateTime(value){
-  if(!value) return '';
-  const d=new Date(value); if(Number.isNaN(d.getTime())) return String(value).slice(0,16);
-  const pad=n=>String(n).padStart(2,'0');
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-function checkedField(label,id,value){return `<label class="check-field"><input id="${id}" type="checkbox" ${value?'checked':''}> ${label}</label>`;}
 window.openOfferForm=function(id=''){
   const o=(window.adminOffers||[]).find(x=>String(x.id)===String(id))||{};
   document.getElementById('manageTitle').textContent=id?'Edit Offer':'Add Offer';
   document.getElementById('manageBody').innerHTML=`<div class="form-grid">
-    ${field('Offer Title','o_title','text',o.title||o.name||'Festival Offer',true)}
-    ${field('Short description','o_desc','textarea',o.description||'Celebrate the season with a special offer',true)}
-    <div class="subhead">Custom price & discount</div>
-    <div><label for="o_type">Discount Type</label><select id="o_type"><option value="percentage" ${(o.discount_type||'percentage')==='percentage'?'selected':''}>Percentage (%)</option><option value="fixed" ${o.discount_type==='fixed'?'selected':''}>Fixed amount (₹)</option></select></div>
-    ${field('Discount Value','o_value','number',o.discount_value??10)}
-    ${field('Final Selling Price (₹, optional override)','o_final_price','number',o.final_price??'',false,'Leave blank to calculate from discount')}
-    ${field('Coupon Code (optional)','o_coupon_code','text',o.coupon_code||'')}
-    <p class="form-help full">If Final Selling Price is entered, it takes priority over Discount Type/Value. Price must be greater than ₹0. The storefront will never raise the current selling price through an offer. This offer price applies automatically; coupon code is shown as a code suggestion and is not required for the automatic offer.</p>
-    <div class="subhead">Where should this offer appear?</div>
-    <div>${checkedField('Top announcement banner', 'o_show_banner',o.show_banner!==false)}</div>
-    <div>${checkedField('Popup when website opens', 'o_show_popup',!!o.show_popup)}</div>
-    <div>${checkedField('Product offer card + countdown', 'o_show_product',o.show_product_offer!==false)}</div>
-    <div class="subhead">Banner & popup copy</div>
-    ${field('Banner text','o_banner_text','text',o.banner_text||'Festival Offer Live! Save on Pandit Ji',true)}
-    ${field('Button text','o_cta_text','text',o.cta_text||'Shop Now')}
-    ${field('Button link (optional)','o_cta_url','text',o.cta_url||'#shop')}
-    ${field('Popup heading','o_popup_heading','text',o.popup_heading||'Festival Offer',true)}
-    ${field('Popup subheading','o_popup_subheading','text',o.popup_subheading||'Celebrate the season with a special offer',true)}
-    <div class="full"><label for="o_popup_image_file">Festival popup image (optional)</label><input id="o_popup_image_file" type="file" accept="image/*"><p class="form-help">Upload a new festival image (max 8 MB). It will be stored in Supabase Storage. If no file is selected, the image URL below is used.</p><div id="o_popup_image_preview" style="margin-top:8px">${o.popup_image_url?`<img src="${escapeAttr(o.popup_image_url)}" alt="Current festival popup" style="max-width:180px;max-height:120px;object-fit:contain;border-radius:8px;border:1px solid #ddd">`:''}</div></div>
-    ${field('Festival popup image URL (optional)','o_popup_image_url','url',o.popup_image_url||'',true,'Public image URL; upload above to replace it')}
-    <div class="subhead">Schedule</div>
-    ${field('Start Date & Time','o_start','datetime-local',localDateTime(o.starts_at||o.start_date||''))}
-    ${field('End Date & Time','o_end','datetime-local',localDateTime(o.expires_at||o.end_date||''))}
-    <div>${checkedField('Offer is active', 'o_active',o.is_active!==false)}</div>
+    ${field('Offer Title','o_title','text',o.title||o.name||'',true)}
+    ${field('Description','o_desc','textarea',o.description||'',true)}
+    ${field('Discount Type','o_type','text',o.discount_type||'percentage','')}
+    ${field('Discount Value','o_value','number',o.discount_value??'')}
+    ${field('Start Date','o_start','datetime-local',o.starts_at||o.start_date||'')}
+    ${field('End Date','o_end','datetime-local',o.expires_at||o.end_date||'')}
   </div><div id="formMsg" class="msg"></div>
   <div class="form-actions"><button class="secondary" onclick="closeManage()">Cancel</button><button class="primary" onclick="saveOffer('${escapeAttr(id)}')">Save Offer</button></div>`;
   document.getElementById('manageModal').style.display='block';
-  const popupFile=document.getElementById('o_popup_image_file');
-  if(popupFile) popupFile.addEventListener('change',function(){
-    const preview=document.getElementById('o_popup_image_preview'); if(!preview)return;
-    preview.innerHTML=''; const file=this.files&&this.files[0]; if(!file)return;
-    if(!file.type.startsWith('image/')){this.value='';alert('Please choose an image file.');return;}
-    if(file.size>8*1024*1024){this.value='';alert('Image must be 8 MB or smaller.');return;}
-    const img=document.createElement('img');img.alt=file.name;img.src=URL.createObjectURL(file);img.style.cssText='max-width:180px;max-height:120px;object-fit:contain;border-radius:8px;border:1px solid #ddd';preview.appendChild(img);
-  });
 };
-async function uploadOfferPopupImage(file){
-  if(!file)return null;
-  if(!file.type.startsWith('image/'))throw new Error('Festival popup must be an image file.');
-  if(file.size>8*1024*1024)throw new Error('Festival popup image must be 8 MB or smaller.');
-  const {data:{session}}=await supabaseClient.auth.getSession();
-  if(!session)throw new Error('Admin session expired. Please log in again.');
-  const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
-  const path='offers/'+Date.now()+'-'+Math.random().toString(36).slice(2,9)+'.'+ext;
-  const {error}=await supabaseClient.storage.from('product-images').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
-  if(error)throw new Error('Festival image upload failed: '+error.message+' — check product-images bucket and Storage policies.');
-  const {data}=supabaseClient.storage.from('product-images').getPublicUrl(path);
-  return data.publicUrl;
-}
 window.saveOffer=async function(id){
-  const title=document.getElementById('o_title').value.trim();
-  const type=document.getElementById('o_type').value;
-  const value=Number(document.getElementById('o_value').value||0);
-  const finalRaw=document.getElementById('o_final_price').value.trim();
-  const finalPrice=finalRaw===''?null:Number(finalRaw);
-  const msg=document.getElementById('formMsg');
-  if(!title){msg.textContent='Please enter an offer title.';msg.className='msg error';return;}
-  if(value<0 || !Number.isFinite(value)){msg.textContent='Discount value must be zero or higher.';msg.className='msg error';return;}
-  if(finalPrice!==null && (!Number.isFinite(finalPrice)||finalPrice<=0)){msg.textContent='Final selling price must be greater than zero.';msg.className='msg error';return;}
-  const start=document.getElementById('o_start').value||null, end=document.getElementById('o_end').value||null;
-  if(start&&end&&new Date(end)<=new Date(start)){msg.textContent='End date must be after start date.';msg.className='msg error';return;}
-  msg.textContent='Saving offer…';msg.className='msg';
-  try{
-    const pickedImage=document.getElementById('o_popup_image_file')?.files?.[0]||null;
-    const uploadedImage=await uploadOfferPopupImage(pickedImage);
-    const popupImageUrl=uploadedImage||document.getElementById('o_popup_image_url').value.trim()||null;
-    const payload={title,description:document.getElementById('o_desc').value.trim()||null,discount_type:type,discount_value:value,final_price:finalPrice,coupon_code:document.getElementById('o_coupon_code').value.trim().toUpperCase()||null,show_banner:document.getElementById('o_show_banner').checked,show_popup:document.getElementById('o_show_popup').checked,show_product_offer:document.getElementById('o_show_product').checked,banner_text:document.getElementById('o_banner_text').value.trim()||title,cta_text:document.getElementById('o_cta_text').value.trim()||'Shop Now',cta_url:document.getElementById('o_cta_url').value.trim()||'#shop',popup_heading:document.getElementById('o_popup_heading').value.trim()||title,popup_subheading:document.getElementById('o_popup_subheading').value.trim()||null,popup_image_url:popupImageUrl,starts_at:start?new Date(start).toISOString():null,expires_at:end?new Date(end).toISOString():null,is_active:document.getElementById('o_active').checked};
-    const result=id?await supabaseClient.from('offers').update(payload).eq('id',id):await supabaseClient.from('offers').insert(payload);
-    if(result.error){msg.textContent=result.error.message+' — If a column is missing, run the supplied offers-migration.sql in Supabase SQL Editor.';msg.className='msg error';return;}
-    closeManage();await loadOffers();
-  }catch(err){msg.textContent=err.message||'Could not save festival offer.';msg.className='msg error';}
-
+  const payload={title:document.getElementById('o_title').value.trim(),description:document.getElementById('o_desc').value.trim()||null,discount_type:document.getElementById('o_type').value.trim()||'percentage',discount_value:Number(document.getElementById('o_value').value||0),starts_at:document.getElementById('o_start').value||null,expires_at:document.getElementById('o_end').value||null,is_active:id ? ((window.adminOffers||[]).find(x=>String(x.id)===String(id))?.is_active!==false) : true};
+  const result=id?await supabaseClient.from('offers').update(payload).eq('id',id):await supabaseClient.from('offers').insert(payload);
+  if(result.error){document.getElementById('formMsg').textContent=result.error.message;document.getElementById('formMsg').className='msg error';return;}
+  closeManage();await loadOffers();
 };
 window.toggleOffer=async function(id,currentlyInactive){
   const {error}=await supabaseClient.from('offers').update({is_active:currentlyInactive}).eq('id',id);
