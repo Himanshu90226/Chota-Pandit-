@@ -70,6 +70,36 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
 @media(max-width:600px){.tracking-fields{grid-template-columns:1fr}}
 .small-btn{border:1px solid #ddd;background:#fff;padding:7px 10px;border-radius:8px;cursor:pointer}
 @media(max-width:700px){.section-head{align-items:flex-start;flex-direction:column}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}}
+
+/* AKARRA premium dashboard visual system */
+:root{--ink:#2b160d;--brown:#28160e;--cream:#f6efe4;--paper:#fffaf3;--line:#eadfce;--accent:#a45a2c;--muted:#84776b}
+body{background:#f5efe5;color:var(--ink);font-family:Inter,Arial,sans-serif}
+#app{display:none;min-height:100vh;grid-template-columns:224px minmax(0,1fr);grid-template-rows:62px 1fr;grid-template-areas:'side top' 'side main'}
+#app>header{grid-area:top;position:sticky;top:0;background:#fffaf3;border-bottom:1px solid var(--line);padding:12px 26px;z-index:6}
+#app>header .brand{font:29px Georgia,serif;letter-spacing:2px;color:#f3d2a9}
+#app>header .logout{border-color:var(--line);background:#fffaf3;color:var(--ink)}
+.sidebar{grid-area:side;background:linear-gradient(180deg,#25160f,#1a100b);color:#e7c8a3;min-height:100vh;padding:20px 14px;position:sticky;top:0;height:100vh}
+.sidebar-brand{font:30px Georgia,serif;letter-spacing:2px;padding:0 10px 24px;color:#f1d0a6}
+.side-nav{display:grid;gap:7px}.side-nav .tab{display:flex;align-items:center;gap:12px;text-align:left;border:0;background:transparent;color:#d8bea1;padding:13px 12px;border-radius:10px;font-size:13px;font-weight:500}.side-nav .tab:hover,.side-nav .tab.active{background:#3a291e;color:#fff5e7}.side-nav .tab.active{box-shadow:inset 3px 0 #d18a50}
+#app>main{grid-area:main;max-width:none;width:100%;margin:0;padding:25px 26px 40px;min-width:0}
+.tabs{display:none}.tab-content h1{font-size:27px;letter-spacing:-.5px;margin:0 0 4px}.section-head{margin-bottom:22px}.muted{color:var(--muted)}
+.dashboard-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.dashboard-heading p{margin:5px 0 0;color:#82786f;font-size:13px}.date-select{border:1px solid var(--line);background:#fffaf3;padding:10px 14px;border-radius:10px;color:var(--ink)}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:18px 0}.stat{border:1px solid #eee5d9;background:#fffaf4;border-radius:13px;padding:18px;box-shadow:0 5px 18px #462b1608}.stat small{color:#684d3c;font-size:12px}.stat strong{font-size:27px;margin-top:8px;color:#25170f}.stat .delta{display:block;font-size:10px;color:#39844a;margin-top:7px}
+.notify-banner{background:#fff0dc;border:1px solid #f6d7b3;color:#43230f;padding:14px 17px;border-radius:13px;margin:0 0 16px;font-weight:500;line-height:1.5}
+.table-card{background:#fffaf4;border:1px solid #eee4d7;border-radius:14px;padding:17px;box-shadow:0 5px 18px #462b1607}.table-card h2{font-size:15px;font-weight:600;margin:0 0 16px}table{min-width:740px}th,td{border-bottom:1px solid #eee6dc;padding:13px 10px}th{font-size:11px;text-transform:none;color:#6f655b;font-weight:600}td{font-size:12px}.badge{background:#d7f0c9;color:#286d29}.primary,.btn{background:#35190d}.secondary,.small-btn{border-color:#dfd0bf;background:#fffaf3;color:#432414}.modal-box{background:#fffaf3}.detail{background:#f7efe4}
+.dashboard-lower{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.notification-card,.activity-card{background:#fffaf4;border:1px solid #eee4d7;border-radius:14px;padding:18px}.notification-card h3,.activity-card h3{font-size:14px;margin:0 0 7px}.notification-card p{font-size:12px;color:#817568;margin:0 0 16px}.setting-row{display:flex;gap:9px;align-items:flex-start;font-size:12px;margin:13px 0}.setting-row input{width:auto;margin:1px 0 0;accent-color:#35190d}.setting-row small{display:block;color:#8a7d70;margin-top:4px}.activity-item{display:grid;grid-template-columns:10px 90px 1fr;gap:10px;font-size:11px;padding:12px 0;border-bottom:1px solid #f0e7dc}.activity-dot{width:8px;height:8px;background:#3c9a49;border-radius:50%;margin-top:3px}.activity-time{color:#8a7d70}.feature-note{font-size:12px;color:#827568;line-height:1.6}.pill-paid{display:inline-block;border:1px solid #a5d68f;background:#dff2d6;color:#276c2c;border-radius:12px;padding:4px 8px;font-size:11px}.pill-pending{display:inline-block;border:1px solid #f3a36c;background:#fff0df;color:#85420f;border-radius:12px;padding:4px 8px;font-size:11px}
+@media(max-width:900px){#app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;grid-template-areas:'top' 'side' 'main'}.sidebar{position:relative;height:auto;min-height:0;padding:10px 12px}.sidebar-brand{display:none}.side-nav{display:flex;overflow:auto}.side-nav .tab{white-space:nowrap;padding:10px 12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}#app>main{padding:18px 12px}.dashboard-lower{grid-template-columns:1fr}#app>header{padding:12px 16px}}
+@media(max-width:500px){.stats{grid-template-columns:1fr 1fr;gap:8px}.stat{padding:13px}.stat strong{font-size:22px}.dashboard-heading{align-items:flex-start;gap:10px}.dashboard-heading h1{font-size:23px}}
+
+
+/* Mobile-first alert badges and persistent notification inbox */
+.alert-bell{position:relative;border:1px solid #ead9ca;background:#fff8f0;color:#351b10;border-radius:12px;padding:10px 13px;font-weight:700;cursor:pointer;min-height:42px}
+.alert-count{position:absolute;right:-7px;top:-8px;min-width:21px;height:21px;padding:0 5px;border-radius:99px;background:#d92d20;color:#fff;border:2px solid #fff;font-size:11px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 2px 6px #0002}
+.alert-count[hidden]{display:none!important}.tab .nav-badge{margin-left:auto;background:#d92d20;color:#fff;border-radius:99px;min-width:21px;height:21px;padding:0 6px;font-size:11px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}.tab .nav-badge[hidden]{display:none!important}
+#alertDrawer{position:fixed;z-index:1000;right:16px;top:72px;width:min(410px,calc(100vw - 24px));max-height:75vh;overflow:auto;background:#fffaf4;border:1px solid #ead9ca;border-radius:18px;box-shadow:0 18px 60px #25140d35;padding:16px;display:none}
+#alertDrawer.open{display:block}.alert-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-16px;background:#fffaf4;padding:4px 0 12px;z-index:1}.alert-row{padding:12px 10px;border:1px solid #f0e3d7;border-radius:12px;margin:8px 0;background:white;cursor:pointer}.alert-row.unread{border-left:4px solid #d92d20;background:#fff4ed}.alert-row strong{display:block;font-size:14px;margin-bottom:4px}.alert-row small{color:#75675d}.alert-empty{padding:22px 8px;text-align:center;color:#776b62}.notice-pill{display:inline-flex;align-items:center;gap:6px;background:#fff0ed;color:#bd2419;border:1px solid #ffd0c8;padding:7px 10px;border-radius:99px;font-size:12px;font-weight:700}
+@media(max-width:640px){header{padding:12px 14px;gap:8px;flex-wrap:wrap}.brand{font-size:18px}header>div:last-child{gap:6px!important}.logout{padding:8px 10px;font-size:12px}main{padding:16px 10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:13px;border-radius:12px}.stat strong{font-size:22px}.table-card{padding:12px}.side-nav{gap:4px}.tab{font-size:13px}.alert-bell{padding:8px 11px}#alertDrawer{top:62px;right:8px;width:calc(100vw - 16px);max-height:80vh}}
+
 </style>
 </head>
 <body>
@@ -90,39 +120,56 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
 </div>
 
 <div id="app">
+<div id="alertDrawer" aria-live="polite"><div class="alert-drawer-head"><strong>Notifications <span id="drawerUnreadCount" class="notice-pill">0 unread</span></strong><div style="display:flex;gap:6px"><button id="markAllRead" class="secondary" type="button">Mark all read</button><button id="closeAlertDrawer" class="secondary" type="button" aria-label="Close notifications">✕</button></div></div><div id="alertList"></div><p class="feature-note">Alerts stay in this browser until you clear/read them. For notifications when the admin page is fully closed, server-side push or email delivery must also be configured.</p></div>
+<aside class="sidebar"><div class="sidebar-brand">AKARRA</div><nav class="side-nav">
+  <button class="tab active" data-tab="dashboardTab">⌂ &nbsp; Dashboard</button>
+  <button class="tab" data-tab="dashboardTab">▣ &nbsp; Orders <span class="nav-badge" id="navOrderCount" hidden>0</span></button>
+  <button class="tab" data-tab="productsTab">♧ &nbsp; Products</button>
+  <button class="tab" data-tab="couponsTab">❀ &nbsp; Coupons</button>
+  <button class="tab" data-tab="customersTab">♙ &nbsp; Customers</button>
+  <button class="tab" data-tab="analyticsTab">▥ &nbsp; Analytics</button>
+  <button class="tab" data-tab="settingsTab">⚙ &nbsp; Settings</button>
+  <button class="tab" data-tab="offersTab">✧ &nbsp; Offers</button>
+</nav></aside>
 <header>
-  <div class="brand">AKARRA ADMIN</div>
+  <div class="brand">AKARRA</div>
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
-    <a href="./index.html" class="logout" style="display:inline-block;text-decoration:none;color:inherit">View Storefront</a>
+    <button id="alertBell" class="alert-bell" type="button" aria-label="Open notifications" title="Unread notifications">🔔 <span id="alertBellCount" class="alert-count" hidden>0</span></button>
+    <a href="./index.html" class="logout" style="display:inline-block;text-decoration:none;color:inherit">View Storefront ↗</a>
     <button id="logoutBtn" class="logout">Logout</button>
   </div>
 </header>
 <main>
-  <div class="tabs">
+  <div class="tabs" style="display:none">
     <button class="tab active" data-tab="dashboardTab">Dashboard</button>
     <button class="tab" data-tab="productsTab">Products</button>
     <button class="tab" data-tab="offersTab">Offers</button>
     <button class="tab" data-tab="couponsTab">Coupons</button>
-    <button class="tab" data-tab="customersTab">Customers</button>
-    <button class="tab" data-tab="analyticsTab">Analytics</button>
-    <button class="tab" data-tab="alertsTab">Alerts & Settings</button>
-    <button class="tab" data-tab="activityTab">Activity Log</button>
   </div>
 
   <section id="dashboardTab" class="tab-content">
-  <h1>Dashboard</h1>
-  <div id="newOrderNotice" class="notify-banner" role="status"></div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:-8px 0 18px"><button class="secondary" type="button" onclick="enableOrderNotifications()">Enable order alerts</button><button class="secondary" type="button" onclick="loadDashboard()">Refresh orders</button></div>
+  <div class="dashboard-heading"><div><h1>Dashboard</h1><p>Here's what's happening with your store.</p></div><div style="display:flex;gap:8px;align-items:center"><select class="date-select" aria-label="Date range"><option>Today</option><option>7 days</option><option>30 days</option></select><button class="secondary" type="button" onclick="loadDashboard()">↻ Refresh</button></div></div>
+  <div id="newOrderNotice" class="notify-banner" role="status" style="display:none"></div>
   <div class="stats">
-    <div class="stat"><small>Total Orders</small><strong id="totalOrders">—</strong></div>
-    <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">—</strong></div>
-    <div class="stat"><small>Revenue</small><strong id="revenue">—</strong></div>
+    <div class="stat"><small>Total Orders</small><strong id="totalOrders">—</strong><span class="delta">↑ Live store data</span></div>
+    <div class="stat"><small>Paid Orders</small><strong id="paidOrders">—</strong><span class="delta">✓ Verified payments</span></div>
+    <div class="stat"><small>Pending Orders</small><strong id="pendingOrders">—</strong><span class="delta" style="color:#9b6b3d">Needs attention</span></div>
+    <div class="stat"><small>Total Revenue</small><strong id="revenue">—</strong><span class="delta">↑ Paid orders only</span></div>
   </div>
+  <div style="display:flex;gap:9px;flex-wrap:wrap;margin:0 0 14px"><button class="primary" type="button" onclick="enableOrderNotifications()">♧ Enable order alerts</button><button class="secondary" type="button" onclick="window.testOrderAlert&&window.testOrderAlert()">Test notification</button></div>
   <div class="table-card">
-    <h2>Recent Orders</h2>
+    <h2>Recent Orders &nbsp; <span style="background:#6d371c;color:#fff;border-radius:12px;padding:3px 7px;font-size:11px" id="recentOrderCount">0</span></h2>
     <div id="ordersArea" class="loading">Loading orders…</div>
   </div>
-
+  <div class="dashboard-lower">
+    <section class="notification-card"><h3>♧ &nbsp; Order Notifications</h3><p>Get real-time alerts for new orders.</p>
+      <label class="setting-row"><input id="browserNotifyPref" type="checkbox" checked><span>Browser notification<small>Show popup when a new order arrives</small></span></label>
+      <label class="setting-row"><input id="soundNotifyPref" type="checkbox" checked><span>Sound alert<small>Play a sound for new orders</small></span></label>
+      <label class="setting-row"><input id="emailNotifyPref" type="checkbox"><span>Email notification<small>Email alerts require a configured server-side email function</small></span></label>
+      <p class="feature-note">Red badges + notification inbox save unread alerts on this device. Browser popups require permission. For alerts when this page is fully closed, configure server-side push or email delivery.</p>
+    </section>
+    <section class="activity-card"><h3>Recent Activity</h3><div id="activityArea"><div class="activity-item"><span class="activity-dot"></span><span class="activity-time">Now</span><span>Admin panel loaded. Recent order activity will appear here.</span></div></div></section>
+  </div>
   </section>
 
   <section id="productsTab" class="tab-content" style="display:none">
@@ -139,33 +186,9 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
     <div class="section-head"><div><h1>Coupons</h1><p class="muted">Manage coupon codes and discounts.</p></div><button class="primary" onclick="openCouponForm()">+ Add Coupon</button></div>
     <div id="couponsArea" class="table-card">Loading coupons…</div>
   </section>
-
-  <section id="customersTab" class="tab-content" style="display:none">
-    <div class="section-head"><div><h1>Customers</h1><p class="muted">Customer directory and purchase history from saved orders.</p></div><button class="secondary" onclick="loadCustomers()">Refresh</button></div>
-    <div id="customersArea" class="table-card">Load customers to view…</div>
-  </section>
-  <section id="analyticsTab" class="tab-content" style="display:none">
-    <div class="section-head"><div><h1>Sales & Analytics</h1><p class="muted">Figures are calculated from orders available to the signed-in admin.</p></div><button class="secondary" onclick="loadAnalytics()">Refresh analytics</button></div>
-    <div id="analyticsArea" class="table-card">Loading analytics…</div>
-  </section>
-  <section id="alertsTab" class="tab-content" style="display:none">
-    <div class="section-head"><div><h1>Alerts & Settings</h1><p class="muted">Manage browser alerts and check communication setup.</p></div></div>
-    <div class="table-card">
-      <h3>New order notifications</h3><p class="muted">Realtime browser alerts work while this admin page is open. Allow notifications and keep this page open.</p>
-      <button class="primary" onclick="enableOrderNotifications()">Enable browser alerts</button>
-      <button class="secondary" onclick="testAdminAlert()">Test notification</button>
-      <hr style="border:0;border-top:1px solid #eee;margin:22px 0">
-      <h3>Email & WhatsApp</h3><p class="muted">Order confirmation email is handled by the configured Supabase Edge Function/Resend setup. Email alerts to the owner when a new order arrives require a separate server-side trigger; never place Resend or WhatsApp API secrets in this HTML.</p>
-      <p><a href="https://supabase.com/dashboard/project/fvmfvhzsfmxjioexsrrs/functions" target="_blank" rel="noopener">Open Supabase Edge Functions ↗</a></p>
-      <hr style="border:0;border-top:1px solid #eee;margin:22px 0">
-      <h3>Data export</h3><p class="muted">Download recent orders as CSV for accounting and backups.</p><button class="secondary" onclick="exportOrdersCsv()">Export orders CSV</button>
-      <p class="muted" style="margin-top:16px">Security: access is controlled by Supabase Auth and database Row Level Security (RLS). Use a dedicated admin account and never put service-role keys in frontend code.</p>
-    </div>
-  </section>
-  <section id="activityTab" class="tab-content" style="display:none">
-    <div class="section-head"><div><h1>Activity Log</h1><p class="muted">Recent browser-session activity for this admin panel.</p></div><button class="secondary" onclick="renderActivity()">Refresh</button></div>
-    <div id="activityArea" class="table-card">No activity yet.</div>
-  </section>
+  <section id="customersTab" class="tab-content" style="display:none"><div class="section-head"><div><h1>Customers</h1><p class="muted">Customer directory based on customers linked to recent orders.</p></div><button class="secondary" onclick="exportCustomersCsv()">Export CSV</button></div><div id="customersArea" class="table-card">Load the dashboard to view customers.</div></section>
+  <section id="analyticsTab" class="tab-content" style="display:none"><div class="section-head"><div><h1>Sales Analytics</h1><p class="muted">Summary calculated from orders returned by your current Supabase policies.</p></div><button class="secondary" onclick="loadDashboard()">Refresh data</button></div><div id="analyticsArea" class="stats"></div><div class="table-card"><h2>Order status breakdown</h2><div id="statusBreakdown" class="feature-note">Load dashboard data to see status breakdown.</div></div></section>
+  <section id="settingsTab" class="tab-content" style="display:none"><div class="section-head"><div><h1>Settings & Integrations</h1><p class="muted">Check the status of customer communications and notifications.</p></div></div><div class="table-card"><h2>Order notifications</h2><p class="feature-note">Enable browser permission and then start live order alerts from Dashboard. Browser alerts require this page to remain open.</p><button class="primary" onclick="enableOrderNotifications()">Enable browser alerts</button><hr style="border:0;border-top:1px solid #eee;margin:20px 0"><h2>Customer order tracking</h2><p class="feature-note">Customer tracking page: <a href="./track.html" target="_blank">Open Track My Order ↗</a>. The secure <code>order-track</code> Supabase Edge Function must be deployed.</p><h2>Payments</h2><p class="feature-note">Payment status should be updated only by verified Razorpay server-side confirmation. Do not manually mark payments as paid from this dashboard.</p><h2>Security</h2><p class="feature-note">Admin access depends on Supabase Auth and database Row Level Security (RLS). Never place service-role keys or Razorpay secrets in browser code.</p></div></section>
 
   <div id="manageModal" class="modal">
     <div class="modal-box">
@@ -208,7 +231,9 @@ function showLogin(message='', error=true){
 }
 function showApp(){
   loginScreen.style.display='none';
-  app.style.display='block';
+  app.style.display='grid';
+  startOrderRealtime();
+  renderAlertInbox();
 }
 function money(n){
   return '₹'+Number(n||0).toLocaleString('en-IN');
@@ -250,8 +275,15 @@ async function loadDashboard(){
   }
 
   const customerMap=Object.fromEntries(customers.map(c=>[c.id,c]));
+  const ca=document.getElementById('customersArea');
+  if(ca){ca.innerHTML=customers.length?`<table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>City</th></tr></thead><tbody>${customers.map(c=>`<tr><td>${escapeHtml(c.name||'—')}</td><td>${escapeHtml(c.email||'—')}</td><td>${escapeHtml(c.phone||'—')}</td><td>${escapeHtml(c.city||'—')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No customer records available for the current order list.</div>';}
+  const analytics=document.getElementById('analyticsArea');if(analytics){analytics.innerHTML=`<div class="stat"><small>Paid Revenue</small><strong>${money(rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').reduce((a,o)=>a+Number(o.total_amount||0),0))}</strong></div><div class="stat"><small>Average Order Value</small><strong>${money(rows.length?rows.reduce((a,o)=>a+Number(o.total_amount||0),0)/rows.length:0)}</strong></div><div class="stat"><small>Customers</small><strong>${customers.length}</strong></div><div class="stat"><small>Delivered</small><strong>${rows.filter(o=>String(o.order_status||'').toLowerCase()==='delivered').length}</strong></div>`;}
+  const breakdown=document.getElementById('statusBreakdown');if(breakdown){const statuses=['pending','confirmed','packed','shipped','delivered','cancelled'];breakdown.innerHTML=statuses.map(st=>`<span style="display:inline-block;margin:5px 8px 5px 0;padding:8px 11px;border:1px solid #eadfce;border-radius:9px;background:#fff8ef">${st[0].toUpperCase()+st.slice(1)}: <strong>${rows.filter(o=>String(o.order_status||'pending').toLowerCase()===st).length}</strong></span>`).join('');}
+  const activity=document.getElementById('activityArea');if(activity){activity.innerHTML=rows.slice(0,4).map((o,i)=>`<div class="activity-item"><span class="activity-dot" style="background:${i===0?'#399b49':i===1?'#a48a73':'#d67a36'}"></span><span class="activity-time">${o.created_at?new Date(o.created_at).toLocaleString('en-IN',{hour:'numeric',minute:'2-digit',day:'numeric',month:'short'}):'Recent'}</span><span>Order ${escapeHtml(o.order_number||'—')} · ${escapeHtml(o.payment_status||'pending')} · ${money(o.total_amount)}</span></div>`).join('')||'<p class="feature-note">No recent activity.</p>';}
 
   document.getElementById('totalOrders').textContent=rows.length;
+  document.getElementById('navOrderCount').textContent=rows.length;document.getElementById('recentOrderCount').textContent=rows.length;
+  document.getElementById('paidOrders').textContent=rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').length;
   document.getElementById('pendingOrders').textContent=rows.filter(o=>String(o.order_status||'').toLowerCase()==='pending').length;
   document.getElementById('revenue').textContent=money(
     rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid')
@@ -336,7 +368,6 @@ window.updateOrder=async function(id,status,payment){
     await loadDashboard();
     return;
   }
-  addActivity('Order updated', 'Order '+id+' status/payment changed');
   await loadDashboard();
 };
 
@@ -351,7 +382,6 @@ window.saveTracking=async function(id){
   if(error){msg.textContent='Save failed: '+error.message;msg.className='msg error';return;}
   const o=(window.adminOrders||[]).find(x=>x.id===id);if(o){o.tracking_number=tracking_number;o.tracking_url=tracking_url;}
   msg.textContent='Tracking details saved.';msg.className='msg success';
-  addActivity('Tracking saved','Tracking details updated for '+(o?.order_number||id));
   await loadDashboard();
 };
 window.copyTrackingMessage=function(id){
@@ -362,30 +392,66 @@ window.copyTrackingMessage=function(id){
   navigator.clipboard?.writeText(message).then(()=>{const m=document.getElementById('trackingMsg');m.textContent='Tracking message copied. Paste it into WhatsApp.';m.className='msg success';}).catch(()=>prompt('Copy this message:',message));
 };
 let orderAlertChannel=null;
+const ALERT_STORE_KEY='akarra_admin_alerts_v2';
+const ALERT_SEEN_KEY='akarra_admin_seen_order_ids_v2';
+let alertItems=[];
+try{alertItems=JSON.parse(localStorage.getItem(ALERT_STORE_KEY)||'[]');if(!Array.isArray(alertItems))alertItems=[];}catch(e){alertItems=[];}
+function persistAlerts(){try{localStorage.setItem(ALERT_STORE_KEY,JSON.stringify(alertItems.slice(0,100)));}catch(e){}}
+function unreadAlerts(){return alertItems.filter(a=>!a.read).length;}
+function updateAlertBadges(){
+ const count=unreadAlerts();
+ ['alertBellCount','navOrderCount','recentOrderCount','drawerUnreadCount'].forEach(id=>{
+  const el=document.getElementById(id);if(!el)return;
+  if(id==='drawerUnreadCount'){el.textContent=count+' unread';return;}
+  if(id==='recentOrderCount'){el.textContent=document.getElementById('totalOrders')?.textContent||'0';return;}
+  el.textContent=count>99?'99+':String(count);el.hidden=count===0;
+ });
+ const bell=document.getElementById('alertBell');if(bell)bell.setAttribute('aria-label',count?`${count} unread notifications`:'No unread notifications');
+}
+function renderAlertInbox(){
+ const box=document.getElementById('alertList');if(!box)return;
+ if(!alertItems.length){box.innerHTML='<div class="alert-empty">No notifications yet. New orders will appear here.</div>';updateAlertBadges();return;}
+ box.innerHTML=alertItems.slice(0,50).map(a=>`<div class="alert-row ${a.read?'':'unread'}" data-alert-id="${escapeHtml(a.id)}"><strong>${a.read?'':'🔴 '}${escapeHtml(a.title)}</strong><div>${escapeHtml(a.body)}</div><small>${escapeHtml(a.time||'Just now')}${a.read?' · Read':' · Unread'}</small></div>`).join('');
+ box.querySelectorAll('[data-alert-id]').forEach(el=>el.addEventListener('click',()=>{const a=alertItems.find(x=>x.id===el.dataset.alertId);if(a){a.read=true;persistAlerts();renderAlertInbox();}}));
+ updateAlertBadges();
+}
+function addAdminAlert(order){
+ const oid=String(order.id||order.order_number||Date.now());
+ if(alertItems.some(a=>a.orderId===oid&&a.type==='new-order'))return;
+ const body=`${order.order_number||'New order'} · ${money(order.total_amount)} · Payment: ${order.payment_status||'pending'}`;
+ alertItems.unshift({id:'alert-'+oid+'-'+Date.now(),orderId:oid,type:'new-order',title:'New order received',body,time:new Date().toLocaleString('en-IN'),read:false});
+ persistAlerts();renderAlertInbox();
+ const notice=document.getElementById('newOrderNotice');if(notice){notice.textContent='🔔 New order: '+body;notice.style.display='block';}
+ if(document.getElementById('soundNotifyPref')?.checked){try{const C=window.AudioContext||window.webkitAudioContext;if(C){const c=new C(),osc=c.createOscillator(),g=c.createGain();osc.connect(g);g.connect(c.destination);osc.frequency.value=880;g.gain.value=.07;osc.start();osc.stop(c.currentTime+.22);}}catch(e){}}
+ if(document.getElementById('browserNotifyPref')?.checked&&'Notification' in window&&Notification.permission==='granted'){
+   try{const n=new Notification('AKARRA · New order received',{body,tag:'akarra-'+oid,renotify:false});n.onclick=()=>{window.focus();document.getElementById('alertDrawer')?.classList.add('open');n.close();};}catch(e){console.warn('Browser notification failed',e);}
+ }
+}
+function startOrderRealtime(){
+ if(orderAlertChannel)return;
+ orderAlertChannel=supabaseClient.channel('akarra-admin-new-orders-v2')
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'orders'},async(payload)=>{
+    const o=payload.new||{};addAdminAlert(o);
+    try{await loadDashboard();}catch(e){console.error(e);}
+  })
+  .subscribe(status=>{
+    const notice=document.getElementById('newOrderNotice');
+    if(status==='SUBSCRIBED'&&notice){notice.textContent='🟢 Live order feed connected. Keep this admin page open for instant alerts.';notice.style.display='block';}
+    if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){if(notice){notice.textContent='⚠️ Live alerts disconnected. Refresh this page and check Supabase Realtime settings.';notice.style.display='block';}}
+  });
+}
 window.enableOrderNotifications=async function(){
-  if('Notification' in window){
-    const permission=await Notification.requestPermission();
-    if(permission!=='granted'){alert('Browser notification permission allow karo.');return;}
-  }else{alert('Is browser mein notifications supported nahi hain.');}
-  if(orderAlertChannel){alert('Live order alerts are already enabled while this admin panel stays open.');return;}
-  orderAlertChannel=supabaseClient.channel('akarra-admin-new-orders')
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'orders'},async(payload)=>{
-      const o=payload.new||{};
-      addActivity('New order received',String(o.order_number||'New order')+' · ₹'+Number(o.total_amount||0));
-      const title='New AKARRA order received';
-      const body=`${o.order_number||'New order'} · ₹${Number(o.total_amount||0).toLocaleString('en-IN')} · Payment: ${o.payment_status||'pending'}`;
-      const notice=document.getElementById('newOrderNotice');
-      notice.textContent='🛍️ '+title+': '+body;notice.style.display='block';
-      if('Notification' in window && Notification.permission==='granted'){
-        try{new Notification(title,{body,icon:'/favicon.ico',tag:o.order_number||String(Date.now())});}catch(e){console.warn(e);}
-      }
-      try{await loadDashboard();}catch(e){console.error(e);}
-    }).subscribe((status)=>{
-      if(status==='SUBSCRIBED'){
-        const notice=document.getElementById('newOrderNotice');notice.textContent='🔔 Live order alerts enabled. Keep this admin page open to receive instant browser alerts.';notice.style.display='block';
-      }
-    });
+  if(!('Notification' in window)){alert('This browser does not support browser notifications. In-app red badges will still work while this page is open.');startOrderRealtime();return;}
+  if(!window.isSecureContext){alert('Mobile notifications ke liye website HTTPS par open honi chahiye.');return;}
+  try{const permission=await Notification.requestPermission();
+    if(permission!=='granted'){alert('Browser settings mein AKARRA ke notifications Allow karo.');startOrderRealtime();return;}
+    localStorage.setItem('akarra_browser_notifications','on');startOrderRealtime();
+    if(alertItems.length===0){new Notification('AKARRA alerts enabled',{body:'New order alerts are enabled on this device.'});}
+    alert('Browser notifications enabled on this device. Page open/background mein alerts aa sakte hain; fully closed page ke liye push/email backend chahiye.');
+  }catch(e){console.error(e);alert('Notification permission enable nahi ho payi. Browser/site settings check karo.');}
 };
+window.testOrderAlert=function(){addAdminAlert({id:'test-'+Date.now(),order_number:'TEST-NOTIFICATION',total_amount:0,payment_status:'test'});const n=document.getElementById('newOrderNotice');if(n){n.textContent='🔔 Test alert created. Check red badge and notification inbox.';n.style.display='block';}if('Notification'in window&&Notification.permission==='granted'&&document.getElementById('browserNotifyPref')?.checked){try{new Notification('AKARRA test alert',{body:'Your notification setup is responding.'});}catch(e){}}};
+window.exportCustomersCsv=function(){const rows=window.adminCustomers?Object.values(window.adminCustomers):[];const escCsv=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[['Name','Email','Phone','Address','City','State','Pincode'],...rows.map(c=>[c.name,c.email,c.phone,c.address,c.city,c.state,c.pincode])].map(r=>r.map(escCsv).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='akarra-customers.csv';a.click();URL.revokeObjectURL(a.href)};
 
 document.getElementById('closeModal').addEventListener('click',()=>{
   document.getElementById('orderModal').style.display='none';
@@ -404,13 +470,11 @@ tabButtons.forEach(btn=>btn.addEventListener('click',async()=>{
   tabButtons.forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none');
-  document.getElementById(btn.dataset.tab).style.display='block';
+  const target=document.getElementById(btn.dataset.tab);if(target)target.style.display='block';
   if(btn.dataset.tab==='productsTab') await loadProducts();
   if(btn.dataset.tab==='offersTab') await loadOffers();
   if(btn.dataset.tab==='couponsTab') await loadCoupons();
-  if(btn.dataset.tab==='customersTab') await loadCustomers();
-  if(btn.dataset.tab==='analyticsTab') await loadAnalytics();
-  if(btn.dataset.tab==='activityTab') renderActivity();
+  if(btn.dataset.tab==='customersTab'||btn.dataset.tab==='analyticsTab') await loadDashboard();
 }));
 
 function field(label,id,type='text',value='',full=false,placeholder=''){
@@ -614,14 +678,6 @@ window.toggleCoupon=async function(id,currentlyInactive){
   if(error){alert(error.message);return;} await loadCoupons();
 };
 window.closeManage=function(){document.getElementById('manageModal').style.display='none';};
-
-const activityItems=[];
-function addActivity(action,details){activityItems.unshift({time:new Date().toLocaleString('en-IN'),action,details});if(activityItems.length>100)activityItems.pop();}
-function renderActivity(){const el=document.getElementById('activityArea');if(!activityItems.length){el.innerHTML='<div class="empty">No activity recorded in this browser session yet.</div>';return;}el.innerHTML='<table><thead><tr><th>Time</th><th>Action</th><th>Details</th></tr></thead><tbody>'+activityItems.map(a=>`<tr><td>${escapeHtml(a.time)}</td><td>${escapeHtml(a.action)}</td><td>${escapeHtml(a.details)}</td></tr>`).join('')+'</tbody></table>';}
-window.testAdminAlert=function(){const title='AKARRA test notification',body='Browser notifications are enabled for this session.';if(!('Notification'in window)){alert(body);return;}if(Notification.permission==='granted'){new Notification(title,{body});alert('Test notification sent.');}else{alert('Click Enable browser alerts and allow notifications first.');}};
-window.exportOrdersCsv=async function(){const {data,error}=await supabaseClient.from('orders').select('order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,payment_method,order_status,tracking_number,tracking_url,created_at').order('created_at',{ascending:false}).limit(5000);if(error){alert('Export failed: '+error.message);return;}const rows=data||[];const ids=[...new Set(rows.map(o=>o.customer_id).filter(Boolean))];let customers=[];if(ids.length){const r=await supabaseClient.from('customers').select('id,name,email,phone,address,city,state,pincode').in('id',ids);if(!r.error)customers=r.data||[];}const map=Object.fromEntries(customers.map(c=>[c.id,c]));const cols=['order_number','customer_name','email','phone','address','city','state','pincode','subtotal','discount','coupon_discount','total_amount','payment_status','payment_method','order_status','tracking_number','tracking_url','created_at'];const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[cols.join(','),...rows.map(o=>{const c=map[o.customer_id]||{};return [o.order_number,c.name,c.email,c.phone,c.address,c.city,c.state,c.pincode,o.subtotal,o.discount,o.coupon_discount,o.total_amount,o.payment_status,o.payment_method,o.order_status,o.tracking_number,o.tracking_url,o.created_at].map(quote).join(',')})].join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='akarra-orders-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);addActivity('Orders exported',rows.length+' rows exported to CSV');};
-window.loadCustomers=async function(){const area=document.getElementById('customersArea');area.textContent='Loading customers…';const {data,error}=await supabaseClient.from('customers').select('id,name,email,phone,address,city,state,pincode,created_at').order('created_at',{ascending:false}).limit(1000);if(error){area.innerHTML='<div class="empty">Could not load customers: '+escapeHtml(error.message)+' — check Supabase RLS.</div>';return;}const rows=data||[];const {data:orders}=await supabaseClient.from('orders').select('customer_id,total_amount,payment_status');const counts={};(orders||[]).forEach(o=>{if(!counts[o.customer_id])counts[o.customer_id]={orders:0,spend:0};counts[o.customer_id].orders++;if(String(o.payment_status).toLowerCase()==='paid')counts[o.customer_id].spend+=Number(o.total_amount||0);});if(!rows.length){area.innerHTML='<div class="empty">No customers found.</div>';return;}area.innerHTML='<table><thead><tr><th>Customer</th><th>Contact</th><th>Location</th><th>Orders</th><th>Paid spend</th></tr></thead><tbody>'+rows.map(c=>{const x=counts[c.id]||{orders:0,spend:0};return `<tr><td><strong>${escapeHtml(c.name||'—')}</strong></td><td>${escapeHtml(c.email||'—')}<br>${escapeHtml(c.phone||'—')}</td><td>${escapeHtml([c.city,c.state,c.pincode].filter(Boolean).join(', ')||'—')}</td><td>${x.orders}</td><td>${money(x.spend)}</td></tr>`}).join('')+'</tbody></table>';addActivity('Customers viewed',rows.length+' customer records loaded');};
-window.loadAnalytics=async function(){const area=document.getElementById('analyticsArea');area.textContent='Loading analytics…';const {data,error}=await supabaseClient.from('orders').select('order_number,total_amount,payment_status,order_status,created_at').order('created_at',{ascending:false}).limit(5000);if(error){area.innerHTML='<div class="empty">Analytics unavailable: '+escapeHtml(error.message)+'</div>';return;}const rows=data||[],paid=rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid'),pending=rows.filter(o=>String(o.payment_status||'').toLowerCase()==='pending'),cancelled=rows.filter(o=>String(o.order_status||'').toLowerCase()==='cancelled'),today=new Date().toISOString().slice(0,10),todayRows=paid.filter(o=>String(o.created_at||'').slice(0,10)===today),revenue=paid.reduce((a,o)=>a+Number(o.total_amount||0),0),todayRevenue=todayRows.reduce((a,o)=>a+Number(o.total_amount||0),0),avg=paid.length?revenue/paid.length:0;area.innerHTML=`<div class="stats"><div class="stat"><small>Paid Revenue</small><strong>${money(revenue)}</strong></div><div class="stat"><small>Today's Paid Revenue</small><strong>${money(todayRevenue)}</strong></div><div class="stat"><small>Average Paid Order</small><strong>${money(avg)}</strong></div><div class="stat"><small>Total Orders Loaded</small><strong>${rows.length}</strong></div><div class="stat"><small>Payment Pending</small><strong>${pending.length}</strong></div><div class="stat"><small>Cancelled Orders</small><strong>${cancelled.length}</strong></div></div><div style="margin-top:20px"><h3>Order status breakdown</h3><table><thead><tr><th>Status</th><th>Count</th></tr></thead><tbody>${['pending','confirmed','packed','shipped','delivered','cancelled'].map(s=>`<tr><td>${s[0].toUpperCase()+s.slice(1)}</td><td>${rows.filter(o=>String(o.order_status||'pending').toLowerCase()===s).length}</td></tr>`).join('')}</tbody></table></div><p class="muted" style="margin-top:14px">Revenue counts orders marked paid. This is revenue, not net profit; product costs, shipping costs, refunds and gateway fees are not deducted. Today's total uses order creation date.</p>`;addActivity('Analytics viewed',rows.length+' orders analysed');};
 
 loginForm.addEventListener('submit',async(e)=>{
   e.preventDefault();
