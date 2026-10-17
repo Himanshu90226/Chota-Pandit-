@@ -103,6 +103,10 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
     <button class="tab" data-tab="productsTab">Products</button>
     <button class="tab" data-tab="offersTab">Offers</button>
     <button class="tab" data-tab="couponsTab">Coupons</button>
+    <button class="tab" data-tab="customersTab">Customers</button>
+    <button class="tab" data-tab="analyticsTab">Analytics</button>
+    <button class="tab" data-tab="alertsTab">Alerts & Settings</button>
+    <button class="tab" data-tab="activityTab">Activity Log</button>
   </div>
 
   <section id="dashboardTab" class="tab-content">
@@ -134,6 +138,33 @@ select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff}
   <section id="couponsTab" class="tab-content" style="display:none">
     <div class="section-head"><div><h1>Coupons</h1><p class="muted">Manage coupon codes and discounts.</p></div><button class="primary" onclick="openCouponForm()">+ Add Coupon</button></div>
     <div id="couponsArea" class="table-card">Loading coupons…</div>
+  </section>
+
+  <section id="customersTab" class="tab-content" style="display:none">
+    <div class="section-head"><div><h1>Customers</h1><p class="muted">Customer directory and purchase history from saved orders.</p></div><button class="secondary" onclick="loadCustomers()">Refresh</button></div>
+    <div id="customersArea" class="table-card">Load customers to view…</div>
+  </section>
+  <section id="analyticsTab" class="tab-content" style="display:none">
+    <div class="section-head"><div><h1>Sales & Analytics</h1><p class="muted">Figures are calculated from orders available to the signed-in admin.</p></div><button class="secondary" onclick="loadAnalytics()">Refresh analytics</button></div>
+    <div id="analyticsArea" class="table-card">Loading analytics…</div>
+  </section>
+  <section id="alertsTab" class="tab-content" style="display:none">
+    <div class="section-head"><div><h1>Alerts & Settings</h1><p class="muted">Manage browser alerts and check communication setup.</p></div></div>
+    <div class="table-card">
+      <h3>New order notifications</h3><p class="muted">Realtime browser alerts work while this admin page is open. Allow notifications and keep this page open.</p>
+      <button class="primary" onclick="enableOrderNotifications()">Enable browser alerts</button>
+      <button class="secondary" onclick="testAdminAlert()">Test notification</button>
+      <hr style="border:0;border-top:1px solid #eee;margin:22px 0">
+      <h3>Email & WhatsApp</h3><p class="muted">Order confirmation email is handled by the configured Supabase Edge Function/Resend setup. Email alerts to the owner when a new order arrives require a separate server-side trigger; never place Resend or WhatsApp API secrets in this HTML.</p>
+      <p><a href="https://supabase.com/dashboard/project/fvmfvhzsfmxjioexsrrs/functions" target="_blank" rel="noopener">Open Supabase Edge Functions ↗</a></p>
+      <hr style="border:0;border-top:1px solid #eee;margin:22px 0">
+      <h3>Data export</h3><p class="muted">Download recent orders as CSV for accounting and backups.</p><button class="secondary" onclick="exportOrdersCsv()">Export orders CSV</button>
+      <p class="muted" style="margin-top:16px">Security: access is controlled by Supabase Auth and database Row Level Security (RLS). Use a dedicated admin account and never put service-role keys in frontend code.</p>
+    </div>
+  </section>
+  <section id="activityTab" class="tab-content" style="display:none">
+    <div class="section-head"><div><h1>Activity Log</h1><p class="muted">Recent browser-session activity for this admin panel.</p></div><button class="secondary" onclick="renderActivity()">Refresh</button></div>
+    <div id="activityArea" class="table-card">No activity yet.</div>
   </section>
 
   <div id="manageModal" class="modal">
@@ -305,6 +336,7 @@ window.updateOrder=async function(id,status,payment){
     await loadDashboard();
     return;
   }
+  addActivity('Order updated', 'Order '+id+' status/payment changed');
   await loadDashboard();
 };
 
@@ -319,6 +351,7 @@ window.saveTracking=async function(id){
   if(error){msg.textContent='Save failed: '+error.message;msg.className='msg error';return;}
   const o=(window.adminOrders||[]).find(x=>x.id===id);if(o){o.tracking_number=tracking_number;o.tracking_url=tracking_url;}
   msg.textContent='Tracking details saved.';msg.className='msg success';
+  addActivity('Tracking saved','Tracking details updated for '+(o?.order_number||id));
   await loadDashboard();
 };
 window.copyTrackingMessage=function(id){
@@ -338,6 +371,7 @@ window.enableOrderNotifications=async function(){
   orderAlertChannel=supabaseClient.channel('akarra-admin-new-orders')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'orders'},async(payload)=>{
       const o=payload.new||{};
+      addActivity('New order received',String(o.order_number||'New order')+' · ₹'+Number(o.total_amount||0));
       const title='New AKARRA order received';
       const body=`${o.order_number||'New order'} · ₹${Number(o.total_amount||0).toLocaleString('en-IN')} · Payment: ${o.payment_status||'pending'}`;
       const notice=document.getElementById('newOrderNotice');
@@ -374,6 +408,9 @@ tabButtons.forEach(btn=>btn.addEventListener('click',async()=>{
   if(btn.dataset.tab==='productsTab') await loadProducts();
   if(btn.dataset.tab==='offersTab') await loadOffers();
   if(btn.dataset.tab==='couponsTab') await loadCoupons();
+  if(btn.dataset.tab==='customersTab') await loadCustomers();
+  if(btn.dataset.tab==='analyticsTab') await loadAnalytics();
+  if(btn.dataset.tab==='activityTab') renderActivity();
 }));
 
 function field(label,id,type='text',value='',full=false,placeholder=''){
@@ -577,6 +614,14 @@ window.toggleCoupon=async function(id,currentlyInactive){
   if(error){alert(error.message);return;} await loadCoupons();
 };
 window.closeManage=function(){document.getElementById('manageModal').style.display='none';};
+
+const activityItems=[];
+function addActivity(action,details){activityItems.unshift({time:new Date().toLocaleString('en-IN'),action,details});if(activityItems.length>100)activityItems.pop();}
+function renderActivity(){const el=document.getElementById('activityArea');if(!activityItems.length){el.innerHTML='<div class="empty">No activity recorded in this browser session yet.</div>';return;}el.innerHTML='<table><thead><tr><th>Time</th><th>Action</th><th>Details</th></tr></thead><tbody>'+activityItems.map(a=>`<tr><td>${escapeHtml(a.time)}</td><td>${escapeHtml(a.action)}</td><td>${escapeHtml(a.details)}</td></tr>`).join('')+'</tbody></table>';}
+window.testAdminAlert=function(){const title='AKARRA test notification',body='Browser notifications are enabled for this session.';if(!('Notification'in window)){alert(body);return;}if(Notification.permission==='granted'){new Notification(title,{body});alert('Test notification sent.');}else{alert('Click Enable browser alerts and allow notifications first.');}};
+window.exportOrdersCsv=async function(){const {data,error}=await supabaseClient.from('orders').select('order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,payment_method,order_status,tracking_number,tracking_url,created_at').order('created_at',{ascending:false}).limit(5000);if(error){alert('Export failed: '+error.message);return;}const rows=data||[];const ids=[...new Set(rows.map(o=>o.customer_id).filter(Boolean))];let customers=[];if(ids.length){const r=await supabaseClient.from('customers').select('id,name,email,phone,address,city,state,pincode').in('id',ids);if(!r.error)customers=r.data||[];}const map=Object.fromEntries(customers.map(c=>[c.id,c]));const cols=['order_number','customer_name','email','phone','address','city','state','pincode','subtotal','discount','coupon_discount','total_amount','payment_status','payment_method','order_status','tracking_number','tracking_url','created_at'];const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[cols.join(','),...rows.map(o=>{const c=map[o.customer_id]||{};return [o.order_number,c.name,c.email,c.phone,c.address,c.city,c.state,c.pincode,o.subtotal,o.discount,o.coupon_discount,o.total_amount,o.payment_status,o.payment_method,o.order_status,o.tracking_number,o.tracking_url,o.created_at].map(quote).join(',')})].join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='akarra-orders-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);addActivity('Orders exported',rows.length+' rows exported to CSV');};
+window.loadCustomers=async function(){const area=document.getElementById('customersArea');area.textContent='Loading customers…';const {data,error}=await supabaseClient.from('customers').select('id,name,email,phone,address,city,state,pincode,created_at').order('created_at',{ascending:false}).limit(1000);if(error){area.innerHTML='<div class="empty">Could not load customers: '+escapeHtml(error.message)+' — check Supabase RLS.</div>';return;}const rows=data||[];const {data:orders}=await supabaseClient.from('orders').select('customer_id,total_amount,payment_status');const counts={};(orders||[]).forEach(o=>{if(!counts[o.customer_id])counts[o.customer_id]={orders:0,spend:0};counts[o.customer_id].orders++;if(String(o.payment_status).toLowerCase()==='paid')counts[o.customer_id].spend+=Number(o.total_amount||0);});if(!rows.length){area.innerHTML='<div class="empty">No customers found.</div>';return;}area.innerHTML='<table><thead><tr><th>Customer</th><th>Contact</th><th>Location</th><th>Orders</th><th>Paid spend</th></tr></thead><tbody>'+rows.map(c=>{const x=counts[c.id]||{orders:0,spend:0};return `<tr><td><strong>${escapeHtml(c.name||'—')}</strong></td><td>${escapeHtml(c.email||'—')}<br>${escapeHtml(c.phone||'—')}</td><td>${escapeHtml([c.city,c.state,c.pincode].filter(Boolean).join(', ')||'—')}</td><td>${x.orders}</td><td>${money(x.spend)}</td></tr>`}).join('')+'</tbody></table>';addActivity('Customers viewed',rows.length+' customer records loaded');};
+window.loadAnalytics=async function(){const area=document.getElementById('analyticsArea');area.textContent='Loading analytics…';const {data,error}=await supabaseClient.from('orders').select('order_number,total_amount,payment_status,order_status,created_at').order('created_at',{ascending:false}).limit(5000);if(error){area.innerHTML='<div class="empty">Analytics unavailable: '+escapeHtml(error.message)+'</div>';return;}const rows=data||[],paid=rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid'),pending=rows.filter(o=>String(o.payment_status||'').toLowerCase()==='pending'),cancelled=rows.filter(o=>String(o.order_status||'').toLowerCase()==='cancelled'),today=new Date().toISOString().slice(0,10),todayRows=paid.filter(o=>String(o.created_at||'').slice(0,10)===today),revenue=paid.reduce((a,o)=>a+Number(o.total_amount||0),0),todayRevenue=todayRows.reduce((a,o)=>a+Number(o.total_amount||0),0),avg=paid.length?revenue/paid.length:0;area.innerHTML=`<div class="stats"><div class="stat"><small>Paid Revenue</small><strong>${money(revenue)}</strong></div><div class="stat"><small>Today's Paid Revenue</small><strong>${money(todayRevenue)}</strong></div><div class="stat"><small>Average Paid Order</small><strong>${money(avg)}</strong></div><div class="stat"><small>Total Orders Loaded</small><strong>${rows.length}</strong></div><div class="stat"><small>Payment Pending</small><strong>${pending.length}</strong></div><div class="stat"><small>Cancelled Orders</small><strong>${cancelled.length}</strong></div></div><div style="margin-top:20px"><h3>Order status breakdown</h3><table><thead><tr><th>Status</th><th>Count</th></tr></thead><tbody>${['pending','confirmed','packed','shipped','delivered','cancelled'].map(s=>`<tr><td>${s[0].toUpperCase()+s.slice(1)}</td><td>${rows.filter(o=>String(o.order_status||'pending').toLowerCase()===s).length}</td></tr>`).join('')}</tbody></table></div><p class="muted" style="margin-top:14px">Revenue counts orders marked paid. This is revenue, not net profit; product costs, shipping costs, refunds and gateway fees are not deducted. Today's total uses order creation date.</p>`;addActivity('Analytics viewed',rows.length+' orders analysed');};
 
 loginForm.addEventListener('submit',async(e)=>{
   e.preventDefault();
