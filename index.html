@@ -2121,11 +2121,19 @@ async function startRazorpayPayment(){
         const verifyResp=await fetch(RAZORPAY_VERIFY_PAYMENT_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY},body:JSON.stringify({...response,order_number:window.panditOrderId})});
         const verified=await verifyResp.json();
         if(!verifyResp.ok || verified.verified!==true) throw new Error(verified.error||'Payment verification did not succeed.');
-        if(status) status.innerHTML='<strong>Payment successful</strong><span>Your payment has been verified. Order ID: '+window.panditOrderId+'.</span>';
+        if(status) status.innerHTML='<strong>Payment successful</strong><span>Payment verified and order marked paid. Order ID: '+window.panditOrderId+'.</span>';
+        btn.disabled=true;
+        btn.textContent='Payment successful ✓';
         alert('Payment verified successfully! Order ID: '+window.panditOrderId);
+        closePaymentModal();
         openOrderWhatsApp();
-      }catch(err){console.error('Razorpay verification error',err);if(status) status.innerHTML='<strong>Verification pending</strong><span>Payment response received but could not be verified here. Contact AKARRA with Order ID '+window.panditOrderId+'. Do not pay again until checked.</span>';alert('Payment response received, but verification is pending. Please contact AKARRA with Order ID '+window.panditOrderId+'.');}
-      finally{btn.disabled=false;btn.textContent='Pay securely →';}
+      }catch(err){
+        console.error('Razorpay verification error',err);
+        if(status) status.innerHTML='<strong>Verification pending</strong><span>Payment response received but could not be verified or saved. Contact AKARRA with Order ID '+window.panditOrderId+'. Do not pay again until checked.</span>';
+        alert('Payment response received, but verification is pending. Please contact AKARRA with Order ID '+window.panditOrderId+'. Do not pay again until checked.');
+        btn.disabled=false;
+        btn.textContent='Check payment status';
+      }
     },modal:{ondismiss:function(){if(status)status.innerHTML='<strong>Payment not completed</strong><span>Checkout was closed. Your order remains pending; you can try again.</span>';btn.disabled=false;btn.textContent='Pay securely →';}},retry:{enabled:true}};
     const checkout=new Razorpay(options);checkout.on('payment.failed',function(resp){console.error('Razorpay payment failed',resp.error);if(status)status.innerHTML='<strong>Payment failed</strong><span>'+((resp.error&&resp.error.description)||'Please try again. Your order remains pending.')+'</span>';btn.disabled=false;btn.textContent='Try payment again →';});checkout.open();
   }catch(err){console.error('Razorpay create order error',err);if(status)status.innerHTML='<strong>Could not start payment</strong><span>'+(err.message||'Please try again later.')+'</span>';alert('Could not start payment: '+(err.message||'Please try again later.'));btn.disabled=false;btn.textContent='Pay securely →';}
