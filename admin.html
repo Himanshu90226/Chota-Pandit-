@@ -100,6 +100,15 @@ body{background:#f5efe5;color:var(--ink);font-family:Inter,Arial,sans-serif}
 #alertDrawer.open{display:block}.alert-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-16px;background:#fffaf4;padding:4px 0 12px;z-index:1}.alert-row{padding:12px 10px;border:1px solid #f0e3d7;border-radius:12px;margin:8px 0;background:white;cursor:pointer}.alert-row.unread{border-left:4px solid #d92d20;background:#fff4ed}.alert-row strong{display:block;font-size:14px;margin-bottom:4px}.alert-row small{color:#75675d}.alert-empty{padding:22px 8px;text-align:center;color:#776b62}.notice-pill{display:inline-flex;align-items:center;gap:6px;background:#fff0ed;color:#bd2419;border:1px solid #ffd0c8;padding:7px 10px;border-radius:99px;font-size:12px;font-weight:700}
 @media(max-width:640px){header{padding:12px 14px;gap:8px;flex-wrap:wrap}.brand{font-size:18px}header>div:last-child{gap:6px!important}.logout{padding:8px 10px;font-size:12px}main{padding:16px 10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:13px;border-radius:12px}.stat strong{font-size:22px}.table-card{padding:12px}.side-nav{gap:4px}.tab{font-size:13px}.alert-bell{padding:8px 11px}#alertDrawer{top:62px;right:8px;width:calc(100vw - 16px);max-height:80vh}}
 
+
+.crm-toolbar{display:grid;grid-template-columns:minmax(220px,2fr) repeat(3,minmax(140px,1fr));gap:10px;margin:0 0 15px}
+.crm-toolbar input,.crm-toolbar select{width:100%;min-width:0;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:#fffaf3;color:var(--ink)}
+.crm-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.crm-kpi{background:#fffaf4;border:1px solid #eee4d7;border-radius:12px;padding:14px}.crm-kpi small{color:var(--muted)}.crm-kpi strong{display:block;font-size:22px;margin-top:5px}
+.crm-actions{display:flex;gap:6px;flex-wrap:wrap}.crm-tag{display:inline-block;padding:4px 7px;margin:2px;border-radius:20px;background:#f0e6d9;color:#5a351f;font-size:11px}
+.crm-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.crm-profile-grid .full{grid-column:1/-1}.crm-profile-grid textarea{width:100%;min-height:90px;padding:11px;border:1px solid #dfd0bf;border-radius:9px;font:inherit;resize:vertical}.crm-note{padding:11px 0;border-bottom:1px solid #eee4d7}.crm-note small{display:block;color:var(--muted);margin-top:4px}
+@media(max-width:850px){.crm-toolbar{grid-template-columns:1fr 1fr}.crm-kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.crm-toolbar{grid-template-columns:1fr}.crm-profile-grid{grid-template-columns:1fr}.crm-profile-grid .full{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -126,7 +135,7 @@ body{background:#f5efe5;color:var(--ink);font-family:Inter,Arial,sans-serif}
   <button class="tab" data-tab="dashboardTab">▣ &nbsp; Orders <span class="nav-badge" id="navOrderCount" hidden>0</span></button>
   <button class="tab" data-tab="productsTab">♧ &nbsp; Products</button>
   <button class="tab" data-tab="couponsTab">❀ &nbsp; Coupons</button>
-  <button class="tab" data-tab="customersTab">♙ &nbsp; Customers</button>
+  <button class="tab" data-tab="customersTab">♙ &nbsp; Customers / CRM</button>
   <button class="tab" data-tab="analyticsTab">▥ &nbsp; Analytics</button>
   <button class="tab" data-tab="settingsTab">⚙ &nbsp; Settings</button>
   <button class="tab" data-tab="offersTab">✧ &nbsp; Offers</button>
@@ -186,7 +195,13 @@ body{background:#f5efe5;color:var(--ink);font-family:Inter,Arial,sans-serif}
     <div class="section-head"><div><h1>Coupons</h1><p class="muted">Manage coupon codes and discounts.</p></div><button class="primary" onclick="openCouponForm()">+ Add Coupon</button></div>
     <div id="couponsArea" class="table-card">Loading coupons…</div>
   </section>
-  <section id="customersTab" class="tab-content" style="display:none"><div class="section-head"><div><h1>Customers</h1><p class="muted">Customer directory based on customers linked to recent orders.</p></div><button class="secondary" onclick="exportCustomersCsv()">Export CSV</button></div><div id="customersArea" class="table-card">Load the dashboard to view customers.</div></section>
+  <section id="customersTab" class="tab-content" style="display:none">
+    <div class="section-head"><div><h1>Customers / CRM</h1><p class="muted">Customer profiles, order history, notes, tags, follow-ups and WhatsApp shortcuts.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" onclick="loadCRM()">Refresh</button><button class="primary" onclick="exportCustomersCsv()">Export CSV</button></div></div>
+    <div class="crm-kpis"><div class="crm-kpi"><small>Total customers</small><strong id="crmTotal">—</strong></div><div class="crm-kpi"><small>Repeat customers</small><strong id="crmRepeat">—</strong></div><div class="crm-kpi"><small>Customer sales (paid)</small><strong id="crmSales">—</strong></div><div class="crm-kpi"><small>Follow-ups due</small><strong id="crmDue">—</strong></div></div>
+    <div class="crm-toolbar"><input id="crmSearch" placeholder="Search name, phone, email or customer ID" oninput="renderCRMTable()"><select id="crmSegment" onchange="renderCRMTable()"><option value="all">All customers</option><option value="new">New customers</option><option value="repeat">Repeat customers</option><option value="vip">VIP customers</option><option value="followup">Follow-up due</option><option value="complaint">Complaint tag</option></select><select id="crmTagFilter" onchange="renderCRMTable()"><option value="all">All tags</option><option value="New Customer">New Customer</option><option value="Repeat Customer">Repeat Customer</option><option value="VIP">VIP</option><option value="Bulk Buyer">Bulk Buyer</option><option value="Complaint">Complaint</option><option value="Enquiry">Enquiry</option></select><select id="crmSort" onchange="renderCRMTable()"><option value="recent">Recent order first</option><option value="spend">Highest spending</option><option value="orders">Most orders</option><option value="name">Name A–Z</option></select></div>
+    <div id="crmMigrationNotice" class="notify-banner" style="display:none"></div><div id="customersArea" class="table-card">Loading customer records…</div>
+  </section>
+  <div id="crmModal" class="modal"><div class="modal-box" style="max-width:820px"><div class="modal-head"><h2 id="crmModalTitle">Customer Profile</h2><button class="close-btn" onclick="closeCRMModal()">×</button></div><div id="crmModalBody">Loading…</div></div></div>
   <section id="analyticsTab" class="tab-content" style="display:none"><div class="section-head"><div><h1>Sales Analytics</h1><p class="muted">Summary calculated from orders returned by your current Supabase policies.</p></div><button class="secondary" onclick="loadDashboard()">Refresh data</button></div><div id="analyticsArea" class="stats"></div><div class="table-card"><h2>Order status breakdown</h2><div id="statusBreakdown" class="feature-note">Load dashboard data to see status breakdown.</div></div></section>
   <section id="settingsTab" class="tab-content" style="display:none"><div class="section-head"><div><h1>Settings & Integrations</h1><p class="muted">Check the status of customer communications and notifications.</p></div></div><div class="table-card"><h2>Order notifications</h2><p class="feature-note">Enable browser permission and then start live order alerts from Dashboard. Browser alerts require this page to remain open.</p><button class="primary" onclick="enableOrderNotifications()">Enable browser alerts</button><hr style="border:0;border-top:1px solid #eee;margin:20px 0"><h2>Customer order tracking</h2><p class="feature-note">Customer tracking page: <a href="./track.html" target="_blank">Open Track My Order ↗</a>. The secure <code>order-track</code> Supabase Edge Function must be deployed.</p><h2>Payments</h2><p class="feature-note">Payment status should be updated only by verified Razorpay server-side confirmation. Do not manually mark payments as paid from this dashboard.</p><h2>Security</h2><p class="feature-note">Admin access depends on Supabase Auth and database Row Level Security (RLS). Never place service-role keys or Razorpay secrets in browser code.</p></div></section>
 
@@ -245,7 +260,7 @@ async function loadDashboard(){
 
   const {data:orders,error}=await supabaseClient
     .from('orders')
-    .select('id,order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,order_status,tracking_number,tracking_url,created_at')
+    .select('id,order_number,customer_id,subtotal,discount,coupon_discount,total_amount,payment_status,order_status,is_test_order,tracking_number,tracking_url,created_at')
     .order('created_at',{ascending:false})
     .limit(50);
 
@@ -259,6 +274,7 @@ async function loadDashboard(){
   }
 
   const rows=orders||[];
+  const businessRows=rows.filter(o=>!o.is_test_order);
   const customerIds=[...new Set(rows.map(o=>o.customer_id).filter(Boolean))];
   let customers=[];
 
@@ -277,16 +293,16 @@ async function loadDashboard(){
   const customerMap=Object.fromEntries(customers.map(c=>[c.id,c]));
   const ca=document.getElementById('customersArea');
   if(ca){ca.innerHTML=customers.length?`<table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>City</th></tr></thead><tbody>${customers.map(c=>`<tr><td>${escapeHtml(c.name||'—')}</td><td>${escapeHtml(c.email||'—')}</td><td>${escapeHtml(c.phone||'—')}</td><td>${escapeHtml(c.city||'—')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No customer records available for the current order list.</div>';}
-  const analytics=document.getElementById('analyticsArea');if(analytics){analytics.innerHTML=`<div class="stat"><small>Paid Revenue</small><strong>${money(rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').reduce((a,o)=>a+Number(o.total_amount||0),0))}</strong></div><div class="stat"><small>Average Order Value</small><strong>${money(rows.length?rows.reduce((a,o)=>a+Number(o.total_amount||0),0)/rows.length:0)}</strong></div><div class="stat"><small>Customers</small><strong>${customers.length}</strong></div><div class="stat"><small>Delivered</small><strong>${rows.filter(o=>String(o.order_status||'').toLowerCase()==='delivered').length}</strong></div>`;}
-  const breakdown=document.getElementById('statusBreakdown');if(breakdown){const statuses=['pending','confirmed','packed','shipped','delivered','cancelled'];breakdown.innerHTML=statuses.map(st=>`<span style="display:inline-block;margin:5px 8px 5px 0;padding:8px 11px;border:1px solid #eadfce;border-radius:9px;background:#fff8ef">${st[0].toUpperCase()+st.slice(1)}: <strong>${rows.filter(o=>String(o.order_status||'pending').toLowerCase()===st).length}</strong></span>`).join('');}
+  const analytics=document.getElementById('analyticsArea');if(analytics){analytics.innerHTML=`<div class="stat"><small>Paid Revenue</small><strong>${money(businessRows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').reduce((a,o)=>a+Number(o.total_amount||0),0))}</strong></div><div class="stat"><small>Average Order Value</small><strong>${money(businessRows.length?businessRows.reduce((a,o)=>a+Number(o.total_amount||0),0)/businessRows.length:0)}</strong></div><div class="stat"><small>Customers</small><strong>${customers.length}</strong></div><div class="stat"><small>Delivered</small><strong>${businessRows.filter(o=>String(o.order_status||'').toLowerCase()==='delivered').length}</strong></div>`;}
+  const breakdown=document.getElementById('statusBreakdown');if(breakdown){const statuses=['pending','confirmed','packed','shipped','delivered','cancelled'];breakdown.innerHTML=statuses.map(st=>`<span style="display:inline-block;margin:5px 8px 5px 0;padding:8px 11px;border:1px solid #eadfce;border-radius:9px;background:#fff8ef">${st[0].toUpperCase()+st.slice(1)}: <strong>${businessRows.filter(o=>String(o.order_status||'pending').toLowerCase()===st).length}</strong></span>`).join('');}
   const activity=document.getElementById('activityArea');if(activity){activity.innerHTML=rows.slice(0,4).map((o,i)=>`<div class="activity-item"><span class="activity-dot" style="background:${i===0?'#399b49':i===1?'#a48a73':'#d67a36'}"></span><span class="activity-time">${o.created_at?new Date(o.created_at).toLocaleString('en-IN',{hour:'numeric',minute:'2-digit',day:'numeric',month:'short'}):'Recent'}</span><span>Order ${escapeHtml(o.order_number||'—')} · ${escapeHtml(o.payment_status||'pending')} · ${money(o.total_amount)}</span></div>`).join('')||'<p class="feature-note">No recent activity.</p>';}
 
-  document.getElementById('totalOrders').textContent=rows.length;
-  document.getElementById('navOrderCount').textContent=rows.length;document.getElementById('recentOrderCount').textContent=rows.length;
-  document.getElementById('paidOrders').textContent=rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').length;
-  document.getElementById('pendingOrders').textContent=rows.filter(o=>String(o.order_status||'').toLowerCase()==='pending').length;
+  document.getElementById('totalOrders').textContent=businessRows.length;
+  document.getElementById('navOrderCount').textContent=businessRows.length;document.getElementById('recentOrderCount').textContent=businessRows.length;
+  document.getElementById('paidOrders').textContent=businessRows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid').length;
+  document.getElementById('pendingOrders').textContent=businessRows.filter(o=>String(o.order_status||'').toLowerCase()==='pending').length;
   document.getElementById('revenue').textContent=money(
-    rows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid')
+    businessRows.filter(o=>String(o.payment_status||'').toLowerCase()==='paid')
       .reduce((s,o)=>s+Number(o.total_amount||0),0)
   );
 
@@ -311,7 +327,7 @@ async function loadDashboard(){
         </td>
         <td>
           <select onchange="updateOrder('${escapeHtml(o.id)}', this.value, null)">
-            ${['pending','confirmed','packed','shipped','delivered'].map(s=>`<option value="${s}" ${String(o.order_status||'pending')===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+            <option value="test_order" ${o.is_test_order?'selected':''}>Test Order (exclude from totals)</option>${['pending','confirmed','packed','shipped','delivered'].map(s=>`<option value="${s}" ${!o.is_test_order&&String(o.order_status||'pending')===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
           </select>
         </td>
         <td>${o.created_at?new Date(o.created_at).toLocaleString('en-IN'):'-'}</td>
@@ -357,7 +373,8 @@ window.openOrder=async function(id){
 
 window.updateOrder=async function(id,status,payment){
   const patch={};
-  if(status) patch.order_status=status;
+  if(status==='test_order'){patch.is_test_order=true;}
+  else if(status){patch.order_status=status;patch.is_test_order=false;}
   if(payment) patch.payment_status=payment;
   if(!Object.keys(patch).length)return;
 
@@ -431,7 +448,7 @@ function startOrderRealtime(){
  if(orderAlertChannel)return;
  orderAlertChannel=supabaseClient.channel('akarra-admin-new-orders-v2')
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'orders'},async(payload)=>{
-    const o=payload.new||{};addAdminAlert(o);
+    const o=payload.new||{};if(!o.is_test_order)addAdminAlert(o);
     try{await loadDashboard();}catch(e){console.error(e);}
   })
   .subscribe(status=>{
@@ -451,7 +468,59 @@ window.enableOrderNotifications=async function(){
   }catch(e){console.error(e);alert('Notification permission enable nahi ho payi. Browser/site settings check karo.');}
 };
 window.testOrderAlert=function(){addAdminAlert({id:'test-'+Date.now(),order_number:'TEST-NOTIFICATION',total_amount:0,payment_status:'test'});const n=document.getElementById('newOrderNotice');if(n){n.textContent='🔔 Test alert created. Check red badge and notification inbox.';n.style.display='block';}if('Notification'in window&&Notification.permission==='granted'&&document.getElementById('browserNotifyPref')?.checked){try{new Notification('AKARRA test alert',{body:'Your notification setup is responding.'});}catch(e){}}};
-window.exportCustomersCsv=function(){const rows=window.adminCustomers?Object.values(window.adminCustomers):[];const escCsv=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[['Name','Email','Phone','Address','City','State','Pincode'],...rows.map(c=>[c.name,c.email,c.phone,c.address,c.city,c.state,c.pincode])].map(r=>r.map(escCsv).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='akarra-customers.csv';a.click();URL.revokeObjectURL(a.href)};
+// CRM module: uses existing customers/orders plus optional CRM metadata tables.
+window.crmCustomers=[]; window.crmProfiles={}; window.crmOrders=[]; window.crmActivity={}; window.crmTablesReady=false;
+function crmDate(v){if(!v)return '—';const d=new Date(v);return isNaN(d)?'—':d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function crmCustomerStats(c){const orders=(window.crmOrders||[]).filter(o=>!o.is_test_order&&String(o.customer_id||'')===String(c.id));const paid=orders.filter(o=>String(o.payment_status||'').toLowerCase()==='paid');return {orders:orders.length,spend:paid.reduce((n,o)=>n+Number(o.total_amount||0),0),last:orders.map(o=>o.created_at).filter(Boolean).sort().reverse()[0]||null};}
+window.loadCRM=async function(){
+ const area=document.getElementById('customersArea'); if(!area)return; area.innerHTML='<div class="loading">Loading CRM records…</div>';
+ const [customerRes,orderRes,profileRes]=await Promise.all([
+  supabaseClient.from('customers').select('id,name,email,phone,address,city,state,pincode').order('name',{ascending:true}).limit(5000),
+  supabaseClient.from('orders').select('id,order_number,customer_id,total_amount,payment_status,order_status,is_test_order,created_at,tracking_number,tracking_url').order('created_at',{ascending:false}).limit(5000),
+  supabaseClient.from('customer_crm_profiles').select('customer_id,tags,follow_up_at,follow_up_status,updated_at')
+ ]);
+ if(customerRes.error){area.innerHTML='<div class="empty">Customer records could not be loaded. Check Supabase RLS: '+escapeHtml(customerRes.error.message)+'</div>';return;}
+ window.crmCustomers=customerRes.data||[]; window.crmOrders=orderRes.error?[]:(orderRes.data||[]); window.crmProfiles={};
+ if(profileRes.error){window.crmTablesReady=false;const n=document.getElementById('crmMigrationNotice');n.style.display='block';n.textContent='Basic customer and order view is available. Run the included AKARRA CRM SQL migration in Supabase to enable persistent tags, follow-ups and notes.';}else{window.crmTablesReady=true;(profileRes.data||[]).forEach(p=>window.crmProfiles[p.customer_id]=p);document.getElementById('crmMigrationNotice').style.display='none';}
+ const repeat=window.crmCustomers.filter(c=>crmCustomerStats(c).orders>1).length;
+ const sales=window.crmOrders.filter(o=>!o.is_test_order&&String(o.payment_status||'').toLowerCase()==='paid').reduce((n,o)=>n+Number(o.total_amount||0),0);
+ const due=Object.values(window.crmProfiles).filter(p=>p.follow_up_at&&new Date(p.follow_up_at)<=new Date()&&p.follow_up_status!=='Resolved').length;
+ document.getElementById('crmTotal').textContent=window.crmCustomers.length;document.getElementById('crmRepeat').textContent=repeat;document.getElementById('crmSales').textContent=money(sales);document.getElementById('crmDue').textContent=due;
+ renderCRMTable();
+};
+window.renderCRMTable=function(){
+ const area=document.getElementById('customersArea');if(!area)return;
+ const q=(document.getElementById('crmSearch')?.value||'').trim().toLowerCase(),seg=document.getElementById('crmSegment')?.value||'all',tag=document.getElementById('crmTagFilter')?.value||'all',sort=document.getElementById('crmSort')?.value||'recent';
+ let rows=(window.crmCustomers||[]).map(c=>{const st=crmCustomerStats(c),p=window.crmProfiles[c.id]||{},tags=Array.isArray(p.tags)?p.tags:[];return {...c,_stats:st,_profile:p,_tags:tags};});
+ rows=rows.filter(c=>{const hay=[c.name,c.email,c.phone,c.id].join(' ').toLowerCase();if(q&&!hay.includes(q))return false;if(tag!=='all'&&!c._tags.includes(tag))return false;const due=c._profile.follow_up_at&&new Date(c._profile.follow_up_at)<=new Date()&&c._profile.follow_up_status!=='Resolved';if(seg==='new'&&c._stats.orders!==1)return false;if(seg==='repeat'&&c._stats.orders<2)return false;if(seg==='vip'&&c._stats.spend<5000)return false;if(seg==='followup'&&!due)return false;if(seg==='complaint'&&!c._tags.includes('Complaint'))return false;return true;});
+ rows.sort((a,b)=>sort==='spend'?b._stats.spend-a._stats.spend:sort==='orders'?b._stats.orders-a._stats.orders:sort==='name'?String(a.name||'').localeCompare(String(b.name||'')):new Date(b._stats.last||0)-new Date(a._stats.last||0));
+ if(!rows.length){area.innerHTML='<div class="empty">No customers match these filters.</div>';return;}
+ area.innerHTML=`<table><thead><tr><th>Customer</th><th>Contact</th><th>Orders</th><th>Paid spending</th><th>Last order</th><th>Tags / Follow-up</th><th>Actions</th></tr></thead><tbody>${rows.map(c=>`<tr><td><strong>${escapeHtml(c.name||'Unnamed customer')}</strong><br><small>${escapeHtml(String(c.id).slice(0,8))}</small></td><td>${escapeHtml(c.phone||'—')}<br><small>${escapeHtml(c.email||'')}</small></td><td>${c._stats.orders}</td><td>${money(c._stats.spend)}</td><td>${crmDate(c._stats.last)}</td><td>${c._tags.map(t=>`<span class="crm-tag">${escapeHtml(t)}</span>`).join('')||'<span class="muted">No tags</span>'}${c._profile.follow_up_at?`<br><small>Follow-up: ${crmDate(c._profile.follow_up_at)} · ${escapeHtml(c._profile.follow_up_status||'Open')}</small>`:''}</td><td><div class="crm-actions"><button class="small-btn" onclick="openCRMProfile('${escapeAttr(c.id)}')">View / Edit</button>${c.phone?`<button class="small-btn" onclick="openCRMWhatsApp('${escapeAttr(c.id)}')">WhatsApp</button>`:''}</div></td></tr>`).join('')}</tbody></table><p class="feature-note">Showing ${rows.length} customer(s). Paid spending is calculated from the orders currently readable in Supabase. VIP filter defaults to ₹5,000 lifetime paid spending.</p>`;
+};
+window.openCRMWhatsApp=function(id){const c=(window.crmCustomers||[]).find(x=>String(x.id)===String(id));if(!c||!c.phone)return;const phone=String(c.phone).replace(/\D/g,'');const msg=`Hello ${c.name||''}, this is AKARRA. How may we help you?`;window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank','noopener');};
+window.closeCRMModal=function(){document.getElementById('crmModal').style.display='none';};
+window.openCRMProfile=async function(id){
+ const c=(window.crmCustomers||[]).find(x=>String(x.id)===String(id));if(!c)return;const st=crmCustomerStats(c),p=window.crmProfiles[c.id]||{},tags=Array.isArray(p.tags)?p.tags:[];
+ const notesRes=window.crmTablesReady?await supabaseClient.from('customer_crm_activity').select('id,note,activity_type,created_at').eq('customer_id',c.id).order('created_at',{ascending:false}).limit(30):{data:[],error:null};window.crmActivity[c.id]=notesRes.data||[];
+ const orders=(window.crmOrders||[]).filter(o=>!o.is_test_order&&String(o.customer_id||'')===String(c.id));
+ document.getElementById('crmModalTitle').textContent=c.name||'Customer Profile';
+ document.getElementById('crmModalBody').innerHTML=`<div class="detail-grid"><div class="detail"><small>Customer ID</small><strong>${escapeHtml(c.id)}</strong></div><div class="detail"><small>Phone / Email</small><strong>${escapeHtml(c.phone||'—')}<br>${escapeHtml(c.email||'—')}</strong></div><div class="detail"><small>Orders / Paid spending</small><strong>${st.orders} orders · ${money(st.spend)}</strong></div><div class="detail"><small>Last order</small><strong>${crmDate(st.last)}</strong></div><div class="detail" style="grid-column:1/-1"><small>Address</small><strong>${escapeHtml([c.address,c.city,c.state,c.pincode].filter(Boolean).join(', ')||'—')}</strong></div></div>
+ <h3>CRM details</h3><div class="crm-profile-grid"><div><label for="crmTags">Tags (comma separated)</label><input id="crmTags" value="${escapeAttr(tags.join(', '))}" placeholder="New Customer, Repeat Customer, VIP"></div><div><label for="crmFollowStatus">Follow-up status</label><select id="crmFollowStatus" style="width:100%;padding:11px;border:1px solid #dfd0bf;border-radius:9px"><option ${(!p.follow_up_status||p.follow_up_status==='Open')?'selected':''}>Open</option><option ${p.follow_up_status==='In Progress'?'selected':''}>In Progress</option><option ${p.follow_up_status==='Resolved'?'selected':''}>Resolved</option></select></div><div><label for="crmFollowDate">Follow-up date</label><input id="crmFollowDate" type="datetime-local" value="${escapeAttr(p.follow_up_at?new Date(new Date(p.follow_up_at).getTime()-new Date(p.follow_up_at).getTimezoneOffset()*60000).toISOString().slice(0,16):'')}"></div><div class="full"><label for="crmNoteInput">Add internal note / enquiry / complaint</label><textarea id="crmNoteInput" placeholder="Write a customer note. This is internal to the admin panel."></textarea></div></div>
+ <div class="form-actions"><button class="secondary" onclick="closeCRMModal()">Close</button><button class="primary" onclick="saveCRMProfile('${escapeAttr(c.id)}')">Save CRM details</button><button class="primary" onclick="addCRMNote('${escapeAttr(c.id)}')">Add note</button></div><div id="crmSaveMsg" class="msg" aria-live="polite"></div>
+ <h3>Order history</h3><div class="table-card"><table><thead><tr><th>Order</th><th>Date</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead><tbody>${orders.length?orders.map(o=>`<tr><td>${escapeHtml(o.order_number||o.id)}</td><td>${crmDate(o.created_at)}</td><td>${money(o.total_amount)}</td><td>${escapeHtml(o.payment_status||'pending')}</td><td>${escapeHtml(o.order_status||'pending')}</td></tr>`).join(''):'<tr><td colspan="5">No orders found for this customer.</td></tr>'}</tbody></table></div>
+ <h3>Notes & activity</h3><div>${(window.crmActivity[c.id]||[]).map(n=>`<div class="crm-note">${escapeHtml(n.note||'') }<small>${escapeHtml(n.activity_type||'Note')} · ${crmDate(n.created_at)}</small></div>`).join('')||'<p class="feature-note">No notes yet.</p>'}</div>`;
+ document.getElementById('crmModal').style.display='block';
+};
+window.saveCRMProfile=async function(id){
+ if(!window.crmTablesReady){alert('CRM tables are not installed yet. Run the included SQL migration in Supabase first.');return;}
+ const c=(window.crmCustomers||[]).find(x=>String(x.id)===String(id));if(!c)return;
+ const tags=[...new Set(document.getElementById('crmTags').value.split(',').map(t=>t.trim()).filter(Boolean))].slice(0,20);
+ const rawDate=document.getElementById('crmFollowDate').value;const payload={customer_id:c.id,tags,follow_up_at:rawDate?new Date(rawDate).toISOString():null,follow_up_status:document.getElementById('crmFollowStatus').value,updated_at:new Date().toISOString()};
+ const {error}=await supabaseClient.from('customer_crm_profiles').upsert(payload,{onConflict:'customer_id'});const msg=document.getElementById('crmSaveMsg');if(error){msg.textContent='Save failed: '+error.message;msg.className='msg error';return;}
+ window.crmProfiles[c.id]=payload;msg.textContent='CRM details saved.';msg.className='msg success';await loadCRM();
+};
+window.addCRMNote=async function(id){if(!window.crmTablesReady){alert('CRM tables are not installed yet. Run the included SQL migration in Supabase first.');return;}const note=document.getElementById('crmNoteInput').value.trim();if(!note){alert('Please write a note first.');return;}const {data:{user}}=await supabaseClient.auth.getUser();const {error}=await supabaseClient.from('customer_crm_activity').insert({customer_id:id,note,activity_type:'Note',created_by:user?.id||null});const msg=document.getElementById('crmSaveMsg');if(error){msg.textContent='Note could not be saved: '+error.message;msg.className='msg error';return;}await openCRMProfile(id);const m=document.getElementById('crmSaveMsg');m.textContent='Note added.';m.className='msg success';};
+window.exportCustomersCsv=function(){const rows=(window.crmCustomers&&window.crmCustomers.length)?window.crmCustomers:(window.adminCustomers?Object.values(window.adminCustomers):[]);const escCsv=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[['Customer ID','Name','Email','Phone','Address','City','State','Pincode','Orders','Paid Spending','Tags','Follow-up Date','Follow-up Status'],...rows.map(c=>{const st=window.crmCustomers?crmCustomerStats(c):{orders:'',spend:''},p=(window.crmProfiles||{})[c.id]||{};return [c.id,c.name,c.email,c.phone,c.address,c.city,c.state,c.pincode,st.orders,st.spend,(p.tags||[]).join('; '),p.follow_up_at,p.follow_up_status]})].map(r=>r.map(escCsv).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='akarra-crm-customers.csv';a.click();URL.revokeObjectURL(a.href)};
 
 document.getElementById('closeModal').addEventListener('click',()=>{
   document.getElementById('orderModal').style.display='none';
@@ -474,7 +543,8 @@ tabButtons.forEach(btn=>btn.addEventListener('click',async()=>{
   if(btn.dataset.tab==='productsTab') await loadProducts();
   if(btn.dataset.tab==='offersTab') await loadOffers();
   if(btn.dataset.tab==='couponsTab') await loadCoupons();
-  if(btn.dataset.tab==='customersTab'||btn.dataset.tab==='analyticsTab') await loadDashboard();
+  if(btn.dataset.tab==='customersTab') await loadCRM();
+  if(btn.dataset.tab==='analyticsTab') await loadDashboard();
 }));
 
 function field(label,id,type='text',value='',full=false,placeholder=''){
