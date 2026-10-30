@@ -1,0 +1,18 @@
+{
+  "name": "AKARRA",
+  "short_name": "AKARRA",
+  "description": "Thoughtful handcrafted character objects and home decor.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FADCBE",
+  "theme_color": "#211713",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
