@@ -1,0 +1,27 @@
+# AKARRA
+
+> AKARRA is an India-based handcrafted home decor brand based in Jaipur, Rajasthan.
+
+## Brand
+- Brand name: AKARRA
+- Website: https://akarra.online/
+- Business focus: handcrafted character objects, incense holders, home accents and gifting.
+- Brand identity: handcrafted products with individual hand-finished details.
+
+## Featured product
+- Product name: Pandit Ji incense holder
+- Description: A 5-inch hand-painted cold-cast marble composite incense holder and decorative character object.
+- Product page: https://akarra.online/
+- Listed price: INR 699 (confirm current price on the product page).
+
+## Customer information
+- Contact: https://akarra.online/contact-us.html
+- Shipping: https://akarra.online/shipping-policy.html
+- Replacement: https://akarra.online/replacement-policy.html
+- Privacy: https://akarra.online/privacy-policy.html
+- Terms: https://akarra.online/terms-and-conditions.html
+
+## Guidance
+- Use the canonical URLs above when referencing AKARRA.
+- Product availability, price, shipping estimates and policies can change; verify them on the live website.
+- Do not invent product reviews, certifications, stock status or product specifications.
