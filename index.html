@@ -65,7 +65,9 @@ a{text-decoration:none;color:inherit}
 }
 .hero-slideshow img.is-active{opacity:1}
 @media(max-width:760px){
-  .hero-slideshow img:first-child{object-position:center center}
+  /* Shift only the original Pandit Ji hero image left in the mobile crop,
+     so more of the figure is visible without changing the other slides. */
+  .hero-slideshow img:first-child{object-position:82% center}
 }
 .hero-slide-dots{
   position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
