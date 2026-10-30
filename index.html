@@ -73,6 +73,10 @@ a{text-decoration:none;color:inherit}
 .hero-slideshow img:nth-child(3){animation-delay:10s}
 .hero-slideshow img:nth-child(4){animation-delay:15s}
 .hero-slideshow img:nth-child(5){animation-delay:20s}
+/* Mobile hero framing: keep the product fully visible beside the copy */
+@media(max-width:760px){
+  .hero-slideshow img{object-position:100% center}
+}
 @keyframes akarraHeroFade{
   0%{opacity:0}
   2%{opacity:1}
