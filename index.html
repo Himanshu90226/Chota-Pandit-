@@ -7,6 +7,21 @@
 <!-- Prevent campaign placeholder/backend text flashing before the page styles and Supabase data load. -->
 <style id="ak-early-campaign-visibility">#akOfferPopup:not(.open){display:none!important}#akOfferBanner{display:none!important}#akProductOffer{display:none}
 .available-coupons{display:grid;gap:7px;margin-top:10px}.available-coupon{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px dashed #d9b78b;border-radius:10px;background:#fffaf3;font-size:12px}.available-coupon-copy{min-width:0}.available-coupon-code{font-weight:800;letter-spacing:.04em;color:#6f4327}.available-coupon-desc{color:#716961;margin-top:2px;line-height:1.35}.available-coupon button{flex-shrink:0;border:0;border-radius:7px;padding:7px 10px;background:#286553;color:#fff;font-size:11px;font-weight:800;cursor:pointer}
+
+/* THE MAKING SLIDER — scoped only to #story; hero styles remain untouched */
+#story .story-image.making-slider{overflow:hidden;position:relative;border-radius:28px}
+#story .making-slides{position:relative;width:100%;aspect-ratio:1536 / 1192;background:#e5d7c6}
+#story .making-slide{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:100%;object-fit:contain;opacity:0;transition:opacity .65s ease}
+#story .making-slide.is-active{opacity:1}
+#story .making-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.88);color:#34271f;font-size:28px;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+#story .making-prev{left:14px}
+#story .making-next{right:14px}
+#story .making-dots{position:absolute;left:0;right:0;bottom:14px;z-index:2;display:flex;justify-content:center;align-items:center;gap:8px}
+#story .making-dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.65);box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+#story .making-dot.is-active{width:21px;border-radius:8px;background:#fff}
+@media(max-width:760px){#story .making-arrow{width:34px;height:34px;font-size:24px}#story .making-prev{left:9px}#story .making-next{right:9px}#story .making-dots{bottom:10px;gap:7px}}
+@media(prefers-reduced-motion:reduce){#story .making-slide{transition:none}}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600&display=swap">
@@ -1363,8 +1378,23 @@ h2.section-title{letter-spacing:-.015em}
       <h2 class="section-title">Made by hand, finished with care.</h2>
       <p class="lead">Cast in cold-cast marble composite, then carefully painted and sealed by hand. Every detail, from the hair and moustache to the tiny garland, is finished to bring Pandit Ji to life.</p>
     </div>
-    <div class="story-image">
-      <img loading="lazy" decoding="async" width="1536" height="1192" src="assets/media-03.jpg" alt="Pandit Ji held in hand">
+    <div class="story-image making-slider" aria-label="The Making photo gallery">
+      <div class="making-slides">
+        <img class="making-slide is-active" loading="lazy" decoding="async" width="1536" height="1192" src="assets/media-03.jpg" alt="Pandit Ji held in hand">
+        <img class="making-slide" loading="lazy" decoding="async" width="1536" height="1192" src="assets/making-slide-01.jpg" alt="Pandit Ji handcrafted making process, image 1">
+        <img class="making-slide" loading="lazy" decoding="async" width="1536" height="1192" src="assets/making-slide-02.jpg" alt="Pandit Ji handcrafted making process, image 2">
+        <img class="making-slide" loading="lazy" decoding="async" width="1536" height="1192" src="assets/making-slide-03.jpg" alt="Pandit Ji handcrafted making process, image 3">
+        <img class="making-slide" loading="lazy" decoding="async" width="1536" height="1192" src="assets/making-slide-04.jpg" alt="Pandit Ji handcrafted making process, image 4">
+      </div>
+      <button class="making-arrow making-prev" type="button" aria-label="Previous making image">&#8249;</button>
+      <button class="making-arrow making-next" type="button" aria-label="Next making image">&#8250;</button>
+      <div class="making-dots" role="group" aria-label="Choose making image">
+        <button class="making-dot is-active" type="button" aria-label="Show image 1" aria-current="true"></button>
+        <button class="making-dot" type="button" aria-label="Show image 2"></button>
+        <button class="making-dot" type="button" aria-label="Show image 3"></button>
+        <button class="making-dot" type="button" aria-label="Show image 4"></button>
+        <button class="making-dot" type="button" aria-label="Show image 5"></button>
+      </div>
     </div>
   </div>
 </section>
@@ -2766,6 +2796,43 @@ setTimeout(checkPasswordRecovery,300);
 // Load current product fields from Supabase without changing the page layout.
 loadStorefrontProduct();
 </script>
+
+<script>
+(function(){
+  function initMakingSlider(){
+    var root=document.querySelector('#story .making-slider');
+    if(!root || root.dataset.sliderReady) return;
+    var slides=Array.prototype.slice.call(root.querySelectorAll('.making-slide'));
+    var dots=Array.prototype.slice.call(root.querySelectorAll('.making-dot'));
+    var prev=root.querySelector('.making-prev'),next=root.querySelector('.making-next');
+    if(!slides.length || slides.length!==dots.length) return;
+    root.dataset.sliderReady='true';
+    var index=0,timer=null;
+    function show(n){
+      index=(n+slides.length)%slides.length;
+      slides.forEach(function(el,i){el.classList.toggle('is-active',i===index)});
+      dots.forEach(function(el,i){
+        el.classList.toggle('is-active',i===index);
+        if(i===index) el.setAttribute('aria-current','true'); else el.removeAttribute('aria-current');
+      });
+    }
+    function stop(){if(timer){clearInterval(timer);timer=null}}
+    function start(){stop();timer=setInterval(function(){show(index+1)},5000)}
+    prev.addEventListener('click',function(){show(index-1);start()});
+    next.addEventListener('click',function(){show(index+1);start()});
+    dots.forEach(function(dot,i){dot.addEventListener('click',function(){show(i);start()})});
+    root.addEventListener('mouseenter',stop);
+    root.addEventListener('mouseleave',start);
+    root.addEventListener('focusin',stop);
+    root.addEventListener('focusout',start);
+    document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else start()});
+    show(0);start();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initMakingSlider);
+  else initMakingSlider();
+})();
+</script>
+
 </body>
 </html>
 
