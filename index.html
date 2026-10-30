@@ -53,13 +53,29 @@ a{text-decoration:none;color:inherit}
 .hero{
   min-height:620px;
   position:relative;overflow:hidden;
-  background: url("assets/media-02.jpg") center center / cover no-repeat;
+  background: #2A150E;
   color:white;
 }
+/* HERO IMAGE SLIDER: existing hero image + uploaded second image */
+.hero:before,
+.hero:after{
+  content:"";position:absolute;inset:0;z-index:0;
+  background-repeat:no-repeat;background-size:cover;background-position:center center;
+  pointer-events:none;
+}
 .hero:before{
-  content:"";position:absolute;inset:-8%;
-  background:transparent;
-  animation:ambient 9s ease-in-out infinite alternate;
+  background-image:url("assets/media-02.jpg");
+  animation:heroSlideFirst 5s infinite;
+}
+.hero:after{
+  background-image:url("assets/hero-slide-2.jpg");
+  animation:heroSlideSecond 5s infinite;
+}
+@keyframes heroSlideFirst{
+  0%,46%{opacity:1}50%,96%{opacity:0}100%{opacity:1}
+}
+@keyframes heroSlideSecond{
+  0%,46%{opacity:0}50%,96%{opacity:1}100%{opacity:0}
 }
 .hero-inner{
   min-height:620px;display:block;position:relative;z-index:1;
@@ -397,9 +413,8 @@ footer{padding:22px 0 18px;background:#14151d;color:#aeb4c4;font-size:13px}.foot
   .nav-links{display:none}
   .hero{
     min-height:760px;
-    background-size:cover;
-    background-position:center center;
   }
+  .hero:before,.hero:after{background-position:center center;}
   .hero-inner{display:block;min-height:760px;padding:0}
   .hero-copy{
     padding:0;
@@ -433,7 +448,8 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
 @media(max-width:760px){
   .container,.hero-inner{width:calc(100% - 32px);max-width:620px}
   /* Mobile only: make the hero shorter while keeping the full-width image */
-  .hero{min-height:560px;background-size:cover;background-position:72% center}
+  .hero{min-height:560px}
+  .hero:before,.hero:after{background-position:72% center}
   .hero-inner{min-height:560px;padding:0}
 
   /* Mobile hero: keep all copy clear of the product on the right */
@@ -621,7 +637,8 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}
   .nav .nav-links a{opacity:.9;}
   .nav .nav-actions{display:none;}
 
-  .hero{min-height:560px;background-position:70% center;background-size:cover;}
+  .hero{min-height:560px;}
+  .hero:before,.hero:after{background-position:70% center;}
   .hero-inner{min-height:560px;width:calc(100% - 24px);}
   .hero-copy{left:1%;top:43%;width:49%;max-width:185px;transform:translateY(-50%);}
   .hero-copy .kicker{font-size:8px;letter-spacing:.15em;margin-bottom:4px;}
@@ -876,6 +893,8 @@ h2.section-title{letter-spacing:-.015em}
   .hero{
     min-height:450px !important;
     height:450px !important;
+  }
+  .hero:before,.hero:after{
     background-size:cover !important;
     background-position:82% center !important;
   }
