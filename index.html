@@ -56,41 +56,30 @@ a{text-decoration:none;color:inherit}
   background: #2A150E;
   color:white;
 }
-/* HERO IMAGE SLIDESHOW: original hero image + four new scenes, seamless 5-second cadence */
-.hero-slideshow{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#2A150E}
+/* HERO IMAGE SLIDESHOW: five images, smooth 5-second rotation */
+.hero-slideshow{position:absolute;inset:0;z-index:0;overflow:hidden;background:#2A150E}
 .hero-slideshow img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center center;
-  opacity:0;
-  animation:akarraHeroFade 25s infinite;
-  will-change:opacity;
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center center;
+  opacity:0;transition:opacity .9s ease;will-change:opacity;
 }
+.hero-slideshow img.is-active{opacity:1}
 @media(max-width:760px){
-  .hero-slideshow img:first-child{
-    object-position:center center;
-  }
+  .hero-slideshow img:first-child{object-position:center center}
 }
-/* Keep each hero slide at its own natural centered crop on mobile */
-.hero-slideshow img:nth-child(1){animation-delay:0s}
-.hero-slideshow img:nth-child(2){animation-delay:5s}
-.hero-slideshow img:nth-child(3){animation-delay:10s}
-.hero-slideshow img:nth-child(4){animation-delay:15s}
-.hero-slideshow img:nth-child(5){animation-delay:20s}
-/* Mobile slideshow: retain each image's original centered framing */
-@keyframes akarraHeroFade{
-  0%{opacity:0}
-  2%{opacity:1}
-  18%{opacity:1}
-  22%{opacity:0}
-  100%{opacity:0}
+.hero-slide-dots{
+  position:absolute;left:50%;bottom:22px;transform:translateX(-50%);
+  z-index:3;display:flex;align-items:center;justify-content:center;gap:9px;
 }
+.hero-slide-dot{
+  width:7px;height:7px;padding:0;border:0;border-radius:50%;
+  background:rgba(255,255,255,.48);cursor:pointer;
+  transition:width .25s ease,background .25s ease,transform .25s ease;
+}
+.hero-slide-dot.is-active{width:20px;border-radius:8px;background:#fff}
+.hero-slide-dot:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){
-  .hero-slideshow img{animation:none;opacity:0}
-  .hero-slideshow img:first-child{opacity:1}
+  .hero-slideshow img{transition:none}
 }
 .hero-inner{
   min-height:620px;display:block;position:relative;z-index:1;
@@ -1318,6 +1307,13 @@ h2.section-title{letter-spacing:-.015em}
     <img src="assets/hero-slide-03.webp" alt="" decoding="async">
     <img src="assets/hero-slide-04.webp" alt="" decoding="async">
   </div>
+  <div class="hero-slide-dots" role="group" aria-label="Choose hero image">
+    <button class="hero-slide-dot is-active" type="button" aria-label="Show image 1" aria-current="true"></button>
+    <button class="hero-slide-dot" type="button" aria-label="Show image 2"></button>
+    <button class="hero-slide-dot" type="button" aria-label="Show image 3"></button>
+    <button class="hero-slide-dot" type="button" aria-label="Show image 4"></button>
+    <button class="hero-slide-dot" type="button" aria-label="Show image 5"></button>
+  </div>
   <div class="hero-inner container">
     <div class="hero-copy">
       <h1>Pandit <span class="hero-ji-red" style="color:#A31A08 !important">Ji</span></h1>
@@ -1328,6 +1324,33 @@ h2.section-title{letter-spacing:-.015em}
 
   </div>
 </section>
+<script>
+(function(){
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  const slides = Array.from(hero.querySelectorAll('.hero-slideshow img'));
+  const dots = Array.from(hero.querySelectorAll('.hero-slide-dot'));
+  if(!slides.length || slides.length !== dots.length) return;
+  let active = 0;
+  let timer;
+  function showSlide(index){
+    active = (index + slides.length) % slides.length;
+    slides.forEach((slide,i)=>slide.classList.toggle('is-active',i===active));
+    dots.forEach((dot,i)=>{
+      dot.classList.toggle('is-active',i===active);
+      if(i===active) dot.setAttribute('aria-current','true');
+      else dot.removeAttribute('aria-current');
+    });
+  }
+  function restartTimer(){
+    clearInterval(timer);
+    timer = setInterval(()=>showSlide(active+1),5000);
+  }
+  dots.forEach((dot,i)=>dot.addEventListener('click',()=>{showSlide(i);restartTimer()}));
+  showSlide(0);
+  restartTimer();
+})();
+</script>
 
 
 
