@@ -1386,6 +1386,72 @@ h2.section-title{letter-spacing:-.015em}
  .moments-reference .moment-reference-copy p{font-size:12px!important}
 }
 </style>
+
+<style id="use-it-your-way-compact-spacing">
+/* Compact the Use It Your Way section and keep all four benefits on one row */
+.moments-reference{
+  padding-top:28px!important;
+  padding-bottom:22px!important;
+}
+.moments-reference .moments-reference-eyebrow{margin-bottom:10px!important}
+.moments-reference .moments-reference h2{margin-bottom:8px!important}
+.moments-reference .moments-reference-intro{margin:10px 0 18px!important}
+.moments-reference .moments-reference-grid{gap:14px!important}
+.moments-reference .moment-reference-card{height:420px!important}
+.moments-reference .moments-benefits{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  margin-top:14px!important;
+  row-gap:0!important;
+}
+.moments-reference .moments-benefit{
+  gap:5px!important;
+  padding:0 5px!important;
+  font-size:12px!important;
+  line-height:1.25!important;
+}
+.moments-reference .moments-benefit-icon{
+  width:42px!important;height:42px!important;
+  background:rgba(248,228,209,.55)!important;
+}
+.moments-reference .moments-benefit-icon svg{width:21px!important;height:21px!important}
+.moments-reference .moments-benefit+.moments-benefit:before{
+  top:10px!important;height:55px!important;
+}
+@media(max-width:760px){
+  .moments-reference{padding-top:24px!important;padding-bottom:18px!important}
+  .moments-reference .moments-reference-eyebrow{margin-bottom:8px!important}
+  .moments-reference .moments-reference h2{font-size:30px!important;margin-bottom:6px!important}
+  .moments-reference .moments-reference-intro{font-size:13px!important;line-height:1.4!important;margin:8px 0 14px!important}
+  .moments-reference .moments-reference-grid{gap:10px!important}
+  .moments-reference .moment-reference-card{height:315px!important}
+  .moments-reference .moment-reference-copy{padding:17px 10px 16px 15px!important}
+  .moments-reference .moment-reference-number{margin-bottom:15px!important}
+  .moments-reference .moment-reference-kicker{font-size:10px!important;margin-bottom:9px!important}
+  .moments-reference .moment-reference-copy h3{font-size:24px!important;margin-bottom:9px!important}
+  .moments-reference .moment-reference-copy p{font-size:11px!important;line-height:1.35!important}
+  .moments-reference .moments-benefits{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    margin-top:12px!important;column-gap:2px!important;
+  }
+  .moments-reference .moments-benefit{
+    font-size:9px!important;line-height:1.2!important;gap:4px!important;padding:0 2px!important;
+  }
+  .moments-reference .moments-benefit+.moments-benefit:before{
+    display:block!important;top:7px!important;height:42px!important;
+  }
+  .moments-reference .moments-benefit-icon{width:34px!important;height:34px!important}
+  .moments-reference .moments-benefit-icon svg{width:18px!important;height:18px!important}
+}
+@media(max-width:390px){
+  .moments-reference .moment-reference-card{height:295px!important}
+  .moments-reference .moment-reference-copy{width:70%!important;padding-left:12px!important}
+  .moments-reference .moment-reference-copy h3{font-size:22px!important}
+  .moments-reference .moment-reference-copy p{font-size:10px!important}
+  .moments-reference .moments-benefit{font-size:8px!important}
+  .moments-reference .moments-benefit-icon{width:31px!important;height:31px!important}
+  .moments-reference .moments-benefit-icon svg{width:16px!important;height:16px!important}
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
