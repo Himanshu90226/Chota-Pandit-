@@ -187,7 +187,7 @@ h2.section-title{font:500 clamp(42px,5vw,70px)/1 "Playfair Display",serif;letter
 .moment p{max-width:460px;line-height:1.7;color:inherit;opacity:.72}
 
 
-/* USE IT YOUR WAY — premium two-card layout */
+/* USE IT YOUR WAY — responsive, image-forward layout */
 .moments-reference{background:#fbf2e6;padding:76px 0 82px;color:#2b211b}
 .moments-reference-inner{max-width:1180px}
 .moments-reference-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#bd4b28;margin-bottom:18px}
@@ -198,42 +198,45 @@ h2.section-title{font:500 clamp(42px,5vw,70px)/1 "Playfair Display",serif;letter
 .moment-reference-photo{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:center}
 .moment-reference-card-shelf .moment-reference-photo{object-position:center}
 .moment-reference-card-incense .moment-reference-photo{object-position:center}
-.moment-reference-card-shelf:after,.moment-reference-card-incense:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(255,242,222,.96) 0%,rgba(255,242,222,.83) 38%,rgba(255,242,222,.12) 72%,rgba(255,242,222,0) 100%)}
-.moment-reference-card-incense:after{background:linear-gradient(90deg,rgba(126,57,32,.92) 0%,rgba(151,76,47,.78) 39%,rgba(151,76,47,.12) 76%,rgba(151,76,47,0) 100%)}
-.moment-reference-copy{position:relative;z-index:1;width:58%;padding:30px 24px 30px 30px;display:flex;flex-direction:column;align-items:flex-start}
+.moment-reference-card-shelf:after,.moment-reference-card-incense:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(255,242,222,.30) 0%,rgba(255,242,222,.12) 42%,rgba(255,242,222,0) 75%)}
+.moment-reference-card-incense:after{background:linear-gradient(90deg,rgba(42,22,14,.30) 0%,rgba(42,22,14,.12) 45%,rgba(42,22,14,0) 78%)}
+.moment-reference-copy{position:relative;z-index:1;width:62%;padding:30px 24px 30px 30px;display:flex;flex-direction:column;align-items:flex-start;background:transparent}
 .moment-reference-number{font-size:18px;letter-spacing:.08em;color:#76675a;padding-bottom:9px;border-bottom:1px solid #a65a3a;min-width:27px;margin-bottom:32px}
-.moment-reference-kicker{font-size:13px;letter-spacing:.12em;color:#a94e2e;margin-bottom:17px}
+.moment-reference-kicker{font-size:13px;letter-spacing:.12em;color:#91452c;margin-bottom:17px}
 .moment-reference-copy h3{font:500 clamp(28px,3vw,40px)/1.04 "Playfair Display",Georgia,serif;letter-spacing:-.025em;margin:0 0 18px;color:#211812}
-.moment-reference-copy p{margin:0;font-size:16px;line-height:1.55;color:#6e6258;max-width:270px}
+.moment-reference-copy p{margin:0;font-size:16px;line-height:1.55;color:#4f4036;max-width:270px}
 .moment-reference-card-incense .moment-reference-number{color:#fff2e7;border-color:#f1d8c8}
 .moment-reference-card-incense .moment-reference-kicker,.moment-reference-card-incense .moment-reference-copy h3{color:#fff5ed}
-.moment-reference-card-incense .moment-reference-copy p{color:rgba(255,246,238,.88)}
+.moment-reference-card-incense .moment-reference-copy p{color:rgba(255,246,238,.96);text-shadow:0 1px 5px rgba(0,0,0,.35)}
 .moments-benefits{display:grid;grid-template-columns:repeat(4,1fr);margin-top:25px;padding-top:1px}
-.moments-benefit{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;text-align:center;padding:0 14px;color:#76675a;font-size:16px;line-height:1.42}
-.moments-benefit+.moments-benefit:before{content:"";position:absolute;left:0;top:23px;height:98px;border-left:1px solid #e7d5c1}
-.moments-benefit-icon{width:78px;height:78px;border-radius:50%;background:#f8e4d1;display:grid;place-items:center}
-.moments-benefit-icon svg{width:38px;height:38px;fill:none;stroke:#392a21;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.moments-benefit{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;text-align:center;padding:0 12px;color:#76675a;font-size:15px;line-height:1.42}
+.moments-benefit+.moments-benefit:before{content:"";position:absolute;left:0;top:18px;height:76px;border-left:1px solid #e7d5c1}
+.moments-benefit-icon{width:58px;height:58px;border-radius:50%;background:rgba(248,228,209,.72);display:grid;place-items:center}
+.moments-benefit-icon svg{width:28px;height:28px;fill:none;stroke:#392a21;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:760px){
- .moments-reference{padding:58px 0 62px}
- .moments-reference h2{font-size:39px}
- .moments-reference-intro{font-size:15px;margin-bottom:25px}
- .moments-reference-grid{grid-template-columns:1fr;gap:16px}
- .moment-reference-card{min-height:430px;border-radius:20px}
- .moment-reference-copy{width:63%;padding:23px 16px 24px 22px}
- .moment-reference-number{margin-bottom:28px}
- .moment-reference-copy h3{font-size:32px}
- .moment-reference-copy p{font-size:14px;line-height:1.5;max-width:220px}
- .moments-benefits{grid-template-columns:repeat(2,1fr);row-gap:22px;margin-top:24px}
- .moments-benefit{font-size:14px;padding:0 8px}
+ .moments-reference{padding:38px 0 42px}
+ .moments-reference h2{font-size:32px;line-height:1.08}
+ .moments-reference-intro{font-size:14px;line-height:1.55;margin-bottom:20px}
+ .moments-reference-grid{grid-template-columns:minmax(0,1fr);gap:13px}
+ .moment-reference-card{min-height:0;height:365px;border-radius:17px}
+ .moment-reference-copy{width:72%;padding:19px 14px 20px 18px}
+ .moment-reference-number{font-size:15px;margin-bottom:18px;padding-bottom:6px}
+ .moment-reference-kicker{font-size:11px;letter-spacing:.09em;margin-bottom:11px}
+ .moment-reference-copy h3{font-size:27px;line-height:1.05;margin-bottom:12px}
+ .moment-reference-copy p{font-size:13px;line-height:1.42;max-width:205px}
+ .moments-benefits{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px;row-gap:17px;margin-top:22px}
+ .moments-benefit{font-size:12px;line-height:1.35;gap:6px;padding:0 5px}
  .moments-benefit+.moments-benefit:before{display:none}
- .moments-benefit-icon{width:66px;height:66px}
- .moments-benefit-icon svg{width:33px;height:33px}
+ .moments-benefit-icon{width:46px;height:46px;background:rgba(248,228,209,.58)}
+ .moments-benefit-icon svg{width:23px;height:23px}
 }
 @media(max-width:390px){
- .moment-reference-card{min-height:405px}
- .moment-reference-copy{width:66%;padding-left:18px}
- .moment-reference-copy h3{font-size:29px}
- .moment-reference-copy p{font-size:13px}
+ .moment-reference-card{height:340px}
+ .moment-reference-copy{width:76%;padding-left:15px}
+ .moment-reference-copy h3{font-size:25px}
+ .moment-reference-copy p{font-size:12px;max-width:190px}
+ .moments-benefit-icon{width:42px;height:42px}
+ .moments-benefit-icon svg{width:21px;height:21px}
 }
 @media(prefers-reduced-motion:reduce){.moment-reference-photo{transition:none}}
 
