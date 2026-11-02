@@ -1864,6 +1864,60 @@ h2.section-title{letter-spacing:-.015em}
  #details.details-option4 .details-v4-safety{margin-top:17px!important;padding:16px 13px!important;border-radius:19px!important;}
 }
 </style>
+
+<style>
+/* Reference correction: botanical backdrop, visible stone tabletop, compact panels */
+#details.details-option4{
+ background-color:#f8ddc3!important;
+ background-image:url('assets/product-details-bg.svg')!important;
+ background-repeat:no-repeat!important;
+ background-position:center center!important;
+ background-size:cover!important;
+ padding:54px 0 48px!important;
+}
+#details.details-option4:before,#details.details-option4:after{display:none!important;content:none!important;}
+#details.details-option4 .details-v4{width:min(94%,1280px)!important;max-width:1280px!important;}
+#details.details-option4 .details-v4-heading{margin-bottom:26px!important;}
+#details.details-option4 .details-v4-grid{gap:14px!important;}
+#details.details-option4 .details-v4-card{
+ height:214px!important;min-height:214px!important;
+ padding:19px 10px 16px!important;border-radius:30px!important;
+}
+#details.details-option4 .details-v4-safety{
+ min-height:0!important;margin-top:24px!important;
+ padding:22px 28px!important;border-radius:30px!important;
+}
+@media(max-width:900px){
+ #details.details-option4{padding:42px 0 38px!important;}
+ #details.details-option4 .details-v4-card{height:172px!important;min-height:172px!important;padding:14px 7px!important;border-radius:23px!important;}
+ #details.details-option4 .details-v4-safety{margin-top:18px!important;padding:17px 18px!important;border-radius:23px!important;}
+}
+@media(max-width:600px){
+ #details.details-option4{
+  padding:34px 0 30px!important;
+  background-size:100% 100%!important;
+  background-position:center center!important;
+ }
+ #details.details-option4 .details-v4{width:calc(100% - 28px)!important;}
+ #details.details-option4 .details-v4-heading{margin-bottom:18px!important;}
+ #details.details-option4 .details-v4-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;}
+ #details.details-option4 .details-v4-card{
+  height:142px!important;min-height:142px!important;
+  padding:12px 5px 10px!important;border-radius:19px!important;
+ }
+ #details.details-option4 .details-v4-safety{
+  grid-template-columns:42px minmax(0,.8fr) minmax(0,1.8fr)!important;
+  gap:9px!important;margin-top:14px!important;
+  padding:13px 10px!important;border-radius:19px!important;
+ }
+ #details.details-option4 .details-v4-shield{padding:0 8px 0 0!important;}
+ #details.details-option4 .details-v4-shield svg{width:32px!important;height:38px!important;}
+ #details.details-option4 .details-v4-safety strong{font-size:14px!important;line-height:1.15!important;}
+ #details.details-option4 .details-v4-safety p{
+  grid-column:auto!important;font-size:10px!important;line-height:1.35!important;
+ }
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
