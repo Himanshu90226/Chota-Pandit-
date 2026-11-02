@@ -1452,6 +1452,29 @@ h2.section-title{letter-spacing:-.015em}
   .moments-reference .moments-benefit-icon svg{width:16px!important;height:16px!important}
 }
 </style>
+
+<style>
+/* PANDIT JI VIDEO SHOWCASE — Option 3 minimal layout */
+.pandit-video-section{background:#f7f3ed;}
+.pandit-video-layout{display:grid;grid-template-columns:minmax(220px,.72fr) minmax(0,1.55fr);gap:clamp(28px,5vw,72px);align-items:center;}
+.pandit-video-copy .eyebrow{letter-spacing:.18em;font-size:11px;font-weight:600;color:#bd4b28;margin-bottom:18px;}
+.pandit-video-copy .section-title{max-width:430px;margin:0 0 18px;font-size:clamp(42px,5vw,66px);line-height:1.02;letter-spacing:-.045em;}
+.pandit-video-copy p{max-width:360px;color:#6e6259;font-size:15px;line-height:1.8;margin:0;}
+.pandit-video-feature{min-width:0;position:relative;border-radius:18px;overflow:hidden;background:#211b17;box-shadow:0 18px 50px rgba(42,22,14,.12);}
+.pandit-video-feature .gallery-video{display:block;width:100%;height:clamp(300px,42vw,590px);max-height:590px;object-fit:contain;background:#211b17;}
+.pandit-video-controls-note{position:absolute;right:14px;bottom:12px;color:#fff;background:rgba(0,0,0,.42);font-size:10px;padding:5px 9px;border-radius:20px;pointer-events:none;opacity:.8;}
+.pandit-video-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:25px;}
+.pandit-video-card{position:relative;display:grid;grid-template-columns:1fr auto;gap:9px 12px;align-items:center;text-align:left;padding:0;border:0;background:transparent;color:#211b17;cursor:pointer;font:inherit;min-width:0;}
+.pandit-video-thumb{grid-column:1/-1;position:relative;display:block;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#e5ddd3;}
+.pandit-video-thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease;}
+.pandit-video-card:hover .pandit-video-thumb img{transform:scale(1.04);}
+.pandit-play-icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.92);color:#5a3427;font-size:13px;padding-left:2px;}
+.pandit-video-card-title{font-size:13px;font-weight:600;line-height:1.3;}
+.pandit-video-card-number{font-size:11px;color:#a18f80;letter-spacing:.08em;}
+.pandit-video-card.is-active .pandit-video-thumb{outline:2px solid #bd4b28;outline-offset:3px;}
+.pandit-video-card:focus-visible{outline:2px solid #bd4b28;outline-offset:5px;border-radius:8px;}
+@media(max-width:760px){.pandit-video-layout{grid-template-columns:1fr;gap:22px}.pandit-video-copy .eyebrow{margin-bottom:12px}.pandit-video-copy .section-title{font-size:clamp(38px,10vw,52px);max-width:350px;margin-bottom:12px}.pandit-video-copy p{font-size:14px;line-height:1.65}.pandit-video-feature{border-radius:14px}.pandit-video-feature .gallery-video{height:min(118vw,520px);max-height:520px}.pandit-video-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 13px;margin-top:22px}.pandit-video-card-title{font-size:12px}}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
@@ -1608,15 +1631,39 @@ h2.section-title{letter-spacing:-.015em}
   </div>
 </section>
 
-<section class="section gallery">
+<section class="section gallery pandit-video-section" id="panditVideos">
   <div class="container">
-    <div class="eyebrow">Look closer</div>
-    <h2 class="section-title">Every detail matters.</h2>
-    <div class="gallery-video-wrap">
-      <video class="gallery-video" autoplay muted loop playsinline controls preload="metadata" poster="assets/media-01.jpg">
-        <source src="assets/pandit-ji-video-1.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+    <div class="pandit-video-layout">
+      <div class="pandit-video-copy">
+        <div class="eyebrow">MEET PANDIT JI</div>
+        <h2 class="section-title">Watch. Explore. Discover.</h2>
+        <p>Short videos to help you see the craftsmanship, details and character of Pandit Ji.</p>
+      </div>
+      <div class="pandit-video-feature">
+        <video id="panditMainVideo" class="gallery-video" autoplay muted playsinline controls preload="auto" poster="assets/media-01.jpg">
+          <source src="assets/pandit-ji-video-1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="pandit-video-controls-note">Tap the video for sound</div>
+      </div>
+    </div>
+    <div class="pandit-video-list" aria-label="More Pandit Ji videos">
+      <button class="pandit-video-card" type="button" data-video-index="1" aria-label="Play Pandit Ji video 2">
+        <span class="pandit-video-thumb"><img src="assets/media-02.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-card-title">The lifestyle</span><span class="pandit-video-card-number">02</span>
+      </button>
+      <button class="pandit-video-card" type="button" data-video-index="2" aria-label="Play Pandit Ji video 3">
+        <span class="pandit-video-thumb"><img src="assets/media-03.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-card-title">Made with character</span><span class="pandit-video-card-number">03</span>
+      </button>
+      <button class="pandit-video-card" type="button" data-video-index="3" aria-label="Play Pandit Ji video 4">
+        <span class="pandit-video-thumb"><img src="assets/media-04.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-card-title">A festive touch</span><span class="pandit-video-card-number">04</span>
+      </button>
+      <button class="pandit-video-card" type="button" data-video-index="4" aria-label="Play Pandit Ji video 5">
+        <span class="pandit-video-thumb"><img src="assets/media-01.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-card-title">The little details</span><span class="pandit-video-card-number">05</span>
+      </button>
     </div>
   </div>
 </section>
@@ -3014,6 +3061,36 @@ loadStorefrontProduct();
 })();
 </script>
 
+
+<script>
+(function(){
+  function initPanditVideos(){
+    var root=document.getElementById('panditVideos');
+    if(!root || root.dataset.playlistReady==='true') return;
+    var player=document.getElementById('panditMainVideo');
+    var cards=Array.prototype.slice.call(root.querySelectorAll('.pandit-video-card'));
+    if(!player || cards.length!==4) return;
+    root.dataset.playlistReady='true';
+    var playlist=[1,2,3,4,5].map(function(n){return 'assets/pandit-ji-video-'+n+'.mp4'});
+    var current=0;
+    function setActive(){cards.forEach(function(card){var active=Number(card.dataset.videoIndex)===current;card.classList.toggle('is-active',active);if(active)card.setAttribute('aria-current','true');else card.removeAttribute('aria-current')})}
+    function play(index,auto){
+      current=(index+playlist.length)%playlist.length;
+      player.pause();
+      player.src=playlist[current];
+      player.load();
+      setActive();
+      if(auto!==false){var promise=player.play();if(promise&&promise.catch)promise.catch(function(){/* User can start playback with the native play control. */});}
+    }
+    player.addEventListener('ended',function(){play(current+1,true)});
+    cards.forEach(function(card){card.addEventListener('click',function(){play(Number(card.dataset.videoIndex),true)})});
+    player.muted=true;
+    setActive();
+    var start=player.play();if(start&&start.catch)start.catch(function(){/* Native controls remain available if autoplay is blocked. */});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPanditVideos);else initPanditVideos();
+})();
+</script>
 </body>
 </html>
 
