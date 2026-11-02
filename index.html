@@ -1792,6 +1792,33 @@ h2.section-title{letter-spacing:-.015em}
  .details-v4-safety p{grid-column:1/-1!important;font-size:11.5px!important;line-height:1.45!important;}
 }
 </style>
+
+<style>
+/* Fine sizing correction only — preserve approved icons, font family and background */
+#details.details-option4{background-image:url('assets/product-details-bg.svg')!important;background-size:cover!important;background-position:center center!important;}
+.details-v4-icon{width:58px!important;height:58px!important;flex-basis:58px!important;}
+.details-v4-icon svg{width:48px!important;height:48px!important;stroke-width:2!important;}
+.details-v4-card b{font-size:21px!important;}
+.details-v4-card span:last-child{font-size:18px!important;}
+.details-v4-shield:after{content:none!important;display:none!important;}
+.details-v4-shield svg{width:68px!important;height:76px!important;stroke-width:2!important;}
+@media(max-width:900px){
+ .details-v4-icon{width:42px!important;height:42px!important;flex-basis:42px!important;}
+ .details-v4-icon svg{width:36px!important;height:36px!important;}
+ .details-v4-card b{font-size:15px!important;}
+ .details-v4-card span:last-child{font-size:12.5px!important;}
+ .details-v4-shield svg{width:44px!important;height:50px!important;}
+}
+@media(max-width:600px){
+ .details-v4-icon{width:34px!important;height:34px!important;flex-basis:34px!important;}
+ .details-v4-icon svg{width:30px!important;height:30px!important;stroke-width:1.9!important;}
+ .details-v4-card b{font-size:12px!important;}
+ .details-v4-card span:last-child{font-size:10.5px!important;}
+ .details-v4-safety strong{font-size:15px!important;}
+ .details-v4-safety p{font-size:11.5px!important;}
+ .details-v4-shield svg{width:34px!important;height:40px!important;}
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
