@@ -3857,6 +3857,60 @@ loadStorefrontProduct();
 }
 </style>
 
+
+<style id="details-safety-slim-final">
+/* Slim safety strip: one divider only (attached to the shield column). */
+#details.details-option4 .details-v4-safety{
+  display:grid!important;
+  grid-template-columns:76px 250px minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  align-items:center!important;
+  column-gap:24px!important;
+  row-gap:0!important;
+  padding:14px 28px!important;
+  min-height:0!important;
+  height:auto!important;
+  border-radius:24px!important;
+}
+#details.details-option4 .details-v4-shield{
+  grid-column:1!important;grid-row:1!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border-right:1px solid rgba(255,255,255,.72)!important;
+  padding:0 18px 0 0!important;
+}
+#details.details-option4 .details-v4-shield svg{
+  width:48px!important;height:54px!important;
+}
+#details.details-option4 .details-v4-divider{display:none!important;}
+#details.details-option4 .details-v4-safety strong{
+  grid-column:2!important;grid-row:1!important;
+  min-width:0!important;margin:0!important;
+  font-size:22px!important;line-height:1.18!important;
+}
+#details.details-option4 .details-v4-safety p{
+  grid-column:3!important;grid-row:1!important;
+  min-width:0!important;width:auto!important;max-width:none!important;
+  margin:0!important;font-size:17px!important;line-height:1.4!important;
+}
+@media(max-width:640px){
+  #details.details-option4 .details-v4-safety{
+    grid-template-columns:42px 104px minmax(0,1fr)!important;
+    column-gap:10px!important;row-gap:0!important;
+    padding:12px 12px!important;border-radius:17px!important;
+  }
+  #details.details-option4 .details-v4-shield{grid-column:1!important;grid-row:1!important;padding:0 9px 0 0!important;}
+  #details.details-option4 .details-v4-shield svg{width:32px!important;height:38px!important;}
+  #details.details-option4 .details-v4-safety strong{
+    grid-column:2!important;grid-row:1!important;
+    font-size:13px!important;line-height:1.2!important;
+  }
+  #details.details-option4 .details-v4-safety p{
+    grid-column:3!important;grid-row:1!important;
+    font-size:10px!important;line-height:1.35!important;
+  }
+}
+</style>
+
 </body>
 </html>
 
