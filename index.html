@@ -2057,6 +2057,15 @@ h2.section-title{letter-spacing:-.015em}
  #details.details-option4 .details-v4-safety{background:rgba(177,111,58,.56)!important;}
 }
 </style>
+
+<style>
+/* Hide the customer-review section while keeping its existing script/data untouched */
+#reviews.reviews-section{display:none!important;}
+/* Live thumbnail previews always show the matching updated video, not old media stills */
+.pandit-video-thumb{position:relative;display:block;overflow:hidden;}
+.pandit-video-thumb-media{display:block;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;}
+.pandit-video-thumb .pandit-play-icon{z-index:2;pointer-events:none;}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
@@ -2222,7 +2231,7 @@ h2.section-title{letter-spacing:-.015em}
         <p>Short videos to help you see the craftsmanship, details and character of Pandit Ji.</p>
       </div>
       <div class="pandit-video-feature">
-        <video id="panditMainVideo" class="gallery-video" autoplay muted playsinline controls preload="auto" poster="assets/media-01.jpg">
+        <video id="panditMainVideo" class="gallery-video" autoplay muted playsinline controls preload="auto" >
           <source src="assets/pandit-ji-video-1.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -2230,19 +2239,19 @@ h2.section-title{letter-spacing:-.015em}
     </div>
     <div class="pandit-video-list" aria-label="More Pandit Ji videos">
       <button class="pandit-video-card" type="button" data-video-index="2" aria-label="Play Product Showcase video">
-        <span class="pandit-video-thumb"><img src="assets/media-02.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-thumb"><video class="pandit-video-thumb-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="assets/pandit-ji-video-3.mp4" type="video/mp4"></video><span class="pandit-play-icon">▶</span></span>
         <span class="pandit-video-card-copy"><span class="pandit-video-card-title">Product Showcase</span><span class="pandit-video-card-description">See Pandit Ji from all angles.</span></span><span class="pandit-video-card-number">02</span>
       </button>
       <button class="pandit-video-card" type="button" data-video-index="1" aria-label="Play The Making video">
-        <span class="pandit-video-thumb"><img src="assets/media-03.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-thumb"><video class="pandit-video-thumb-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="assets/pandit-ji-video-2.mp4" type="video/mp4"></video><span class="pandit-play-icon">▶</span></span>
         <span class="pandit-video-card-copy"><span class="pandit-video-card-title">The Making</span><span class="pandit-video-card-description">Behind the scenes of the craft.</span></span><span class="pandit-video-card-number">03</span>
       </button>
       <button class="pandit-video-card" type="button" data-video-index="3" aria-label="Play Pandit Ji video 4">
-        <span class="pandit-video-thumb"><img src="assets/media-04.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-thumb"><video class="pandit-video-thumb-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="assets/pandit-ji-video-4.mp4" type="video/mp4"></video><span class="pandit-play-icon">▶</span></span>
         <span class="pandit-video-card-copy"><span class="pandit-video-card-title">Close Details</span><span class="pandit-video-card-description">Hand-painted expressions.</span></span><span class="pandit-video-card-number">04</span>
       </button>
       <button class="pandit-video-card" type="button" data-video-index="4" aria-label="Play Pandit Ji video 5">
-        <span class="pandit-video-thumb"><img src="assets/media-01.jpg" alt="" loading="lazy"><span class="pandit-play-icon">▶</span></span>
+        <span class="pandit-video-thumb"><video class="pandit-video-thumb-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="assets/pandit-ji-video-5.mp4" type="video/mp4"></video><span class="pandit-play-icon">▶</span></span>
         <span class="pandit-video-card-copy"><span class="pandit-video-card-title">In Your Space</span><span class="pandit-video-card-description">A perfect addition to your home.</span></span><span class="pandit-video-card-number">05</span>
       </button>
     </div>
