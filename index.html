@@ -2037,6 +2037,26 @@ h2.section-title{letter-spacing:-.015em}
  #details.details-option4 .details-v4-safety p{font-size:8.5px!important;line-height:1.2!important;grid-column:auto!important;}
 }
 </style>
+
+<style>
+/* Use the supplied botanical tabletop look; make spec cards lighter and more transparent */
+#details.details-option4{
+ background:#ffe2c8 url('assets/product-details-bg.svg') center center/cover no-repeat!important;
+}
+#details.details-option4 .details-v4-card{
+ background:rgba(255,248,238,.20)!important;
+ border:1.5px solid rgba(255,255,255,.72)!important;
+ box-shadow:0 5px 16px rgba(104,69,39,.045)!important;
+}
+#details.details-option4 .details-v4-safety{
+ background:rgba(177,111,58,.56)!important;
+ border:1px solid rgba(255,245,230,.22)!important;
+}
+@media(max-width:600px){
+ #details.details-option4 .details-v4-card{background:rgba(255,248,238,.20)!important;}
+ #details.details-option4 .details-v4-safety{background:rgba(177,111,58,.56)!important;}
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>

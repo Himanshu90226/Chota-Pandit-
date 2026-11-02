@@ -1,39 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="800" viewBox="0 0 1920 800">
 <defs>
- <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f8ddc3"/><stop offset=".42" stop-color="#ffe7d0"/><stop offset=".78" stop-color="#f8d7b9"/><stop offset="1" stop-color="#c9a17a"/></linearGradient>
- <radialGradient id="sun"><stop stop-color="#fff6e9" stop-opacity=".95"/><stop offset="1" stop-color="#fff0df" stop-opacity="0"/></radialGradient>
- <linearGradient id="table" x2="0" y2="1"><stop stop-color="#f3dfc6"/><stop offset=".18" stop-color="#d9bd9a"/><stop offset=".55" stop-color="#c5a17b"/><stop offset="1" stop-color="#947052"/></linearGradient>
- <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="4" seed="17"/><feColorMatrix values=".7 0 0 0 .18 .7 0 0 0 .12 .7 0 0 0 .06 0 0 0 .24 0"/></filter>
- <filter id="blur"><feGaussianBlur stdDeviation="15"/></filter>
+ <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffead7"/><stop offset=".48" stop-color="#ffdfc6"/><stop offset=".83" stop-color="#f8d5b8"/><stop offset="1" stop-color="#c8a17c"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#fff8ed" stop-opacity=".95"/><stop offset="1" stop-color="#fff1e2" stop-opacity="0"/></radialGradient>
+ <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0db"/><stop offset=".15" stop-color="#e9d3b5"/><stop offset=".43" stop-color="#c8a782"/><stop offset="1" stop-color="#967354"/></linearGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="20"/></filter>
+ <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".48" numOctaves="3" seed="12"/><feColorMatrix values=".8 0 0 0 .18 .8 0 0 0 .12 .8 0 0 0 .06 0 0 0 .18 0"/></filter>
 </defs>
-<rect width="1600" height="900" fill="url(#wall)"/>
-<ellipse cx="780" cy="370" rx="1000" ry="530" fill="url(#sun)"/>
-<!-- distinct soft botanical canopy at top left -->
-<g fill="#66852c" opacity=".92">
- <path d="M0 0h30q100 38 170 160Q90 122 0 58Z"/>
- <path d="M0 0Q98 2 178 82Q83 80 0 40Z"/>
- <path d="M20 0Q145 0 260 118Q145 91 20 0Z"/>
- <path d="M0 65Q95 65 170 205Q77 162 0 115Z"/>
- <path d="M85 0Q198 18 278 135Q175 102 85 0Z"/>
- <path d="M0 130Q95 123 140 260Q60 214 0 180Z"/>
- <path d="M0 0Q10 140 98 235" fill="none" stroke="#8ba34b" stroke-width="8"/>
+<rect width="1920" height="800" fill="url(#wall)"/>
+<ellipse cx="850" cy="320" rx="1150" ry="520" fill="url(#sun)"/>
+<!-- sunlight and soft leafy shadows on the warm plaster -->
+<g opacity=".22" fill="#fff9ed" filter="url(#blur)">
+ <path d="M0 0L470 0 760 590 420 590Z"/>
+ <path d="M420 0L710 0 970 610 700 610Z"/>
+ <path d="M1160 0L1450 0 1650 500 1410 500Z"/>
 </g>
-<g fill="#9aa65e" opacity=".34" filter="url(#blur)">
- <ellipse cx="90" cy="160" rx="60" ry="180" transform="rotate(-32 90 160)"/>
- <ellipse cx="220" cy="40" rx="45" ry="130" transform="rotate(-48 220 40)"/>
- <ellipse cx="1500" cy="80" rx="55" ry="180" transform="rotate(35 1500 80)"/>
+<g opacity=".14" fill="#758849" filter="url(#blur)">
+ <ellipse cx="1700" cy="130" rx="38" ry="180" transform="rotate(32 1700 130)"/>
+ <ellipse cx="1580" cy="170" rx="34" ry="150" transform="rotate(-28 1580 170)"/>
+ <ellipse cx="240" cy="420" rx="35" ry="150" transform="rotate(28 240 420)"/>
 </g>
-<!-- soft leafy shadows across the peach plaster -->
-<g fill="#74864b" opacity=".12" filter="url(#blur)">
- <ellipse cx="1350" cy="150" rx="38" ry="170" transform="rotate(35 1350 150)"/>
- <ellipse cx="1450" cy="210" rx="35" ry="150" transform="rotate(-25 1450 210)"/>
- <ellipse cx="270" cy="490" rx="35" ry="130" transform="rotate(40 270 490)"/>
+<!-- upper-left green branch -->
+<g fill="#78952d">
+ <path d="M0 0Q145 35 280 205Q150 135 0 74Z"/>
+ <path d="M0 0Q95 -5 174 105Q80 75 0 40Z"/>
+ <path d="M42 0Q185 0 305 140Q170 90 42 0Z"/>
+ <path d="M0 58Q92 52 180 196Q80 143 0 112Z"/>
+ <path d="M105 0Q225 18 300 120Q196 89 105 0Z"/>
+ <path d="M0 0Q10 115 105 245" fill="none" stroke="#8ca34b" stroke-width="9"/>
 </g>
-<!-- natural stone tabletop -->
-<path d="M0 735Q260 712 500 729T1000 725T1600 730V900H0Z" fill="url(#table)"/>
-<path d="M0 739Q260 716 500 733T1000 729T1600 734" fill="none" stroke="#fff0dc" stroke-width="17" opacity=".88"/>
-<path d="M0 772Q300 752 600 778T1180 770T1600 775" fill="none" stroke="#9c7958" stroke-width="4" opacity=".28"/>
-<path d="M0 815Q300 790 620 817T1240 811T1600 817" fill="none" stroke="#f3dfc6" stroke-width="5" opacity=".26"/>
-<path d="M0 858Q360 840 690 862T1320 854T1600 860" fill="none" stroke="#805e43" stroke-width="3" opacity=".24"/>
-<rect x="0" y="735" width="1600" height="165" filter="url(#noise)" opacity=".22"/>
+<g fill="#93a84d" opacity=".35" filter="url(#blur)">
+ <ellipse cx="65" cy="95" rx="32" ry="115" transform="rotate(-32 65 95)"/>
+ <ellipse cx="180" cy="40" rx="28" ry="105" transform="rotate(-48 180 40)"/>
+</g>
+<!-- lower-left foliage -->
+<g fill="#78952d">
+ <path d="M0 580Q78 550 160 600Q75 604 0 630Z"/>
+ <path d="M0 620Q90 585 175 670Q75 655 0 680Z"/>
+ <path d="M0 690Q75 630 160 720Q70 730 0 730Z"/>
+ <path d="M0 550Q8 490 75 470Q70 530 0 550Z"/>
+ <path d="M0 740Q50 690 120 780Q50 775 0 780Z"/>
+</g>
+<!-- stone surface across the lower edge -->
+<path d="M0 742Q260 725 520 739T1040 736T1560 740T1920 736V800H0Z" fill="url(#stone)"/>
+<path d="M0 746Q260 729 520 743T1040 740T1560 744T1920 740" fill="none" stroke="#fff2df" stroke-width="13" opacity=".95"/>
+<g fill="none" stroke-linecap="round">
+ <path d="M0 762Q320 750 620 766T1230 760T1920 763" stroke="#9e7e5e" stroke-width="3" opacity=".38"/>
+ <path d="M0 779Q280 768 600 782T1260 778T1920 779" stroke="#f4e0c8" stroke-width="4" opacity=".45"/>
+ <path d="M0 793Q330 782 680 796T1370 792T1920 793" stroke="#866747" stroke-width="2" opacity=".25"/>
+</g>
+<rect y="738" width="1920" height="62" filter="url(#grain)" opacity=".2"/>
 </svg>
