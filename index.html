@@ -1602,6 +1602,74 @@ h2.section-title{letter-spacing:-.015em}
  .pandit-video-card-number{font-size:10px!important;}
 }
 </style>
+
+<style>
+/* PRODUCT DETAILS — approved Option 4 layout with translucent panels */
+#details.details-option4{
+ position:relative;isolation:isolate;overflow:hidden;
+ padding:78px 0 76px!important;
+ background:
+  radial-gradient(ellipse at 12% 8%,rgba(255,255,255,.44),transparent 34%),
+  radial-gradient(ellipse at 88% 16%,rgba(255,239,215,.65),transparent 32%),
+  linear-gradient(115deg,#f4d5b8 0%,#f8dfc7 48%,#f1c9a8 100%)!important;
+}
+#details.details-option4:before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:
+  radial-gradient(ellipse at 4% 0%,rgba(74,104,34,.24) 0 2%,transparent 17%),
+  radial-gradient(ellipse at 98% 8%,rgba(116,93,56,.16) 0 3%,transparent 19%),
+  linear-gradient(125deg,transparent 0 18%,rgba(255,255,255,.20) 19%,transparent 34%),
+  repeating-linear-gradient(172deg,transparent 0 9px,rgba(255,255,255,.025) 10px 11px);
+ opacity:.9;
+}
+#details.details-option4:after{
+ content:"";position:absolute;left:0;right:0;bottom:0;height:34px;z-index:-1;
+ background:linear-gradient(180deg,rgba(198,159,119,.15),rgba(142,111,79,.35)),
+ repeating-linear-gradient(90deg,#c8aa87 0 2px,#ddc3a2 3px 7px,#b99570 8px 10px);
+ box-shadow:0 -8px 24px rgba(126,86,52,.10);
+}
+.details-v4{max-width:1420px!important;width:min(94%,1420px)!important;margin:auto!important;}
+.details-v4-heading{text-align:center;margin:0 auto 38px;max-width:900px;}
+.details-v4-heading .eyebrow{font-size:13px!important;letter-spacing:.2em!important;font-weight:700!important;color:#5b321b!important;margin-bottom:12px!important;}
+.details-v4-heading .section-title{font-size:clamp(42px,5vw,68px)!important;line-height:1!important;letter-spacing:-.045em!important;margin:0 0 12px!important;color:#2b160d!important;}
+.details-v4-heading .lead{font-size:clamp(15px,1.5vw,21px)!important;line-height:1.45!important;color:#4d392b!important;margin:0!important;}
+.details-v4-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;align-items:stretch;}
+.details-v4-card{
+ min-height:220px;padding:22px 12px 20px;border:1px solid rgba(255,255,255,.78);
+ border-radius:25px;background:rgba(255,250,243,.34);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+ box-shadow:0 8px 18px rgba(92,58,31,.10);display:flex;flex-direction:column;
+ align-items:center;justify-content:flex-start;text-align:center;gap:10px;color:#2d1a10;
+}
+.details-v4-icon{height:58px;min-width:58px;display:grid;place-items:center;color:#754016;font-family:Georgia,serif;font-size:54px;line-height:1;font-weight:400;}
+.details-v4-card b{font-size:18px;line-height:1.2;font-weight:700;color:#24150e;}
+.details-v4-card span:last-child{font-size:16px;line-height:1.4;color:#503d30;}
+.details-v4-safety{
+ margin-top:30px;display:grid;grid-template-columns:76px minmax(170px,.42fr) minmax(0,1.5fr);
+ align-items:center;gap:22px;padding:23px 30px;border-radius:25px;
+ color:#fffaf4;border:1px solid rgba(255,255,255,.72);
+ background:rgba(117,68,35,.57);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+ box-shadow:0 10px 24px rgba(91,53,29,.13);
+}
+.details-v4-shield{font-size:54px;line-height:1;text-align:center;color:#ffe0b4;border-right:1px solid rgba(255,226,190,.75);padding-right:20px;}
+.details-v4-safety strong{font-size:23px;line-height:1.18;color:#fffaf4;}
+.details-v4-safety p{font-size:16px;line-height:1.55;color:#fffaf4;margin:0;}
+@media(max-width:980px){.details-v4-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.details-v4-card{min-height:190px;}}
+@media(max-width:640px){
+ #details.details-option4{padding:52px 0 56px!important;}
+ .details-v4{width:calc(100% - 28px)!important;}
+ .details-v4-heading{margin-bottom:24px;}
+ .details-v4-heading .section-title{font-size:39px!important;}
+ .details-v4-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+ .details-v4-card{min-height:164px;padding:16px 8px;border-radius:18px;gap:7px;}
+ .details-v4-icon{height:46px;min-width:46px;font-size:43px;}
+ .details-v4-card b{font-size:15px;}
+ .details-v4-card span:last-child{font-size:13px;}
+ .details-v4-safety{grid-template-columns:48px 1fr;gap:12px;padding:18px 16px;margin-top:18px;border-radius:18px;}
+ .details-v4-shield{font-size:36px;padding-right:10px;}
+ .details-v4-safety strong{font-size:17px;}
+ .details-v4-safety p{grid-column:1/-1;font-size:13px;line-height:1.5;}
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
@@ -1794,24 +1862,25 @@ h2.section-title{letter-spacing:-.015em}
   </div>
 </section>
 
-<section class="section" id="details">
-  <div class="container details-grid">
-    <div>
-      <div class="eyebrow">Product details</div>
+<section class="section details-option4" id="details">
+  <div class="container details-v4">
+    <div class="details-v4-heading">
+      <div class="eyebrow">PRODUCT DETAILS</div>
       <h2 class="section-title">What you’re getting.</h2>
       <p class="lead">Everything you need to know before bringing Pandit Ji home.</p>
-      <div class="warning">
-        <strong>Using Pandit Ji safely</strong>
-        <p>Always place Pandit Ji on a stable surface with a suitable heat-resistant tray underneath. Keep burning incense away from children, pets and anything flammable. Never leave it unattended and allow everything to cool before handling.</p>
-      </div>
     </div>
-    <div class="specs">
-      <div class="spec"><b>In the box</b><span>One Pandit Ji figure</span></div>
-      <div class="spec"><b>Height</b><span>5 inches (12.7 cm)</span></div>
-      <div class="spec"><b>Width</b><span>3.5 inches (9 cm)</span></div>
-      <div class="spec"><b>Material</b><span>Cold-cast marble composite</span></div>
-      <div class="spec"><b>Finish</b><span>Painted and sealed by hand</span></div>
-      <div class="spec"><b>Not included</b><span>Ash tray and incense sticks</span></div>
+    <div class="details-v4-grid">
+      <article class="details-v4-card"><span class="details-v4-icon" aria-hidden="true">◇</span><b>In the box</b><span>One Pandit Ji<br>figure</span></article>
+      <article class="details-v4-card"><span class="details-v4-icon" aria-hidden="true">↕</span><b>Height</b><span>5 inches<br>(12.7 cm)</span></article>
+      <article class="details-v4-card"><span class="details-v4-icon" aria-hidden="true">↔</span><b>Width</b><span>3.5 inches<br>(9 cm)</span></article>
+      <article class="details-v4-card"><span class="details-v4-icon details-v4-stack" aria-hidden="true">▱</span><b>Material</b><span>Cold-cast<br>marble composite</span></article>
+      <article class="details-v4-card"><span class="details-v4-icon" aria-hidden="true">♢</span><b>Finish</b><span>Painted and<br>sealed by hand</span></article>
+      <article class="details-v4-card"><span class="details-v4-icon" aria-hidden="true">⊘</span><b>Not included</b><span>Ash tray and<br>incense sticks</span></article>
+    </div>
+    <div class="details-v4-safety">
+      <div class="details-v4-shield" aria-hidden="true">◇</div>
+      <strong>Using Pandit Ji<br>safely.</strong>
+      <p>Always place Pandit Ji on a stable surface with a suitable heat-resistant tray underneath. Keep burning incense away from children, pets and anything flammable. Never leave it unattended and allow everything to cool before handling.</p>
     </div>
   </div>
 </section>
