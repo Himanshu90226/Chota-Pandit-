@@ -1918,6 +1918,52 @@ h2.section-title{letter-spacing:-.015em}
  }
 }
 </style>
+
+<style>
+/* Compact specification cards and safety note — no icon or background changes */
+#details.details-option4 .details-v4-card{
+ height:178px!important;min-height:178px!important;
+ padding:15px 8px 12px!important;gap:7px!important;
+}
+#details.details-option4 .details-v4-card b{font-size:15px!important;line-height:1.15!important;}
+#details.details-option4 .details-v4-card span:last-child{font-size:13px!important;line-height:1.3!important;}
+#details.details-option4 .details-v4-safety{
+ min-height:0!important;height:auto!important;
+ margin-top:18px!important;padding:12px 18px!important;
+ grid-template-columns:54px minmax(125px,.5fr) minmax(0,1.5fr)!important;
+ gap:12px!important;border-radius:22px!important;
+}
+#details.details-option4 .details-v4-shield{font-size:36px!important;padding-right:10px!important;}
+#details.details-option4 .details-v4-shield svg{width:38px!important;height:44px!important;}
+#details.details-option4 .details-v4-safety strong{font-size:16px!important;line-height:1.12!important;}
+#details.details-option4 .details-v4-safety p{font-size:11px!important;line-height:1.3!important;}
+@media(max-width:900px){
+ #details.details-option4 .details-v4-card{height:130px!important;min-height:130px!important;padding:10px 6px 8px!important;gap:5px!important;}
+ #details.details-option4 .details-v4-card b{font-size:12px!important;}
+ #details.details-option4 .details-v4-card span:last-child{font-size:10px!important;line-height:1.22!important;}
+ #details.details-option4 .details-v4-safety{margin-top:12px!important;padding:9px 12px!important;gap:8px!important;grid-template-columns:38px minmax(90px,.65fr) minmax(0,1.6fr)!important;}
+ #details.details-option4 .details-v4-shield{padding-right:7px!important;}
+ #details.details-option4 .details-v4-shield svg{width:30px!important;height:35px!important;}
+ #details.details-option4 .details-v4-safety strong{font-size:12px!important;}
+ #details.details-option4 .details-v4-safety p{font-size:9px!important;line-height:1.22!important;}
+}
+@media(max-width:600px){
+ #details.details-option4 .details-v4-grid{gap:7px!important;}
+ #details.details-option4 .details-v4-card{height:112px!important;min-height:112px!important;padding:8px 4px 7px!important;border-radius:16px!important;gap:4px!important;}
+ #details.details-option4 .details-v4-card b{font-size:10.5px!important;}
+ #details.details-option4 .details-v4-card span:last-child{font-size:9px!important;line-height:1.18!important;}
+ #details.details-option4 .details-v4-safety{
+  height:auto!important;min-height:0!important;
+  grid-template-columns:30px minmax(76px,.65fr) minmax(0,1.65fr)!important;
+  gap:6px!important;margin-top:10px!important;padding:7px 8px!important;
+  border-radius:15px!important;
+ }
+ #details.details-option4 .details-v4-shield{padding-right:5px!important;}
+ #details.details-option4 .details-v4-shield svg{width:24px!important;height:29px!important;}
+ #details.details-option4 .details-v4-safety strong{font-size:10px!important;line-height:1.08!important;}
+ #details.details-option4 .details-v4-safety p{grid-column:auto!important;font-size:8px!important;line-height:1.18!important;}
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
