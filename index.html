@@ -2141,7 +2141,42 @@ h2.section-title{letter-spacing:-.015em}
  .faq.faq-accordion-premium .faq-support{font-size:12px;margin-top:22px;}
 }
 </style>
-</head>
+<style id="faq-card-grid-and-track-nav">
+/* FAQ: 4 x 2 premium icon-card grid */
+.faq.faq-card-grid{position:relative;isolation:isolate;overflow:hidden;padding:clamp(48px,6vw,76px) 0!important;background:linear-gradient(135deg,#f8ecdc 0%,#f4e3cf 52%,#f9efe2 100%)!important;color:#32180d!important}
+.faq.faq-card-grid .container{max-width:1240px!important}
+.faq.faq-card-grid .faq-kicker{text-align:center;text-transform:uppercase;letter-spacing:.2em;font-size:11px;font-weight:700;color:#a65d39;margin:0 0 12px}
+.faq.faq-card-grid h2{text-align:center;color:#32180d!important;font:500 clamp(34px,4.6vw,54px)/1.08 "Playfair Display",Georgia,serif!important;margin:0 0 10px!important}
+.faq.faq-card-grid .faq-intro{text-align:center;color:#796557;font-size:15px;line-height:1.6;margin:0 0 30px}
+.faq.faq-card-grid .faq-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.faq.faq-card-grid .faq-grid-card{min-width:0;min-height:210px;padding:23px 19px 21px;border:1px solid rgba(255,255,255,.9);border-radius:17px;background:rgba(255,250,243,.68);box-shadow:0 8px 22px rgba(94,55,28,.07);text-align:center;display:flex;flex-direction:column;align-items:center}
+.faq.faq-card-grid .faq-grid-icon{width:36px;height:36px;margin:0 0 13px;color:#87502f;display:grid;place-items:center}
+.faq.faq-card-grid .faq-grid-icon svg{width:30px;height:30px;display:block}
+.faq.faq-card-grid .faq-grid-card h3{font:600 15px/1.35 "DM Sans",Arial,sans-serif;color:#32180d;margin:0 0 9px}
+.faq.faq-card-grid .faq-grid-card p{font:400 13px/1.6 "DM Sans",Arial,sans-serif;color:#76665a;margin:0;max-width:250px}
+.faq.faq-card-grid .faq-support{display:flex;justify-content:center;align-items:center;gap:12px;margin:28px auto 0;color:#68432f;font-size:14px;text-align:center}
+.faq.faq-card-grid .faq-support a{color:#874c2c;text-decoration:none;border-bottom:1px solid rgba(135,76,44,.45);font-weight:600}
+.nav-actions{align-items:center}
+.nav-actions .nav-track-order{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none;font:600 12px/1 "DM Sans",Arial,sans-serif;letter-spacing:.02em;padding:9px 12px;border:1px solid currentColor;border-radius:999px;background:rgba(255,248,239,.13);transition:background .2s ease,transform .2s ease}
+.nav-actions .nav-track-order:hover{background:rgba(255,248,239,.28);transform:translateY(-1px)}
+.nav-actions .nav-track-order svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){
+ .faq.faq-card-grid{padding:40px 0 44px!important}
+ .faq.faq-card-grid .container{width:calc(100% - 32px)!important}
+ .faq.faq-card-grid .faq-intro{font-size:13px;margin-bottom:22px}
+ .faq.faq-card-grid .faq-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .faq.faq-card-grid .faq-grid-card{min-height:190px;padding:17px 12px 15px;border-radius:14px}
+ .faq.faq-card-grid .faq-grid-icon{width:30px;height:30px;margin-bottom:10px}
+ .faq.faq-card-grid .faq-grid-icon svg{width:26px;height:26px}
+ .faq.faq-card-grid .faq-grid-card h3{font-size:13px;margin-bottom:7px}
+ .faq.faq-card-grid .faq-grid-card p{font-size:11.5px;line-height:1.5}
+ .faq.faq-card-grid .faq-support{font-size:12px;margin-top:22px}
+ .nav{padding:16px 0}
+ .nav-actions .nav-track-order{padding:8px 10px;font-size:11px;gap:5px}
+ .nav-actions .nav-track-order svg{width:17px;height:17px}
+}
+@media(min-width:761px) and (max-width:980px){.faq.faq-card-grid .faq-grid{gap:11px}.faq.faq-card-grid .faq-grid-card{padding:18px 12px}}
+</style></head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
 <div id="akOfferPopup" aria-hidden="true"><div class="ak-popup-card" role="dialog" aria-modal="true" aria-labelledby="akPopupHeading"><button class="ak-popup-close" id="akPopupClose" aria-label="Close offer">×</button><img class="ak-popup-image" id="akPopupImage" alt="Festival offer" loading="lazy" decoding="async" hidden><div class="ak-popup-content"><div class="ak-popup-brand">AKARRA</div><h2 id="akPopupHeading">Festival Offer</h2><p id="akPopupSubheading">Bring home a little nostalgia</p><div class="ak-popup-discount" id="akPopupDiscount">Special offer</div><div class="ak-countdown" id="akPopupCountdown"><span><b>--</b>Days</span><span><b>--</b>Hours</span><span><b>--</b>Minutes</span><span><b>--</b>Seconds</span></div><a class="ak-popup-cta" id="akPopupCta" href="#shop">Shop Now</a></div></div></div>
@@ -2162,7 +2197,7 @@ h2.section-title{letter-spacing:-.015em}
   <a class="logo" href="#" aria-label="Akarra home"><img class="brand-logo" src="assets/akarra-logo-white.png" alt="Akarra" width="437" height="144" decoding="async"></a>
   <nav class="nav-links">
   </nav>
-  <div class="nav-actions"></div>
+  <div class="nav-actions"><a class="nav-track-order" href="track.html" aria-label="Track your order" title="Track Order"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z"/><path d="M3.5 7.7 12 12l8.5-4.3M12 12v9M8 5l9 4.5"/><path d="M16.5 3.8h3.8v3.8"/></svg><span>Track Order</span></a></div>
 </header>
 
 <section class="hero" id="shop">
@@ -2356,18 +2391,18 @@ h2.section-title{letter-spacing:-.015em}
   </div>
 </section>
 
-<section class="faq faq-accordion-premium" id="faq"><div class="container">
+<section class="faq faq-card-grid" id="faq"><div class="container">
 <div class="faq-kicker">AKARRA · CUSTOMER CARE</div>
 <h2>You asked. We answered.</h2>
 <p class="faq-intro">A few helpful answers before bringing Pandit Ji home.</p>
-<details><summary>When will my order arrive?</summary><p>Orders are generally dispatched within 1–2 working days after payment confirmation. Estimated delivery is 3–7 working days after dispatch. Delivery is free on every order.</p></details>
-<details><summary>How can I pay for my order?</summary><p>Enter your delivery details and pay securely through Razorpay using the payment methods shown at checkout. Your order is marked paid only after server-side verification.</p></details>
-<details><summary>What material and size is Pandit Ji?</summary><p>Cold-cast marble composite, painted and sealed by hand. Height 5 inches (12.7 cm), width 3.5 inches (9 cm).</p></details>
-<details><summary>What comes inside the box?</summary><p>The box contains one Pandit Ji figure. Use a heat-resistant tray to catch ash, keep it away from children, pets and flammable things, and never leave burning incense unattended.</p></details>
-<details><summary>Can I save when buying multiple pieces?</summary><p>Yes. Buy 2 and save ₹50 per piece, or buy 3 and save ₹100 per piece. The discount applies automatically.</p></details>
-<details><summary>What is your return policy?</summary><p>No, Pandit Ji cannot be returned. Because each piece is made to order, we do not accept returns.</p></details>
-<details><summary>What happens if my order arrives damaged?</summary><p>Please contact us within 48 hours of delivery. We will review the issue and arrange a replacement where eligible. To qualify, you must record a video before you open the parcel and keep recording while you open it, showing the parcel sealed and the damage. Without this unboxing video we cannot replace the item. Send the video to us on WhatsApp.</p></details>
-<details><summary>Need help with something else?</summary><p>Message us on WhatsApp and we will reply.</p></details>
+<div class="faq-grid"><article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 8 9 5 9-5M3 8v9l9 5 9-5V8M12 13v9"/></svg></span><h3>What comes inside the box?</h3><p>One Pandit Ji figure. Ash tray and incense sticks are not included.</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v12H3zM14 10h4l3 4v4h-7z"/><circle cx="7.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></svg></span><h3>When will my order arrive?</h3><p>Orders dispatch within 1–2 working days. Delivery usually takes 3–7 working days after dispatch.</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6 15h4"/></svg></span><h3>How can I pay for my order?</h3><p>Pay securely at checkout using the payment methods displayed there. Your order is confirmed after payment verification.</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 17 4l3 3L7 20H4z"/><path d="m13 8 3 3M10 11l2 2M7 14l2 2"/></svg></span><h3>What material and size is Pandit Ji?</h3><p>Made from cold-cast marble composite, hand-painted and sealed. Height: 5 inches (12.7 cm); width: 3.5 inches (9 cm).</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13 11 22l-9-9V3h10l8 10Z"/><circle cx="7" cy="7" r="1.5"/></svg></span><h3>Can I save when buying multiple pieces?</h3><p>Yes. Multi-piece discounts are applied automatically when eligible offers are active at checkout.</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.5-3"/></svg></span><h3>What is your return policy?</h3><p>Pandit Ji is made to order, so returns are not accepted. Please review our Replacement Policy for eligible issues.</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="M12 8v5M12 16h.01"/></svg></span><h3>What happens if my order arrives damaged?</h3><p>Contact us within 48 hours of delivery. Record one continuous unboxing video showing the sealed parcel and the damage, then share it with us on WhatsApp for review.</p></article>
+<article class="faq-grid-card"><span class="faq-grid-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-4.9A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span><h3>Need help with something else?</h3><p>Our team is happy to help. Reach out to us on WhatsApp and we’ll get back to you.</p></article></div>
 <div class="faq-support"><span>Still have a question?</span><a href="https://wa.me/918005961431?text=Hi%2C%20I%20have%20a%20question%20about%20Pandit%20Ji" target="_blank" rel="noopener">Talk to us on WhatsApp</a></div>
 </div></section>
 <div class="sticky-buy" id="stickyBuy"><button class="sb-main" type="button" onclick="openBuyPanel()">Buy Now · <span id="stickyPrice">₹699</span></button><a class="sb-wa" href="https://wa.me/918005961431?text=Hi%2C%20I%20have%20a%20question%20about%20Pandit%20Ji" target="_blank" rel="noopener" aria-label="Ask on WhatsApp"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 3.5A11.7 11.7 0 0 0 12.1 0C5.7 0 .5 5.2.5 11.6c0 2 .5 4 1.5 5.7L.4 24l6.9-1.8a11.6 11.6 0 0 0 4.8 1c6.4 0 11.6-5.2 11.6-11.6 0-3.1-1.2-6-3.2-8.1Z" fill="white"/><path d="M17.3 13.8c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.5.1-.2 0-.4 0-.6-.1-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.2.2 2 3.1 4.9 4.2.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.3Z" fill="#25d366"/></svg></a></div>
