@@ -3792,57 +3792,46 @@ loadStorefrontProduct();
 
 
 <style id="details-safety-one-clean-rule">
-/* Simple, slim safety bar: shield + one divider + heading + message. */
+/* Stable flex layout prevents the safety text from collapsing into a narrow grid column. */
 #details.details-option4 .details-v4-safety{
-  display:grid!important;
-  grid-template-columns:64px 190px minmax(0,1fr)!important;
-  grid-template-rows:auto!important;
-  align-items:center!important;
-  column-gap:22px!important;
-  row-gap:0!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  padding:14px 28px!important;
-  margin-top:20px!important;
+  display:flex!important; flex-flow:row nowrap!important;
+  align-items:center!important; justify-content:stretch!important;
+  gap:22px!important; width:100%!important; height:auto!important; min-height:0!important;
+  box-sizing:border-box!important; padding:14px 28px!important; margin-top:20px!important;
   border-radius:22px!important;
 }
 #details.details-option4 .details-v4-shield{
-  grid-column:1!important;grid-row:1!important;
-  display:flex!important;align-items:center!important;justify-content:center!important;
-  border-right:1px solid rgba(255,255,255,.72)!important;
-  padding:0 18px 0 0!important;
+  flex:0 0 64px!important; width:64px!important; min-width:64px!important;
+  display:flex!important; align-items:center!important; justify-content:center!important;
+  box-sizing:border-box!important; border:0!important; border-right:1px solid rgba(255,255,255,.72)!important;
+  padding:0 18px 0 0!important; margin:0!important;
 }
 #details.details-option4 .details-v4-shield svg{
-  display:block!important;width:42px!important;height:48px!important;
-  fill:none!important;stroke:#fff7e9!important;stroke-width:2.2!important;
+  display:block!important; width:42px!important; height:48px!important;
+  fill:none!important; stroke:#fff7e9!important; stroke-width:2.2!important;
 }
 #details.details-option4 .details-v4-divider{display:none!important;}
 #details.details-option4 .details-v4-safety strong{
-  grid-column:2!important;grid-row:1!important;
-  display:block!important;min-width:0!important;margin:0!important;
-  font-size:21px!important;line-height:1.18!important;white-space:normal!important;
+  flex:0 0 190px!important; width:190px!important; min-width:0!important;
+  display:block!important; margin:0!important; font-size:21px!important; line-height:1.18!important;
 }
 #details.details-option4 .details-v4-safety p{
-  grid-column:3!important;grid-row:1!important;
-  display:block!important;min-width:0!important;width:100%!important;max-width:none!important;
-  margin:0!important;font-size:15px!important;line-height:1.38!important;
+  flex:1 1 0!important; width:auto!important; min-width:0!important; max-width:none!important;
+  display:block!important; margin:0!important; font-size:15px!important; line-height:1.38!important;
 }
 @media(max-width:640px){
   #details.details-option4 .details-v4-safety{
-    grid-template-columns:42px 96px minmax(0,1fr)!important;
-    column-gap:10px!important;
-    padding:12px 12px!important;
-    margin-top:16px!important;
-    border-radius:17px!important;
+    gap:10px!important; padding:12px!important; margin-top:16px!important; border-radius:17px!important;
   }
-  #details.details-option4 .details-v4-shield{grid-column:1!important;grid-row:1!important;padding:0 9px 0 0!important;}
+  #details.details-option4 .details-v4-shield{
+    flex:0 0 42px!important; width:42px!important; min-width:42px!important; padding:0 9px 0 0!important;
+  }
   #details.details-option4 .details-v4-shield svg{width:30px!important;height:36px!important;}
   #details.details-option4 .details-v4-safety strong{
-    grid-column:2!important;grid-row:1!important;font-size:13px!important;line-height:1.2!important;
+    flex:0 0 96px!important; width:96px!important; font-size:13px!important; line-height:1.2!important;
   }
   #details.details-option4 .details-v4-safety p{
-    grid-column:3!important;grid-row:1!important;font-size:10px!important;line-height:1.35!important;
+    flex:1 1 0!important; width:auto!important; min-width:0!important; font-size:10px!important; line-height:1.35!important;
   }
 }
 </style>
