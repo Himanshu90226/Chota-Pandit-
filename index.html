@@ -1729,6 +1729,69 @@ h2.section-title{letter-spacing:-.015em}
 @media(max-width:900px){.details-v4{width:94%!important}.details-v4-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:13px!important}.details-v4-card{min-height:195px!important;}}
 @media(max-width:600px){#details.details-option4{padding:48px 0 54px!important;background-position:center center!important}.details-v4{width:calc(100% - 28px)!important}.details-v4-heading{margin-bottom:22px!important}.details-v4-heading .eyebrow{font-size:12px!important}.details-v4-heading .section-title{font-size:40px!important}.details-v4-heading .lead{font-size:15px!important}.details-v4-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}.details-v4-card{min-height:178px!important;padding:16px 8px!important;border-radius:21px!important;gap:8px!important}.details-v4-icon{height:48px!important;width:48px!important;flex-basis:48px!important}.details-v4-icon svg{width:42px!important;height:42px!important}.details-v4-card b{font-size:15px!important}.details-v4-card span:last-child{font-size:13px!important}.details-v4-safety{grid-template-columns:54px 1fr!important;gap:12px!important;padding:18px 15px!important;margin-top:18px!important;border-radius:20px!important}.details-v4-shield{border-right:1px solid rgba(255,255,255,.65)!important;padding-right:10px!important}.details-v4-shield svg{width:38px!important;height:44px!important}.details-v4-safety strong{font-size:17px!important}.details-v4-safety p{grid-column:1/-1!important;font-size:13px!important;line-height:1.5!important}}
 </style>
+
+<style>
+/* Exact proportions from the user's latest Product Details reference */
+#details.details-option4{
+ background-color:#f8dec5!important;
+ background-image:url('assets/product-details-bg.svg')!important;
+ background-position:center center!important;
+ background-size:cover!important;
+ padding:76px 0 82px!important;
+}
+.details-v4{width:min(94%,1280px)!important;max-width:1280px!important;}
+.details-v4-heading{margin:0 auto 38px!important;max-width:1050px!important;}
+.details-v4-heading .eyebrow{font-size:19px!important;letter-spacing:.19em!important;color:#a64e31!important;margin-bottom:16px!important;}
+.details-v4-heading .section-title{font-size:clamp(58px,6vw,82px)!important;line-height:1.03!important;margin-bottom:16px!important;color:#2b160d!important;}
+.details-v4-heading .lead{font-size:clamp(19px,1.9vw,25px)!important;color:#4b372b!important;}
+.details-v4-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:22px!important;}
+.details-v4-card{min-height:320px!important;padding:32px 12px 26px!important;border-radius:42px!important;background:rgba(255,250,243,.42)!important;border:2px solid rgba(255,255,255,.86)!important;box-shadow:0 7px 18px rgba(112,72,40,.045)!important;gap:13px!important;}
+.details-v4-icon{height:78px!important;width:78px!important;flex-basis:78px!important;}
+.details-v4-icon svg{width:70px!important;height:70px!important;stroke-width:2.15!important;}
+.details-v4-card b{font-size:clamp(19px,1.7vw,25px)!important;font-weight:750!important;}
+.details-v4-card span:last-child{font-size:clamp(17px,1.5vw,22px)!important;line-height:1.45!important;}
+.details-v4-safety{margin-top:40px!important;grid-template-columns:150px minmax(250px,.55fr) minmax(0,1.65fr)!important;gap:28px!important;padding:34px 42px!important;min-height:230px!important;border-radius:42px!important;background:rgba(183,119,67,.82)!important;box-shadow:0 7px 18px rgba(91,53,29,.07)!important;}
+.details-v4-shield{border-right:2px solid rgba(255,255,255,.78)!important;padding-right:30px!important;}
+.details-v4-shield svg{width:90px!important;height:100px!important;stroke-width:2.2!important;}
+.details-v4-safety strong{font-size:clamp(28px,2.5vw,38px)!important;line-height:1.18!important;}
+.details-v4-safety p{font-size:clamp(18px,1.65vw,24px)!important;line-height:1.5!important;}
+@media(max-width:900px){
+ #details.details-option4{padding:54px 0 60px!important;}
+ .details-v4{width:calc(100% - 36px)!important;}
+ .details-v4-heading{margin-bottom:26px!important;}
+ .details-v4-heading .section-title{font-size:clamp(42px,6vw,58px)!important;}
+ .details-v4-heading .lead{font-size:16px!important;}
+ .details-v4-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:13px!important;}
+ .details-v4-card{min-height:210px!important;padding:20px 9px!important;border-radius:25px!important;gap:8px!important;}
+ .details-v4-icon{height:54px!important;width:54px!important;flex-basis:54px!important;}
+ .details-v4-icon svg{width:48px!important;height:48px!important;}
+ .details-v4-card b{font-size:17px!important;}
+ .details-v4-card span:last-child{font-size:14px!important;}
+ .details-v4-safety{grid-template-columns:72px minmax(145px,.6fr) minmax(0,1.5fr)!important;min-height:150px!important;padding:20px!important;gap:14px!important;border-radius:25px!important;}
+ .details-v4-shield{padding-right:14px!important;}
+ .details-v4-shield svg{width:50px!important;height:58px!important;}
+ .details-v4-safety strong{font-size:19px!important;}
+ .details-v4-safety p{font-size:14px!important;}
+}
+@media(max-width:600px){
+ #details.details-option4{padding:42px 0 48px!important;background-position:center center!important;}
+ .details-v4{width:calc(100% - 28px)!important;}
+ .details-v4-heading .eyebrow{font-size:12px!important;margin-bottom:10px!important;}
+ .details-v4-heading .section-title{font-size:38px!important;}
+ .details-v4-heading .lead{font-size:14px!important;}
+ .details-v4-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;}
+ .details-v4-card{min-height:164px!important;padding:14px 5px!important;border-radius:19px!important;gap:7px!important;}
+ .details-v4-icon{height:42px!important;width:42px!important;flex-basis:42px!important;}
+ .details-v4-icon svg{width:37px!important;height:37px!important;}
+ .details-v4-card b{font-size:12px!important;}
+ .details-v4-card span:last-child{font-size:10.5px!important;line-height:1.35!important;}
+ .details-v4-safety{grid-template-columns:48px 1fr!important;gap:10px!important;padding:15px 12px!important;margin-top:16px!important;border-radius:18px!important;min-height:0!important;}
+ .details-v4-shield{padding-right:9px!important;}
+ .details-v4-shield svg{width:36px!important;height:42px!important;}
+ .details-v4-safety strong{font-size:15px!important;}
+ .details-v4-safety p{grid-column:1/-1!important;font-size:11.5px!important;line-height:1.45!important;}
+}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
