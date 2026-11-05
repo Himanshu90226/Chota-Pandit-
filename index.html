@@ -3908,6 +3908,10 @@ loadStorefrontProduct();
 #akarra-smoke-music-player:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @keyframes akSmokeRise{0%{transform:translateY(8px) scale(.55) rotate(-8deg);opacity:0}18%{opacity:.78}55%{transform:translateY(-30px) scale(1.2) rotate(7deg);opacity:.48}100%{transform:translateY(-68px) scale(1.8) rotate(-5deg);opacity:0}}
 @media(max-width:760px){#akarra-smoke-music-player{right:16px;bottom:88px;width:52px;height:52px}}
+@media(min-width:761px){
+  /* Keep the floating music control clear of the fixed desktop WhatsApp button. */
+  #akarra-smoke-music-player{right:24px!important;bottom:92px!important}
+}
 @media(prefers-reduced-motion:reduce){#akarra-smoke-music-player.is-playing:before,#akarra-smoke-music-player.is-playing:after{animation:none;opacity:.25}}
 </style>
 <button id="akarra-smoke-music-player" type="button" aria-label="Play background music" aria-pressed="false">
