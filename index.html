@@ -2235,6 +2235,35 @@ h2.section-title{letter-spacing:-.015em}
 }
 </style>
 
+
+<style id="akarra-desktop-footer-mobile-background-fix">
+/* Desktop footer: match the approved mobile footer background; remove policy divider/box lines.
+   Scoped to desktop only so the mobile footer remains unchanged. */
+@media (min-width:761px){
+  footer{
+    background-color:#8b3d13!important;
+    background-image:linear-gradient(180deg,rgba(36,15,5,.28),rgba(36,15,5,.42)),url("assets/akarra-footer-bg-v3.svg")!important;
+    background-size:cover!important;
+    background-position:center 42%!important;
+    background-repeat:no-repeat!important;
+    color:#fff4e8!important;
+  }
+  footer .footer-description,
+  footer .footer-contact a,
+  footer .footer-social a,
+  footer .footer-policies a{color:#fff0e3!important}
+  footer .footer-heading{color:#fffaf4!important}
+  footer .footer-social a{border-color:rgba(255,242,229,.58)!important}
+  footer .footer-policies{
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    padding-left:0!important;
+    padding-top:0!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
