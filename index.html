@@ -4033,8 +4033,24 @@ loadStorefrontProduct();
  audio.addEventListener('play',function(){paint(true)});
  audio.addEventListener('pause',function(){paint(false)});
  audio.addEventListener('ended',function(){paint(false)});
- // Attempt autoplay; browsers may require the visitor's first tap.
+ // Try autoplay where the browser permits it.
  start();
+
+ // If sound autoplay is blocked, start music on the visitor's first
+ // genuine interaction anywhere on the page (not only the music button).
+ // This is the earliest browser-approved option; forced sound autoplay
+ // on page load cannot be guaranteed by Chrome/Safari policies.
+ var firstGesture=function(event){
+  if(event && event.target && event.target.closest && event.target.closest('#akarra-smoke-music-player'))return;
+  if(!audio.paused)return;
+  start();
+  document.removeEventListener('pointerdown',firstGesture,true);
+  document.removeEventListener('touchstart',firstGesture,true);
+  document.removeEventListener('keydown',firstGesture,true);
+ };
+ document.addEventListener('pointerdown',firstGesture,{capture:true,passive:true});
+ document.addEventListener('touchstart',firstGesture,{capture:true,passive:true});
+ document.addEventListener('keydown',firstGesture,true);
 })();
 </script>
 
