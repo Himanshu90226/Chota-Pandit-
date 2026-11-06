@@ -2184,35 +2184,42 @@ h2.section-title{letter-spacing:-.015em}
 @media(max-width:760px){.nav{z-index:30!important}.nav .logo{display:block!important;visibility:visible!important;opacity:1!important}.nav .brand-logo{filter:none!important;width:88px!important;max-height:32px!important}.nav .nav-actions{display:flex!important;visibility:visible!important;opacity:1!important;margin-left:auto}.nav .nav-track-order{color:#32180d!important;border-color:rgba(75,43,25,.5)!important;background:rgba(255,248,239,.62)!important}}
 
 <style id="faq-card-accordion-functionality">
-/* FAQ-only interaction: clean question click-to-open accordion, no arrow or plus/minus icon. */
-.faq.faq-card-grid .faq-grid-card{position:relative;cursor:pointer}
+/* FAQ-only fix: keep each expanded answer inside its own card. */
+.faq.faq-card-grid .faq-grid{align-items:start!important;grid-auto-rows:min-content!important}
+.faq.faq-card-grid .faq-grid-card{
+  position:relative;cursor:pointer;align-self:start!important;
+  box-sizing:border-box!important;height:auto!important;min-width:0;
+  overflow:hidden!important
+}
 .faq.faq-card-grid .faq-grid-card>summary{
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  width:100%;min-height:100%;padding:0;position:relative;
+  width:100%;height:auto!important;min-height:0!important;flex:0 0 auto!important;
+  box-sizing:border-box!important;padding:0;position:relative;
   cursor:pointer;list-style:none;outline:none
 }
 .faq.faq-card-grid .faq-grid-card>summary::-webkit-details-marker{display:none}
 .faq.faq-card-grid .faq-grid-card>summary::marker{content:""}
 .faq.faq-card-grid .faq-grid-card>summary::before,
-.faq.faq-card-grid .faq-grid-card>summary::after{
-  content:none!important;display:none!important
-}
+.faq.faq-card-grid .faq-grid-card>summary::after{content:none!important;display:none!important}
 .faq.faq-card-grid .faq-grid-card>summary h3{margin:0}
 .faq.faq-card-grid .faq-grid-card>p{display:none!important}
 .faq.faq-card-grid .faq-grid-card[open]>p{
-  display:block!important;max-width:280px;margin:12px 0 0!important;
-  padding-top:10px;border-top:1px solid rgba(135,80,47,.16);
-  text-align:center
+  display:block!important;position:static!important;float:none!important;
+  width:100%;max-width:100%;height:auto!important;flex:0 0 auto!important;
+  box-sizing:border-box!important;white-space:normal!important;
+  overflow-wrap:anywhere;word-break:normal;
+  margin:12px 0 0!important;padding:10px 0 0!important;
+  border-top:1px solid rgba(135,80,47,.16);text-align:center
 }
 .faq.faq-card-grid .faq-grid-card[open]{background:rgba(255,250,243,.62)}
-.faq.faq-card-grid .faq-grid-card>summary:focus-visible{
-  outline:2px solid #87502f;outline-offset:4px;border-radius:8px
-}
+.faq.faq-card-grid .faq-grid-card>summary:focus-visible{outline:2px solid #87502f;outline-offset:4px;border-radius:8px}
 @media(max-width:760px){
- .faq.faq-card-grid .faq-grid-card>summary{padding:0}
+ .faq.faq-card-grid .faq-grid{align-items:start!important;grid-auto-rows:min-content!important;gap:8px!important}
+ .faq.faq-card-grid .faq-grid-card{min-height:94px!important;height:auto!important;padding:11px 8px 10px!important}
+ .faq.faq-card-grid .faq-grid-card>summary{padding:0!important}
  .faq.faq-card-grid .faq-grid-card[open]>p{
    display:block!important;font-size:12px!important;line-height:1.5!important;
-   margin-top:9px!important;padding-top:8px
+   margin-top:9px!important;padding-top:8px!important
  }
 }
 </style>
