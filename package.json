@@ -1,0 +1,22 @@
+{
+  "name": "akarra-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AKARRA cross-platform mobile app",
+  "scripts": {
+    "prepare:web": "node scripts/prepare-web.mjs",
+    "cap:add:android": "npm run prepare:web && cap add android",
+    "cap:add:ios": "npm run prepare:web && cap add ios",
+    "cap:sync": "npm run prepare:web && cap sync",
+    "cap:open:android": "cap open android",
+    "cap:open:ios": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0",
+    "@capacitor/android": "8.6.0",
+    "@capacitor/ios": "8.6.0"
+  }
+}

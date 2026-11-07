@@ -1,0 +1,8 @@
+{
+  "appId": "online.akarra.app",
+  "appName": "AKARRA",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
