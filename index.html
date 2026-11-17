@@ -2306,8 +2306,102 @@ h2.section-title{letter-spacing:-.015em}
 }
 </style>
 
+<style id="ak-homepage-refresh-css">
+/* AKARRA HOMEPAGE REFRESH — reference-led section order */
+.ak-top-marquee{height:36px;overflow:hidden;background:#f47b08;color:#fff;display:flex;align-items:center;white-space:nowrap;position:relative;z-index:30;font:600 15px/1 "DM Sans",Arial,sans-serif}
+.ak-top-marquee-track{display:flex;align-items:center;width:max-content;min-width:200%;animation:akTicker 24s linear infinite}
+.ak-top-marquee span{display:inline-block;padding:0 34px}
+.ak-top-marquee .ak-star{font-size:17px;padding:0 10px}
+@keyframes akTicker{to{transform:translateX(-50%)}}
+body .nav{top:36px!important}
+.ak-home-section{padding:42px 0;background:#fbf3e9;color:#2a150e}
+.ak-home-title{display:flex;align-items:center;gap:18px;justify-content:center;margin:0 0 24px;font:600 clamp(22px,2.5vw,30px)/1.15 "Playfair Display",Georgia,serif;text-align:center;color:#392316}
+.ak-home-title:before,.ak-home-title:after{content:"";height:1px;background:#b99a7d;flex:1;max-width:360px}
+.ak-shop-type-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.ak-type-card{min-height:148px;border-radius:18px;background:#f0ddc8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#3c2416;text-align:center;transition:transform .25s,background .25s}
+.ak-type-card:hover{transform:translateY(-4px);background:#ead0b5}
+.ak-type-card svg{width:42px;height:42px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ak-type-card strong{font:500 16px/1.2 "Playfair Display",Georgia,serif}
+.ak-watch-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.ak-watch-card{position:relative;min-height:280px;overflow:hidden;border-radius:20px;background:#4a2c1c;isolation:isolate}
+.ak-watch-card>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.ak-watch-card:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.02) 20%,rgba(0,0,0,.55) 100%)}
+.ak-watch-product{position:absolute;left:14px;right:14px;bottom:14px;display:flex;align-items:center;gap:12px;padding:11px;border:1px solid rgba(255,255,255,.45);border-radius:17px;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#24170f;text-decoration:none}
+.ak-watch-product img{width:66px;height:66px;object-fit:cover;border-radius:12px;background:#ead8c5}
+.ak-watch-product-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
+.ak-watch-product-copy strong{font:600 16px/1.1 "DM Sans",Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ak-watch-product-copy span{font-size:13px}
+.ak-watch-product-copy b{font-size:15px}
+.ak-watch-product .ak-watch-shop{margin-left:auto;flex:0 0 auto;background:#3b2113;color:#fff;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:700}
+.ak-video-sound{position:absolute;top:12px;right:12px;color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:6px 10px;font-size:11px}
+.ak-brand-story{background:#fbf3e9;padding:44px 0 48px;color:#2a150e;overflow:hidden}
+.ak-brand-ticker{overflow:hidden;white-space:nowrap;margin:0 auto 22px}
+.ak-brand-ticker-track{display:flex;width:max-content;align-items:center;animation:akTicker 22s linear infinite}
+.ak-brand-ticker span{font:600 clamp(24px,4vw,46px)/1.2 "Playfair Display",Georgia,serif;padding:0 28px}
+.ak-product-ribbon{overflow:hidden;margin:0 auto 34px}
+.ak-product-ribbon-track{display:flex;gap:14px;width:max-content;animation:akProductRibbon 28s linear infinite}
+.ak-product-ribbon img{width:clamp(170px,22vw,270px);height:190px;object-fit:cover;border-radius:16px;background:#ead9c6}
+@keyframes akProductRibbon{to{transform:translateX(-50%)}}
+.ak-brand-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:1120px;margin:0 auto}
+.ak-brand-value{display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px 20px;gap:8px}
+.ak-brand-value+.ak-brand-value{border-left:1px solid #cbb7a2}
+.ak-brand-value svg{width:44px;height:44px;stroke:#2a150e;fill:none;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;margin-bottom:5px}
+.ak-brand-value h3{font:500 clamp(17px,2vw,23px)/1.2 "DM Sans",Arial,sans-serif;margin:0}
+.ak-brand-value p{font:400 clamp(13px,1.5vw,16px)/1.45 "DM Sans",Arial,sans-serif;margin:0;color:#4d4036}
+.ak-best-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.ak-best-card{position:relative;min-width:0}
+.ak-best-image-wrap{position:relative;border-radius:15px;overflow:hidden;background:#ead9c6}
+.ak-best-image-wrap img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+.ak-best-bag{position:absolute;top:12px;right:12px;width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,250,243,.94);color:#2a150e;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 12px #0002}
+.ak-best-bag svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ak-best-info{padding:13px 3px}
+.ak-best-info h3{font:600 19px/1.2 "Playfair Display",Georgia,serif;margin:0 0 5px}
+.ak-best-info p{font-size:13px;margin:0 0 8px;color:#74675b}
+.ak-best-price{font-size:17px;font-weight:700}
+.ak-best-old{font-size:13px;color:#8e8177;text-decoration:line-through;margin-right:7px}
+.ak-best-discount{display:inline-block;margin-left:8px;padding:4px 8px;border-radius:7px;background:#f7d8a9;color:#51321a;font-size:11px}
+.ak-best-add{display:block;margin-top:11px;border:0;border-radius:9px;background:#3a2114;color:#fff;padding:11px 18px;font:600 13px "DM Sans",Arial,sans-serif;cursor:pointer}
+.ak-best-view{display:flex;justify-content:center;margin-top:25px}
+.ak-best-view a{border-radius:999px;background:#f0ddc8;padding:13px 24px;font-size:13px;font-weight:700}
+@media(max-width:760px){
+ .ak-top-marquee{height:32px;font-size:12px}
+ .ak-top-marquee span{padding:0 22px}
+ body .nav{top:32px!important}
+ .ak-home-section{padding:30px 0}
+ .ak-home-title{gap:10px;font-size:20px;margin-bottom:18px}
+ .ak-shop-type-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .ak-type-card{min-height:116px;border-radius:14px;gap:8px}
+ .ak-type-card svg{width:34px;height:34px}
+ .ak-type-card strong{font-size:14px}
+ .ak-watch-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .ak-watch-card{min-height:265px;border-radius:15px}
+ .ak-watch-product{left:7px;right:7px;bottom:7px;gap:7px;padding:7px;border-radius:12px}
+ .ak-watch-product img{width:46px;height:46px;border-radius:8px}
+ .ak-watch-product-copy strong{font-size:11px}
+ .ak-watch-product-copy span{font-size:10px}
+ .ak-watch-product-copy b{font-size:12px}
+ .ak-watch-product .ak-watch-shop{font-size:9px;padding:7px 8px}
+ .ak-brand-story{padding:30px 0 34px}
+ .ak-brand-ticker span{font-size:26px;padding:0 16px}
+ .ak-product-ribbon{margin-bottom:22px}
+ .ak-product-ribbon-track{gap:9px}
+ .ak-product-ribbon img{width:155px;height:132px;border-radius:12px}
+ .ak-brand-values{grid-template-columns:1fr;gap:0}
+ .ak-brand-value{padding:16px 12px;gap:6px}
+ .ak-brand-value+.ak-brand-value{border-left:0;border-top:1px solid #cbb7a2}
+ .ak-brand-value svg{width:37px;height:37px}
+ .ak-brand-value h3{font-size:17px}
+ .ak-brand-value p{font-size:13px}
+ .ak-best-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+ .ak-best-info h3{font-size:16px}
+ .ak-best-price{font-size:15px}
+ .ak-best-add{width:100%;padding:10px 8px}
+}
+@media(prefers-reduced-motion:reduce){.ak-top-marquee-track,.ak-brand-ticker-track,.ak-product-ribbon-track{animation:none}}
+</style>
 </head>
 <body>
+<div class="ak-top-marquee" role="region" aria-label="AKARRA brand message"><div class="ak-top-marquee-track"><span class="ak-star">✦</span><span>We make things that work better and last longer.</span><span class="ak-star">✦</span><span>We make things that work better and last longer.</span><span class="ak-star">✦</span><span>We make things that work better and last longer.</span><span class="ak-star">✦</span></div></div>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
 <div id="akOfferPopup" aria-hidden="true"><div class="ak-popup-card" role="dialog" aria-modal="true" aria-labelledby="akPopupHeading"><button class="ak-popup-close" id="akPopupClose" aria-label="Close offer">×</button><img class="ak-popup-image" id="akPopupImage" alt="Festival offer" loading="lazy" decoding="async" hidden><div class="ak-popup-content"><div class="ak-popup-brand">AKARRA</div><h2 id="akPopupHeading">Festival Offer</h2><p id="akPopupSubheading">Bring home a little nostalgia</p><div class="ak-popup-discount" id="akPopupDiscount">Special offer</div><div class="ak-countdown" id="akPopupCountdown"><span><b>--</b>Days</span><span><b>--</b>Hours</span><span><b>--</b>Minutes</span><span><b>--</b>Seconds</span></div><a class="ak-popup-cta" id="akPopupCta" href="#shop">Shop Now</a></div></div></div>
 <div id="resetPanel" class="reset-panel">
@@ -2383,6 +2477,50 @@ h2.section-title{letter-spacing:-.015em}
 })();
 </script>
 
+
+<section class="ak-home-section" id="akShopByType">
+ <div class="container">
+  <h2 class="ak-home-title">SHOP BY TYPE</h2>
+  <div class="ak-shop-type-grid">
+   <a class="ak-type-card" href="#akBestSellers"><svg viewBox="0 0 48 48"><path d="M24 5v24M17 13l7-8 7 8M12 29h24v7H12zM17 36v6M31 36v6M19 17c-4 4-4 7 0 9M29 17c4 4 4 7 0 9"/></svg><strong>Incense Holders</strong></a>
+   <a class="ak-type-card" href="#akBestSellers"><svg viewBox="0 0 48 48"><path d="M10 17h28l-5-9H15zM18 17v5h12v-5M24 22v17M16 41h16M20 39h8"/></svg><strong>Table Lamps</strong></a>
+   <a class="ak-type-card" href="#akBestSellers"><svg viewBox="0 0 48 48"><path d="M24 40V18M24 26c-10 0-14-6-14-13 8 0 14 5 14 13ZM24 21c0-9 5-14 13-14 0 8-4 14-13 14ZM24 33c-7 0-11-4-11-10 7 0 11 4 11 10ZM24 29c0-7 4-11 10-11 0 6-4 11-10 11ZM17 42h14"/></svg><strong>Home Decor</strong></a>
+   <a class="ak-type-card" href="#akBestSellers"><svg viewBox="0 0 48 48"><path d="M24 25v17M7 18h34v24H7zM5 13h38v6H5zM24 13c-1-9-13-10-13-4 0 5 8 6 13 4ZM24 13c1-9 13-10 13-4 0 5-8 6-13 4Z"/></svg><strong>Gifting</strong></a>
+  </div>
+ </div>
+</section>
+<section class="ak-home-section" id="akWatchShop">
+ <div class="container">
+  <h2 class="ak-home-title">WATCH &amp; SHOP – NEW LAUNCHES</h2>
+  <div class="ak-watch-grid">
+   <article class="ak-watch-card"><video autoplay muted loop playsinline preload="metadata"><source src="assets/pandit-ji-video-3.mp4" type="video/mp4"></video><span class="ak-video-sound">PLAYING · MUTED</span><a class="ak-watch-product" href="#buyPanel" onclick="openBuyPanel();return false;"><img src="assets/media-01.jpg" alt="Chhota Pandit incense holder"><span class="ak-watch-product-copy"><strong>Chhota Pandit</strong><span>Incense Holder</span><b>₹699</b></span><span class="ak-watch-shop">Shop now ↗</span></a></article>
+   <article class="ak-watch-card"><video autoplay muted loop playsinline preload="metadata"><source src="assets/pandit-ji-video-2.mp4" type="video/mp4"></video><span class="ak-video-sound">PLAYING · MUTED</span><a class="ak-watch-product" href="#buyPanel" onclick="openBuyPanel();return false;"><img src="assets/media-02.jpg" alt="Chhota Pandit incense holder"><span class="ak-watch-product-copy"><strong>Chhota Pandit</strong><span>The Making</span><b>₹699</b></span><span class="ak-watch-shop">Shop now ↗</span></a></article>
+   <article class="ak-watch-card"><video autoplay muted loop playsinline preload="metadata"><source src="assets/pandit-ji-video-4.mp4" type="video/mp4"></video><span class="ak-video-sound">PLAYING · MUTED</span><a class="ak-watch-product" href="#buyPanel" onclick="openBuyPanel();return false;"><img src="assets/media-03.jpg" alt="Chhota Pandit incense holder"><span class="ak-watch-product-copy"><strong>Chhota Pandit</strong><span>Hand-painted details</span><b>₹699</b></span><span class="ak-watch-shop">Shop now ↗</span></a></article>
+   <article class="ak-watch-card"><video autoplay muted loop playsinline preload="metadata"><source src="assets/pandit-ji-video-5.mp4" type="video/mp4"></video><span class="ak-video-sound">PLAYING · MUTED</span><a class="ak-watch-product" href="#buyPanel" onclick="openBuyPanel();return false;"><img src="assets/media-04.jpg" alt="Chhota Pandit incense holder"><span class="ak-watch-product-copy"><strong>Chhota Pandit</strong><span>In your space</span><b>₹699</b></span><span class="ak-watch-shop">Shop now ↗</span></a></article>
+  </div>
+ </div>
+</section>
+<section class="ak-brand-story" id="akBrandStory">
+ <div class="ak-brand-ticker"><div class="ak-brand-ticker-track"><span>We make things that work better and last longer.</span><span>✦</span><span>We make things that work better and last longer.</span><span>✦</span><span>We make things that work better and last longer.</span><span>✦</span></div></div>
+ <div class="ak-product-ribbon"><div class="ak-product-ribbon-track">
+  <img src="assets/media-01.jpg" alt="AKARRA Chhota Pandit product"><img src="assets/media-02.jpg" alt="AKARRA Chhota Pandit product in a home"><img src="assets/media-03.jpg" alt="AKARRA Chhota Pandit product detail"><img src="assets/media-04.jpg" alt="AKARRA Chhota Pandit incense holder">
+  <img src="assets/media-01.jpg" alt="AKARRA Chhota Pandit product"><img src="assets/media-02.jpg" alt="AKARRA Chhota Pandit product in a home"><img src="assets/media-03.jpg" alt="AKARRA Chhota Pandit product detail"><img src="assets/media-04.jpg" alt="AKARRA Chhota Pandit incense holder">
+ </div></div>
+ <div class="container ak-brand-values">
+  <article class="ak-brand-value"><svg viewBox="0 0 48 48"><path d="M3 24s8-14 21-14 21 14 21 14-8 14-21 14S3 24 3 24Z"/><circle cx="24" cy="24" r="7"/></svg><h3>INTENTIONAL DESIGN</h3><p>Everything we do starts with why</p></article>
+  <article class="ak-brand-value"><svg viewBox="0 0 48 48"><path d="M24 42 7 25C-2 14 12 2 24 14 36 2 50 14 41 25Z"/></svg><h3>MADE WITH CARE</h3><p>We believe in building better</p></article>
+  <article class="ak-brand-value"><svg viewBox="0 0 48 48"><circle cx="24" cy="13" r="8"/><path d="M7 43v-6c0-7 6-12 13-12h8c7 0 13 5 13 12v6Z"/></svg><h3>A TEAM WITH A GOAL</h3><p>Real people making great products</p></article>
+ </div>
+</section>
+<section class="ak-home-section" id="akBestSellers">
+ <div class="container">
+  <h2 class="ak-home-title">BEST SELLERS</h2>
+  <div class="ak-best-grid">
+   <article class="ak-best-card"><div class="ak-best-image-wrap"><img src="assets/media-01.jpg" alt="Chhota Pandit incense holder"><button class="ak-best-bag" type="button" aria-label="Add Chhota Pandit to cart" onclick="openBuyPanel()"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg></button></div><div class="ak-best-info"><h3>Chhota Pandit</h3><p>Incense Holder</p><span class="ak-best-old">₹999</span><span class="ak-best-price">₹699</span><span class="ak-best-discount">30% OFF</span><button class="ak-best-add" type="button" onclick="openBuyPanel()">Add to Cart</button></div></article>
+  </div>
+  <div class="ak-best-view"><a href="#buyPanel" onclick="openBuyPanel();return false;">View Product →</a></div>
+ </div>
+</section>
 
 
 <section class="section" id="story">
