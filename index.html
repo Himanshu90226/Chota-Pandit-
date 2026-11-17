@@ -2408,6 +2408,14 @@ body > .ak-top-marquee,.ak-top-marquee{display:none!important;height:0!important
 .ak-watch-card .ak-video-sound,.ak-watch-product .ak-watch-shop{display:none!important}
 .ak-brand-ticker-track{animation:none!important;transform:none!important;justify-content:center!important;width:100%!important}
 </style>
+<style id="ak-move-marquee-middle">
+/* Move the orange announcement marquee from header to the middle brand-story position */
+.ak-brand-ticker{display:block;width:100%;background:#f47b08;color:#fff;padding:12px 0;margin:0 auto 22px;overflow:hidden;white-space:nowrap;text-align:left}
+.ak-brand-ticker-track{display:flex!important;width:max-content!important;min-width:200%;justify-content:flex-start!important;align-items:center;animation:akTicker 24s linear infinite!important;transform:none}
+.ak-brand-ticker span{font:600 15px/1 "DM Sans",Arial,sans-serif!important;padding:0 30px!important}
+@media(max-width:760px){.ak-brand-ticker{padding:10px 0}.ak-brand-ticker span{font-size:12px!important;padding:0 22px!important}}
+@media(prefers-reduced-motion:reduce){.ak-brand-ticker-track{animation:none!important}}
+</style>
 </head>
 <body>
 <div id="akOfferBanner" role="region" aria-label="Current offer"><div class="ak-banner-inner"><span id="akBannerText"></span><span class="ak-banner-timer" id="akBannerTimer"></span><a id="akBannerCta" href="#shop">Shop Now</a></div><button class="ak-banner-close" id="akBannerClose" aria-label="Close announcement">×</button></div>
@@ -2509,7 +2517,7 @@ body > .ak-top-marquee,.ak-top-marquee{display:none!important;height:0!important
  </div>
 </section>
 <section class="ak-brand-story" id="akBrandStory">
- <div class="ak-brand-ticker"><div class="ak-brand-ticker-track"><span>We make things that work better and last longer.</span></div></div>
+ <div class="ak-brand-ticker"><div class="ak-brand-ticker-track"><span>We make things that work better and last longer.</span><span>✦</span><span>We make things that work better and last longer.</span><span>✦</span></div></div>
  <div class="ak-product-ribbon"><div class="ak-product-ribbon-track">
   <img src="assets/media-01.jpg" alt="AKARRA Chhota Pandit product"><img src="assets/media-02.jpg" alt="AKARRA Chhota Pandit product in a home"><img src="assets/media-03.jpg" alt="AKARRA Chhota Pandit product detail"><img src="assets/media-04.jpg" alt="AKARRA Chhota Pandit incense holder">
   <img src="assets/media-01.jpg" alt="AKARRA Chhota Pandit product"><img src="assets/media-02.jpg" alt="AKARRA Chhota Pandit product in a home"><img src="assets/media-03.jpg" alt="AKARRA Chhota Pandit product detail"><img src="assets/media-04.jpg" alt="AKARRA Chhota Pandit incense holder">
