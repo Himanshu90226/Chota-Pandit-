@@ -71,7 +71,7 @@ a{text-decoration:none;color:inherit}
   background: #2A150E;
   color:white;
 }
-/* HERO IMAGE SLIDESHOW: five images, smooth 5-second rotation */
+/* HERO IMAGE SLIDESHOW: three product slides, smooth 5-second rotation */
 .hero-slideshow{position:absolute;inset:0;z-index:0;overflow:hidden;background:#2A150E}
 .hero-slideshow img{
   position:absolute;inset:0;width:100%;height:100%;
@@ -2441,28 +2441,15 @@ body > .ak-top-marquee,.ak-top-marquee{display:none!important;height:0!important
 </header>
 
 <section class="hero" id="shop">
-  <div class="hero-slideshow" aria-hidden="true">
-    <img src="assets/media-02.jpg" alt="" fetchpriority="high" decoding="async">
-    <img src="assets/hero-slide-01.webp" alt="" decoding="async">
-    <img src="assets/hero-slide-02.webp" alt="" decoding="async">
-    <img src="assets/hero-slide-03.webp" alt="" decoding="async">
-    <img src="assets/hero-slide-04.webp" alt="" decoding="async">
+  <div class="hero-slideshow" aria-label="AKARRA featured products">
+    <img class="is-active" src="assets/media-02.jpg" alt="AKARRA featured product 1" fetchpriority="high" decoding="async">
+    <img src="assets/hero-slide-01.webp" alt="AKARRA featured product 2" decoding="async">
+    <img src="assets/hero-slide-02.webp" alt="AKARRA featured product 3" decoding="async">
   </div>
-  <div class="hero-slide-dots" role="group" aria-label="Choose hero image">
-    <button class="hero-slide-dot is-active" type="button" aria-label="Show image 1" aria-current="true"></button>
-    <button class="hero-slide-dot" type="button" aria-label="Show image 2"></button>
-    <button class="hero-slide-dot" type="button" aria-label="Show image 3"></button>
-    <button class="hero-slide-dot" type="button" aria-label="Show image 4"></button>
-    <button class="hero-slide-dot" type="button" aria-label="Show image 5"></button>
-  </div>
-  <div class="hero-inner container">
-    <div class="hero-copy">
-      <h1>Pandit <span class="hero-ji-red" style="color:#A31A08 !important">Ji</span></h1>
-      <h2>A little character for your space</h2>
-      <p>Meet Pandit Ji — a hand-finished incense holder made to bring personality, craft and a playful touch to your everyday space.</p>
-      <a class="cta" href="#buyPanel" onclick="openBuyPanel();return false;">Buy now&nbsp; →</a>
-    </div>
-
+  <div class="hero-slide-dots" role="group" aria-label="Choose featured product slide">
+    <button class="hero-slide-dot is-active" type="button" aria-label="Show product slide 1" aria-current="true"></button>
+    <button class="hero-slide-dot" type="button" aria-label="Show product slide 2"></button>
+    <button class="hero-slide-dot" type="button" aria-label="Show product slide 3"></button>
   </div>
 </section>
 <script>
